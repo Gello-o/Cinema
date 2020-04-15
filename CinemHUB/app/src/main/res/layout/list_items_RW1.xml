@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content" android:layout_height="wrap_content"
-    android:layout_margin="1dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_margin="1dp"
+    tools:ignore="MissingDefaultResource">
 
     <androidx.cardview.widget.CardView
         android:layout_width="120dp"
@@ -21,7 +23,7 @@
                        1) immagine (imageView)
                        2) testo (textView)
                 -->
-                
+
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="90dp"
                     android:layout_height="90dp"
@@ -30,20 +32,18 @@
                     android:src="@drawable/ic_launcher_background"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:text="simpatia"
+                    android:id="@+id/textView"
+                    android:layout_width="45dp"
+                    android:layout_height="wrap_content"
                     android:layout_below="@+id/imageView"
                     android:layout_centerHorizontal="true"
-                    android:gravity="center"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
                     android:autoSizeMaxTextSize="15dp"
                     android:autoSizeMinTextSize="8dp"
-                    android:autoSizeTextType="uniform"/>
-
-
-
+                    android:autoSizeTextType="uniform"
+                    android:gravity="center"
+                    android:text="simpatia" />
 
 
             </RelativeLayout>
