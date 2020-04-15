@@ -1,4 +1,4 @@
-package com.example.cinemhub.ui.gallery;
+package com.example.cinemhub.ui.preferiti;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,18 +13,19 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.cinemhub.R;
+import com.example.cinemhub.ui.piu_visti.piu_vistiViewModel;
 
-public class GalleryFragment extends Fragment {
+public class preferitiFragment extends Fragment {
 
-    private GalleryViewModel galleryViewModel;
+    private preferitiViewModel preferitiViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        galleryViewModel =
-                ViewModelProviders.of(this).get(GalleryViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_gallery, container, false);
-        final TextView textView = root.findViewById(R.id.text_gallery);
-        galleryViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        preferitiViewModel =
+                ViewModelProviders.of(this).get(preferitiViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_preferiti, container, false);
+        final TextView textView = root.findViewById(R.id.text_preferiti);
+        preferitiViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);

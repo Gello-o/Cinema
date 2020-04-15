@@ -8,8 +8,11 @@
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
-
+    <string name="menu_preferiti">Preferiti</string>
+    <string name="menu_add_list">Aggiunti alla lista</string>
+    <string name="menu_categorie">Categorie</string>
+    <string name="menu_nuovi_arrivi">Nuovi Arrivi</string>
+    <string name="menu_prossime_uscite">Prossime Uscite</string>
+    <string name="menu_piu_visti">Film Più Visti</string>
     <string name="home_second">Home Second</string>
 </resources>

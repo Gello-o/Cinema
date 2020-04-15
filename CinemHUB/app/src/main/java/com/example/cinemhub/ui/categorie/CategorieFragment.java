@@ -1,4 +1,4 @@
-package com.example.cinemhub.ui.slideshow;
+package com.example.cinemhub.ui.categorie;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,17 +14,17 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.cinemhub.R;
 
-public class SlideshowFragment extends Fragment {
+public class CategorieFragment extends Fragment {
 
-    private SlideshowViewModel slideshowViewModel;
+    private CategorieViewModel categorieViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        slideshowViewModel =
-                ViewModelProviders.of(this).get(SlideshowViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_slideshow, container, false);
-        final TextView textView = root.findViewById(R.id.text_slideshow);
-        slideshowViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        categorieViewModel =
+                ViewModelProviders.of(this).get(CategorieViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_categorie, container, false);
+        final TextView textView = root.findViewById(R.id.text_categorie);
+        categorieViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
