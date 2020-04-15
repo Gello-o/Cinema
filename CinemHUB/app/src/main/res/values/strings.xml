@@ -12,4 +12,6 @@
     <string name="menu_slideshow">Slideshow</string>
 
     <string name="home_second">Home Second</string>
+    <string name="movie_poster">movie_poster</string>
+    <string name="something_went_wrong" />
 </resources>
