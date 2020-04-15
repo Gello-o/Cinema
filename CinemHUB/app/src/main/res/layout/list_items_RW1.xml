@@ -16,7 +16,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <!-- qui verranno ineriti i film che verrano fetchati dal db dei film-->
+                <!-- qui verranno ineriti i film che verrano fetchati dal db dei film
+                       nell'esempio c'é:
+                       1) immagine (imageView)
+                       2) testo (textView)
+                -->
+                
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/imageView"
+                    android:src="@drawable/ic_launcher_background"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:text="simpatia"
+                    android:layout_below="@+id/imageView"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:autoSizeMaxTextSize="15dp"
+                    android:autoSizeMinTextSize="8dp"
+                    android:autoSizeTextType="uniform"/>
+
+
+
+
 
             </RelativeLayout>
 
