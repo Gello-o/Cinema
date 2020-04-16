@@ -9,8 +9,10 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main"
     android:layout_marginTop="@dimen/activity_vertical_margin"
-    android:id="@+id/image_and_text_layout">
+    android:id="@+id/image_and_text_layout"
+    android:fitsSystemWindows="true">
 
+    <!--android:background="@color"-->
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

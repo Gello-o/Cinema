@@ -30,13 +30,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        ImageView imageView;
-        TextView textView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageView = itemView.findViewById(R.id.imageView);
-            textView = itemView.findViewById(); //non trova la text view mannaggia a DIO
+
         }
     }
 }
