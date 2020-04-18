@@ -7,7 +7,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/app_bar_main">
 
-    <androidx.fragment.app.FragmentContainerView
+    <fragment
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
@@ -26,12 +26,11 @@
         tools:showIn="@layout/content_main"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:id="@+id/preferiti_layout">
-        <!--qui sopra andranno settati
+        <!-qui sopra andranno settati
             android:layout_marginStart
             android:layout_marginEnd
              etc...
-             PER INDICARE CHE DEVE STARE AL DI SOTTO DELLA TOOLBAR DEL NAV_DRAWER
-             -->
+             PER INDICARE CHE DEVE STARE AL DI SOTTO DELLA TOOLBAR DEL NAV_DRAWER -->
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
