@@ -9,6 +9,6 @@ public class schermata_prova extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.preferiti_overview_content);
+        //setContentView(R.layout.preferiti_overview_content);
     }
 }
