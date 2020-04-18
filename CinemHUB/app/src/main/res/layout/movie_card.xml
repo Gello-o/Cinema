@@ -42,11 +42,7 @@
             android:paddingBottom="@dimen/user_rating_padding_bottom"
             android:paddingLeft="@dimen/movie_title_padding"
             android:paddingRight="@dimen/movie_title_padding"
-            android:textSize="@dimen/user_rating"
-
-
-
-
+            android:textSize="@dimen/user_rating" />
 
     </RelativeLayout>
         
