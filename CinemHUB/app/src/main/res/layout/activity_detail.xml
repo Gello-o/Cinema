@@ -36,7 +36,6 @@
                     android:layout_height="match_parent"
                     android:fitsSystemWindows="true"
                     android:scaleType="centerCrop"
-                    android:layout_collapseMode="parallax"
                     android:contentDescription="@string/movie_details" />
             </RelativeLayout>
 

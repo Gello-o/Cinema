@@ -16,7 +16,7 @@
         app:navGraph="@navigation/mobile_navigation"
         tools:layout_editor_absoluteY="16dp" />
 
-    <?xml version="1.0" encoding="utf-8"?>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
