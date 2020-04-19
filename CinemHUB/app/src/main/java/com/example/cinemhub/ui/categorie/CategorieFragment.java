@@ -10,9 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.cinemhub.R;
+
+import android.widget.Button;
 
 public class CategorieFragment extends Fragment {
 
@@ -20,9 +22,9 @@ public class CategorieFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        categorieViewModel =
-                ViewModelProviders.of(this).get(CategorieViewModel.class);
+        categorieViewModel = new ViewModelProvider(this).get(CategorieViewModel.class);
         View root = inflater.inflate(R.layout.fragment_categorie, container, false);
+        Button button;
         final TextView textView = root.findViewById(R.id.text_categorie);
         categorieViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
@@ -32,4 +34,6 @@ public class CategorieFragment extends Fragment {
         });
         return root;
     }
+
+
 }

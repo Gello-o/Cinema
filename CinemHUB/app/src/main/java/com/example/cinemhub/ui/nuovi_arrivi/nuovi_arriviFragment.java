@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.cinemhub.R;
@@ -21,8 +22,7 @@ public class nuovi_arriviFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        nuovi_arriviViewModel =
-                ViewModelProviders.of(this).get(nuovi_arriviViewModel.class);
+        nuovi_arriviViewModel = new ViewModelProvider(this).get(nuovi_arriviViewModel.class);
         View root = inflater.inflate(R.layout.fragment_nuovi_arrivi, container, false);
         final TextView textView = root.findViewById(R.id.text_nuovi_arrivi);
         nuovi_arriviViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {

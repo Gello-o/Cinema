@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.cinemhub.R;
@@ -21,8 +22,7 @@ public class piu_vistiFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        piu_vistiViewModel =
-                ViewModelProviders.of(this).get(piu_vistiViewModel.class);
+        piu_vistiViewModel = new ViewModelProvider(this).get(piu_vistiViewModel.class);
         View root = inflater.inflate(R.layout.fragment_piu_visti, container, false);
         final TextView textView = root.findViewById(R.id.text_piu_visti);
         piu_vistiViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {

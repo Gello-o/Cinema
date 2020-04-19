@@ -10,7 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.cinemhub.R;
 
@@ -20,8 +21,7 @@ public class prossime_usciteFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        prossime_usciteViewModel =
-                ViewModelProviders.of(this).get(prossime_usciteViewModel.class);
+        prossime_usciteViewModel = new ViewModelProvider(this).get(prossime_usciteViewModel.class);
         View root = inflater.inflate(R.layout.fragment_prossime_uscite, container, false);
         final TextView textView = root.findViewById(R.id.text_prossime_uscite);
         prossime_usciteViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
