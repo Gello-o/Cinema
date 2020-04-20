@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.Configuration;
-import android.graphics.Movie;
 import android.os.Bundle;
 import android.text.Layout;
 import android.util.Log;
@@ -19,6 +18,7 @@ import android.widget.Toast;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.api.Client;
 import com.example.cinemhub.api.Service;
+import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesResponse;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private RecyclerView recyclerView;
     private MoviesAdapter adapter;
-    private List<Movie> movieList;
+    private List<com.example.cinemhub.model.Movie> movieList;
     ProgressDialog pd;
     private DrawerLayout container;
     private static final String LOG_TAG = MoviesAdapter.class.getName();
@@ -129,9 +129,9 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-        movieList = new ArrayList<>();
+        movieList = new ArrayList<Movie>();
 
-        adapter = new MoviesAdapter(this.movieList);
+        adapter = new MoviesAdapter(this, movieList);
 
         if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
             //recyclerView.setLayoutManager(<tipo di layout manager che ci serve>)
@@ -149,14 +149,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadJSON(){
         try{
-            if(BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()){
+            /*if(BuildConfig.the_movie_db_api.isEmpty()){
                 Toast.makeText(getApplicationContext(), "Please obtain API key firstly from themoviedb", Toast.LENGTH_SHORT);
                 pd.dismiss();
                 return;
-            }
+            }*/
             Client client = new Client();
             Service apiService = client.getClient().create(Service.class);
-            Call<MoviesResponse> call = apiService.getPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN);
+            Call<MoviesResponse> call = apiService.getPopularMovies(this.getString(R.string.THE_MOVIE_DB_API_TOKEN));
             call.enqueue(new Callback<MoviesResponse>() {
                 @Override
                 public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
