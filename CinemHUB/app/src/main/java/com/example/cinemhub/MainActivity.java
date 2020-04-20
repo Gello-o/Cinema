@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private RecyclerView recyclerView;
     private MoviesAdapter adapter;
-    private List<com.example.cinemhub.model.Movie> movieList;
+    private List<Movie> movieList;
     ProgressDialog pd;
     private DrawerLayout container;
     private static final String LOG_TAG = MoviesAdapter.class.getName();
@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
             call.enqueue(new Callback<MoviesResponse>() {
                 @Override
                 public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
-                    List<com.example.cinemhub.model.Movie> movies = response.body().getResults();
+                    List<Movie> movies = response.body().getResults();
                     recyclerView.setAdapter(new MoviesAdapter(getApplicationContext(), movies));
                     recyclerView.smoothScrollToPosition(0);
                     pd.dismiss();
