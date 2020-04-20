@@ -8,7 +8,7 @@ public class MoviesResponse {
     @SerializedName("page")
     private int page;
     @SerializedName("results")
-    private List<com.example.cinemhub.model.Movie> results;
+    private List<Movie> results;
     @SerializedName("total_results")
     private int total_results;
     @SerializedName("total_pages")
@@ -26,7 +26,7 @@ public class MoviesResponse {
         return results;
     }
 
-    public void setResults(List<com.example.cinemhub.model.Movie> results) {
+    public void setResults(List <Movie> results) {
         this.results = results;
     }
 

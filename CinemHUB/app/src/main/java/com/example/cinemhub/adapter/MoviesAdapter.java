@@ -3,6 +3,7 @@ package com.example.cinemhub.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,8 @@ import com.example.cinemhub.R;
 import com.example.cinemhub.model.Movie;
 
 import java.util.List;
+
+import info.movito.themoviedbapi.model.MovieList;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHolder>{
 
@@ -49,7 +52,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
 
     }
 
-    public int getItemCount{
+    @Override
+    public int getItemCount() {
         return movieList.size();
     }
 
@@ -76,7 +80,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
                          intent.putExtra("original_title", movieList.get(pos).getOriginal_title());
                          intent.putExtra("poster_path", movieList.get(pos).getPosterPath());
                          intent.putExtra("overview", movieList.get(pos).getOverview());
-                         intent.putExtra("released", movieList.get(pos).getRelease_date();
+                         intent.putExtra("released", movieList.get(pos).getRelease_date());
                          intent.putExtra("vote_average", Double.toString(movieList.get(pos).getVote_average()));
                          intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                          context.startActivity(intent);
