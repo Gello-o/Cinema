@@ -1,9 +1,7 @@
 package com.example.cinemhub.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -19,8 +18,6 @@ import com.example.cinemhub.R;
 import com.example.cinemhub.model.Movie;
 
 import java.util.List;
-
-import info.movito.themoviedbapi.model.MovieList;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHolder>{
 
@@ -33,7 +30,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
     }
 
     @Override
-    public MoviesAdapter.MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i){
+    public MoviesAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i){
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.movie_card, viewGroup, false);
         return new MyViewHolder(view);
     }
@@ -64,9 +61,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
 
         public MyViewHolder(View view){
             super(view);
-            title = (TextView) view.findViewById(R.id.movieTitle);
-            userrating = (TextView) view.findViewById(R.id.usersRating);
-            thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
+            title = view.findViewById(R.id.movieTitle);
+            userrating = view.findViewById(R.id.usersRating);
+            thumbnail = view.findViewById(R.id.thumbnail);
 
             view.setOnClickListener(new View.OnClickListener() {
                 Movie clickedDataItem;

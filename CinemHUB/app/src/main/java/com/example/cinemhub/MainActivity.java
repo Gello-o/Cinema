@@ -24,6 +24,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.multidex.MultiDex;
+import androidx.multidex.MultiDexApplication;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -52,15 +54,10 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout container;
     private static final String LOG_TAG = MoviesAdapter.class.getName();
 
-
-
-    @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        container = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         initViews();
 
@@ -74,7 +71,8 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });*/
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        DrawerLayout drawer;
+        drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -127,9 +125,9 @@ public class MainActivity extends AppCompatActivity {
         pd.setCancelable(false);
         pd.show();
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView = findViewById(R.id.recycler_view);
 
-        movieList = new ArrayList<Movie>();
+        movieList = new ArrayList<>();
 
         adapter = new MoviesAdapter(this, movieList);
 
@@ -154,8 +152,7 @@ public class MainActivity extends AppCompatActivity {
                 pd.dismiss();
                 return;
             }*/
-            Client client = new Client();
-            Service apiService = client.getClient().create(Service.class);
+            Service apiService = Client.getClient().create(Service.class);
             Call<MoviesResponse> call = apiService.getPopularMovies(this.getString(R.string.THE_MOVIE_DB_API_TOKEN));
             call.enqueue(new Callback<MoviesResponse>() {
                 @Override
@@ -177,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }catch (Exception e){
-            Log.d("Error", e.getMessage());
+            System.out.println("Eccezione" + "/n" + e.getMessage());
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
