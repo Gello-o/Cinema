@@ -34,6 +34,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -132,10 +133,10 @@ public class MainActivity extends AppCompatActivity {
         adapter = new MoviesAdapter(this, movieList);
 
         if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            //recyclerView.setLayoutManager(<tipo di layout manager che ci serve>)
-            //il mangiabanane usa gridLayoutManager
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+            //il mangiabanane usa questo
         }else{
-            //recyclerView.setLayoutManager(<altro tipo di layout manager che ci serve>)
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
         }
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
