@@ -13,12 +13,10 @@ import info.movito.themoviedbapi.model.MovieDb;
 public class CategorieViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
-    private TmdbMovies movies;
 
     public CategorieViewModel() {
 
         try{
-            movies = new TmdbApi("740ef79d64b588653371072cdee99a0f").getMovies();
             mText = new MutableLiveData<>();
             mText.setValue("Questa è la pagina delle categorie");
         }catch(Exception exception){
