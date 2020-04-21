@@ -30,6 +30,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
     }
 
     @Override
+    @NonNull
     public MoviesAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i){
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.movie_card, viewGroup, false);
         return new MyViewHolder(view);
@@ -54,10 +55,11 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
         return movieList.size();
     }
 
+
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        public TextView userrating;
-        public TextView title;
-        public ImageView thumbnail;
+        TextView userrating;
+        TextView title;
+        ImageView thumbnail;
 
         public MyViewHolder(View view){
             super(view);

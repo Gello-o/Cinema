@@ -1,18 +1,17 @@
 package com.example.cinemhub;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.text.Layout;
+//import android.text.Layout;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
+//import android.view.View;
 import android.view.Menu;
-import android.widget.HorizontalScrollView;
+/* import android.widget.HorizontalScrollView; */
 import android.widget.Toast;
 
 import com.example.cinemhub.adapter.MoviesAdapter;
@@ -20,12 +19,9 @@ import com.example.cinemhub.api.Client;
 import com.example.cinemhub.api.Service;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesResponse;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
-import androidx.multidex.MultiDex;
-import androidx.multidex.MultiDexApplication;
+import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -39,7 +35,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -64,14 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
-        /*FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
+
         DrawerLayout drawer;
         drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -103,11 +91,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
-        switch(item.getItemId()){
-            case R.id.menu_settings:
-                return true;
-            default: return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.menu_settings) {
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     public Activity getActivity(){
@@ -154,24 +141,29 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }*/
             Service apiService = Client.getClient().create(Service.class);
-            Call<MoviesResponse> call = apiService.getPopularMovies(this.getString(R.string.THE_MOVIE_DB_API_TOKEN));
+            Call<MoviesResponse> call;
+            call = apiService.getPopularMovies(this.getString(R.string.THE_MOVIE_DB_API_TOKEN));
             call.enqueue(new Callback<MoviesResponse>() {
                 @Override
-                public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
-                    List<Movie> movies = response.body().getResults();
-                    recyclerView.setAdapter(new MoviesAdapter(getApplicationContext(), movies));
-                    recyclerView.smoothScrollToPosition(0);
-                    pd.dismiss();
+                public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
+                    List<Movie> movies;
+                    if(response.body() != null) {
+                        movies = response.body().getResults();
+                        recyclerView.setAdapter(new MoviesAdapter(getApplicationContext(), movies));
+                        recyclerView.smoothScrollToPosition(0);
+                        pd.dismiss();
+                    }
+                    else
+                        System.out.println("corpo della response == null");
                 }
 
                 @Override
-                public void onFailure(Call<MoviesResponse> call, Throwable t) {
+                public void onFailure(@NonNull Call<MoviesResponse> call, @NonNull Throwable t) {
                     if(t.getMessage() != null)
                         Log.d("Error", t.getMessage());
                     else
                         System.out.println("qualcosa è andato storto");
                     Toast.makeText(MainActivity.this, "Errror fetching data", Toast.LENGTH_SHORT).show();
-
                 }
             });
         }catch (Exception e){
