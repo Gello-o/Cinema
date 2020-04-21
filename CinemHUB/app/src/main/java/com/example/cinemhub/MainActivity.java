@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("Error", t.getMessage());
                     else
                         System.out.println("qualcosa è andato storto");
-                    Toast.makeText(MainActivity.this, "Errror fetching data", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Error fetching data", Toast.LENGTH_SHORT).show();
                 }
             });
         }catch (Exception e){
