@@ -1,16 +1,16 @@
-package com.example.cinemhub.ui.slideshow;
+package com.example.cinemhub.ui.preferiti;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class SlideshowViewModel extends ViewModel {
+public class preferitiViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public SlideshowViewModel() {
+    public preferitiViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is slideshow fragment");
+        mText.setValue("Questa è la pagina dei preferiti");
     }
 
     public LiveData<String> getText() {
