@@ -46,8 +46,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
                 .load(movieList.get(i).getPosterPath())
                 .placeholder(R.drawable.ic_launcher_foreground)
                 .into(viewHolder.thumbnail);
-
-
     }
 
     @Override

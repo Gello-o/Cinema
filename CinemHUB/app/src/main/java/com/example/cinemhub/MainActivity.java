@@ -6,12 +6,9 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.Configuration;
 import android.os.Bundle;
-//import android.text.Layout;
 import android.util.Log;
 import android.view.MenuItem;
-//import android.view.View;
 import android.view.Menu;
-/* import android.widget.HorizontalScrollView; */
 import android.widget.Toast;
 
 import com.example.cinemhub.adapter.MoviesAdapter;
@@ -31,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -43,19 +41,16 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+    private static final String LOG_TAG = MoviesAdapter.class.getName();
     private RecyclerView recyclerView;
     private MoviesAdapter adapter;
     private List<Movie> movieList;
     ProgressDialog pd;
-    private DrawerLayout container;
-    private static final String LOG_TAG = MoviesAdapter.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        initViews();
 
         Toolbar toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
@@ -73,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+        initViews();
     }
 
     @Override
@@ -119,18 +115,16 @@ public class MainActivity extends AppCompatActivity {
 
         adapter = new MoviesAdapter(this, movieList);
 
-        if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-            //il mangiabanane usa questo
-        }else{
-            recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
-        }
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+
         recyclerView.setAdapter(adapter);
+
         adapter.notifyDataSetChanged();
 
-        loadJSON();
+        pd.dismiss();
+        //loadJSON();
     }
 
     private void loadJSON(){
@@ -142,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
             }*/
             Service apiService = Client.getClient().create(Service.class);
             Call<MoviesResponse> call;
-            call = apiService.getPopularMovies(this.getString(R.string.THE_MOVIE_DB_API_TOKEN));
+            call = apiService.getPopularMovies(getString(R.string.THE_MOVIE_DB_API_TOKEN));
             call.enqueue(new Callback<MoviesResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
@@ -171,6 +165,4 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
-
-
 }
