@@ -50,7 +50,7 @@ public class ActivityDetail extends AppCompatActivity {
 
                 Glide.with(this)
                         .load(thumnail)
-                        .placeholder(R.drawable.placeholder)
+                        .placeholder(R.drawable.ic_launcher_background)
                         .into(imageView);
 
                 nameOfMovie.setText(movieName);

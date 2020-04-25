@@ -16,7 +16,6 @@ import com.bumptech.glide.Glide;
 import com.example.cinemhub.ActivityDetail;
 import com.example.cinemhub.R;
 import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.ui.home.HomeFragment;
 
 import java.util.List;
 

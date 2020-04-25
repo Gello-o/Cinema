@@ -1,34 +1,55 @@
 package com.example.cinemhub.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 public class Movie {
     @SerializedName("poster_path")
+    @Expose
     private String posterPath;
     @SerializedName("overview")
+    @Expose
     private String overview;
     @SerializedName("adult")
+    @Expose
     private boolean adult;
     @SerializedName("genre_ids")
+    @Expose
     private List<Integer> genre_ids;
     @SerializedName("release_date")
+    @Expose
     private String release_date;
     @SerializedName("id")
+    @Expose
     private Integer id;
     @SerializedName("original_title")
+    @Expose
     private String original_title;
     @SerializedName("original_language")
+    @Expose
     private String original_language;
     @SerializedName("title")
+    @Expose
     private String title;
     @SerializedName("backdrop_path")
+    @Expose
     private String backdrop_path;
     @SerializedName("popularity")
+    @Expose
     private Double popularity;
     @SerializedName("vote_count")
+    @Expose
     private Integer vote_count;
+    @SerializedName("vote_average")
+    @Expose
+    private Double vote_average;
+    @SerializedName("video")
+    @Expose
+    private boolean video;
+
+    private final String base_image_Url = "https/image.themoviedb.org/t/p/w1280";
 
     public String getOverview() {
         return overview;
@@ -133,31 +154,6 @@ public class Movie {
     public void setVideo(boolean video) {
         this.video = video;
     }
-
-    public Movie(String posterPath, String overview, boolean adult, List<Integer> genre_ids, String release_date, Integer id, String original_title, String original_language, String title, String backdrop_path, Double popularity, Integer vote_count, Double vote_average, boolean video) {
-        this.posterPath = posterPath;
-        this.overview = overview;
-        this.adult = adult;
-        this.genre_ids = genre_ids;
-        this.release_date = release_date;
-        this.id = id;
-        this.original_title = original_title;
-        this.original_language = original_language;
-        this.title = title;
-        this.backdrop_path = backdrop_path;
-        this.popularity = popularity;
-        this.vote_count = vote_count;
-        this.vote_average = vote_average;
-        this.video = video;
-    }
-
-    @SerializedName("vote_average")
-    private Double vote_average;
-    @SerializedName("video")
-    private boolean video;
-
-    String base_image_Url = "https/image.themoviedb.org/t/p/w500";
-
 
     public String getPosterPath() {
         return base_image_Url + this.posterPath;

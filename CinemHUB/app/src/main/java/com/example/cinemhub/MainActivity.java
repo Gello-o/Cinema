@@ -1,14 +1,10 @@
 package com.example.cinemhub;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.Menu;
-import android.view.View;
 import android.widget.Toast;
 
 import com.example.cinemhub.adapter.MoviesAdapter;
@@ -20,8 +16,6 @@ import com.example.cinemhub.ui.home.HomeFragment;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -41,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private static final String LOG_TAG = MoviesAdapter.class.getName();
-    private RecyclerView recyclerView = findViewById(R.id.recycler_view);
+
     private List<Movie> movieList;
     private MoviesAdapter adapter;
     ProgressDialog pd;
@@ -125,43 +119,4 @@ public class MainActivity extends AppCompatActivity {
         loadJSON();*/
     }
 
-    private void loadJSON(){
-        try{
-            Service apiService = Client.getClient().create(Service.class);
-            Call<MoviesResponse> call;
-            call = apiService.getPopularMovies(getString(R.string.THE_MOVIE_DB_API_TOKEN));
-            call.enqueue(new Callback<MoviesResponse>() {
-                @Override
-                public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
-                    List<Movie> movies;
-                    if(response.body() != null) {
-                        movies = response.body().getResults();
-                        int i =0;
-                        for(Movie m: movies){
-                            i++;
-                            System.out.println("movie " + i + " " + m.getOriginal_title());
-                        }
-
-                        recyclerView.setAdapter(new MoviesAdapter(getApplicationContext(), movies));
-                        recyclerView.smoothScrollToPosition(0);
-                        pd.dismiss();
-                    }
-                    else
-                        System.out.println("corpo della response == null");
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<MoviesResponse> call, @NonNull Throwable t) {
-                    if(t.getMessage() != null)
-                        Log.d("Error", t.getMessage());
-                    else
-                        System.out.println("qualcosa è andato storto");
-                    Toast.makeText(MainActivity.this, "Error fetching data", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }catch (Exception e){
-            System.out.println("Eccezione" + "/n" + e.getMessage());
-            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
-        }
-    }
 }

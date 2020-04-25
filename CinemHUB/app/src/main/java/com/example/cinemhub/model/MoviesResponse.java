@@ -1,17 +1,22 @@
 package com.example.cinemhub.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 public class MoviesResponse {
     @SerializedName("page")
+    @Expose
     private int page;
     @SerializedName("results")
+    @Expose
     private List<Movie> results;
     @SerializedName("total_results")
+    @Expose
     private int total_results;
     @SerializedName("total_pages")
+    @Expose
     private int total_pages;
 
     public int getPage() {
