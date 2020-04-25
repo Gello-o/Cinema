@@ -1,16 +1,16 @@
-package com.example.cinemhub.ui.home;
+package com.example.cinemhub.ui.nuovi_arrivi;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class HomeViewModel extends ViewModel {
+public class nuovi_arriviViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public HomeViewModel() {
+    public nuovi_arriviViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("Questa è la home");
+        mText.setValue("Questa è la pagina dei nuovi arrivi");
     }
 
     public LiveData<String> getText() {

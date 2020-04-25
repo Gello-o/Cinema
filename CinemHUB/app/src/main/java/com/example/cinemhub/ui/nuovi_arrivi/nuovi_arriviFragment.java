@@ -1,4 +1,4 @@
-package com.example.cinemhub.ui.slideshow;
+package com.example.cinemhub.ui.nuovi_arrivi;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,21 +10,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.cinemhub.R;
 
-public class SlideshowFragment extends Fragment {
+public class nuovi_arriviFragment extends Fragment {
 
-    private SlideshowViewModel slideshowViewModel;
+    private nuovi_arriviViewModel nuovi_arriviViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        slideshowViewModel =
-                ViewModelProviders.of(this).get(SlideshowViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_slideshow, container, false);
-        final TextView textView = root.findViewById(R.id.text_slideshow);
-        slideshowViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        nuovi_arriviViewModel =
+                new ViewModelProvider(this).get(nuovi_arriviViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_nuovi_arrivi, container, false);
+        final TextView textView = root.findViewById(R.id.text_nuovi_arrivi);
+        nuovi_arriviViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);

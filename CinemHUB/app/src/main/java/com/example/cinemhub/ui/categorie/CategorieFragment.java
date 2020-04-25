@@ -1,4 +1,4 @@
-package com.example.cinemhub.ui.home;
+package com.example.cinemhub.ui.categorie;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.example.cinemhub.R;
 import com.example.cinemhub.model.Movie;
@@ -20,32 +19,28 @@ import com.example.cinemhub.model.MoviesRepo;
 import java.util.List;
 
 
-public class HomeFragment extends Fragment {
+public class CategorieFragment extends Fragment {
 
-    private HomeViewModel homeViewModel;
+    private CategorieViewModel categorieViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
-        
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
-        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        categorieViewModel =
+                new ViewModelProvider(this).get(CategorieViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_categorie, container, false);
+        final TextView textView = root.findViewById(R.id.text_categorie);
+        categorieViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
+                List<Movie> movies = new MoviesRepo().loadJSON();
+                if(movies == null)
+                    textView.setText("adesso smadonno");
+                else
+                    textView.setText(movies.get(0).getOriginal_title());
             }
         });
-
-        List<Movie> movies = new MoviesRepo().loadJSON();
-        if(movies == null)
-            textView.setText("null");
-        else
-            textView.setText(movies.get(0).getOriginal_title());
 
 
         return root;
     }
 }
-

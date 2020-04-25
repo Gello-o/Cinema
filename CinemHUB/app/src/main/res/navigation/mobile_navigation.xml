@@ -10,34 +10,41 @@
         android:name="com.example.cinemhub.ui.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home">
-
-        <action
-            android:id="@+id/action_HomeFragment_to_HomeSecondFragment"
-            app:destination="@id/nav_home_second" />
-    </fragment>
-    <fragment
-        android:id="@+id/nav_home_second"
-        android:name="com.example.cinemhub.ui.home.HomeSecondFragment"
-        android:label="@string/home_second"
-        tools:layout="@layout/fragment_home_second">
-        <action
-            android:id="@+id/action_HomeSecondFragment_to_HomeFragment"
-            app:destination="@id/nav_home" />
-
-        <argument
-            android:name="myArg"
-            app:argType="string" />
     </fragment>
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.example.cinemhub.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:id="@+id/nav_preferiti"
+        android:name="com.example.cinemhub.ui.preferiti.preferitiFragment"
+        android:label="@string/menu_preferiti"
+        tools:layout="@layout/fragment_preferiti" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.example.cinemhub.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_add_list"
+        android:name="com.example.cinemhub.ui.add_list.add_listFragment"
+        android:label="@string/menu_add_list"
+        tools:layout="@layout/fragment_add_list" />
+
+    <fragment
+        android:id="@+id/nav_categorie"
+        android:name="com.example.cinemhub.ui.categorie.CategorieFragment"
+        android:label="@string/menu_categorie"
+        tools:layout="@layout/fragment_categorie" />
+
+    <fragment
+        android:id="@+id/nav_nuovi_arrivi"
+        android:name="com.example.cinemhub.ui.nuovi_arrivi.nuovi_arriviFragment"
+        android:label="@string/menu_nuovi_arrivi"
+        tools:layout="@layout/fragment_nuovi_arrivi" />
+
+    <fragment
+        android:id="@+id/nav_prossime_uscite"
+        android:name="com.example.cinemhub.ui.prossime_uscite.prossime_usciteFragment"
+        android:label="@string/menu_prossime_uscite"
+        tools:layout="@layout/fragment_prossime_uscite" />
+
+    <fragment
+        android:id="@+id/nav_piu_visti"
+        android:name="com.example.cinemhub.ui.piu_visti.piu_vistiFragment"
+        android:label="@string/menu_piu_visti"
+        tools:layout="@layout/fragment_piu_visti" />
 </navigation>
