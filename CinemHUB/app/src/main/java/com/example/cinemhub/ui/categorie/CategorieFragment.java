@@ -32,7 +32,7 @@ public class CategorieFragment extends Fragment {
         categorieViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                List<Movie> movies = new MoviesRepo().loadJSON();
+                List<Movie> movies = MoviesRepo.loadJSON();
                 if(movies == null)
                     textView.setText("adesso smadonno");
                 else

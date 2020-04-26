@@ -20,7 +20,7 @@
 
     <fragment
         android:id="@+id/nav_add_list"
-        android:name="com.example.cinemhub.ui.add_list.add_listFragment"
+        android:name="com.example.cinemhub.ui.add_list.AddListFragment"
         android:label="@string/menu_add_list"
         tools:layout="@layout/fragment_add_list" />
 
@@ -32,19 +32,19 @@
 
     <fragment
         android:id="@+id/nav_nuovi_arrivi"
-        android:name="com.example.cinemhub.ui.nuovi_arrivi.nuovi_arriviFragment"
+        android:name="com.example.cinemhub.ui.nuovi_arrivi.NuoviArriviFragment"
         android:label="@string/menu_nuovi_arrivi"
         tools:layout="@layout/fragment_nuovi_arrivi" />
 
     <fragment
         android:id="@+id/nav_prossime_uscite"
-        android:name="com.example.cinemhub.ui.prossime_uscite.prossime_usciteFragment"
+        android:name="com.example.cinemhub.ui.prossime_uscite.ProssimeUsciteFragment"
         android:label="@string/menu_prossime_uscite"
         tools:layout="@layout/fragment_prossime_uscite" />
 
     <fragment
         android:id="@+id/nav_piu_visti"
-        android:name="com.example.cinemhub.ui.piu_visti.piu_vistiFragment"
+        android:name="com.example.cinemhub.ui.piu_visti.PiuVistiFragment"
         android:label="@string/menu_piu_visti"
         tools:layout="@layout/fragment_piu_visti" />
 </navigation>

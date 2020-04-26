@@ -1,16 +1,16 @@
-package com.example.cinemhub.ui.nuovi_arrivi;
+package com.example.cinemhub.ui.add_list;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class nuovi_arriviViewModel extends ViewModel {
+public class AddListViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public nuovi_arriviViewModel() {
+    public AddListViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("Questa è la pagina dei nuovi arrivi");
+        mText.setValue("Questa è la pagina dei film aggiunti alla tua lista");
     }
 
     public LiveData<String> getText() {

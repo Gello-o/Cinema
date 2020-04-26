@@ -14,17 +14,17 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.cinemhub.R;
 
-public class piu_vistiFragment extends Fragment {
+public class PiuVistiFragment extends Fragment {
 
-    private piu_vistiViewModel piu_vistiViewModel;
+    private PiuVistiViewModel piuVistiViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        piu_vistiViewModel =
-                new ViewModelProvider(this).get(piu_vistiViewModel.class);
+        piuVistiViewModel =
+                new ViewModelProvider(this).get(PiuVistiViewModel.class);
         View root = inflater.inflate(R.layout.fragment_piu_visti, container, false);
         final TextView textView = root.findViewById(R.id.text_piu_visti);
-        piu_vistiViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        piuVistiViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);

@@ -12,7 +12,11 @@ import com.example.cinemhub.api.Client;
 import com.example.cinemhub.api.Service;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesResponse;
+import com.example.cinemhub.ui.add_list.AddListFragment;
+import com.example.cinemhub.ui.categorie.CategorieFragment;
 import com.example.cinemhub.ui.home.HomeFragment;
+import com.example.cinemhub.ui.nuovi_arrivi.NuoviArriviFragment;
+import com.example.cinemhub.ui.prossime_uscite.ProssimeUsciteFragment;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
@@ -88,10 +92,31 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
-        if (item.getItemId() == R.id.menu_settings) {
+
+        if(item.getItemId() == R.id.menu_settings)
             return true;
+        else
+            return super.onOptionsItemSelected(item);
+        /*
+        switch(id){
+            case R.id.categorie_fragment:
+                getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_container, new CategorieFragment()).commit();
+            case R.id.add_list_fragment:
+                getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_container, new AddListFragment()).commit();
+            case R.id.nuovi_arrivi_fragment:
+                getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_container, new NuoviArriviFragment()).commit();
+            case R.id.preferiti_fragment:
+                getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_container, new PreferitiFragment()).commit();
+            case R.id.piu_visti_fragment:
+                getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_container, new CategorieFragment()).commit();
+            case R.id.prossime_uscite_fragment:
+                getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_container, new ProssimeUsciteFragment()).commit();
+            default:
+                getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_container, new HomeFragment()).commit();
+
         }
-        return super.onOptionsItemSelected(item);
+        */
+
     }
 
     /*public Activity getActivity(){

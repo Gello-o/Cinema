@@ -20,14 +20,14 @@ import retrofit2.Response;
 
 public class MoviesRepo {
 
-    private String BASE_URL = "https://api.themoviedb.org";
+    private static String BASE_URL = "https://api.themoviedb.org";
     public static int PAGE = 1;
     public static String API_KEY = "740ef79d64b588653371072cdee99a0f";
     public static String LANGUAGE = "en-US";
     public static String CATEGORY = "popular";
     public static List<Movie> movies;
 
-    public List<Movie> loadJSON() {
+    public static List<Movie> loadJSON() {
         Service apiService = Client.getClient().create(Service.class);
         Call<MoviesResponse> call;
         call = apiService.getTMDB(CATEGORY, API_KEY, LANGUAGE, PAGE);
@@ -35,11 +35,10 @@ public class MoviesRepo {
             Log.d("Error", "chiamata == null");
             return null;
         }
-
         call.enqueue(new Callback<MoviesResponse>() {
             @Override
             public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
-                movies = response.body().getResults();
+                    movies = response.body().getResults();
             }
 
             @Override
@@ -47,7 +46,7 @@ public class MoviesRepo {
                 if (t.getMessage() != null)
                     Log.d("Error", t.getMessage());
                 else
-                    System.out.println("qualcosa è andato storto");
+                    Log.d("Error", "qualcosa è andato storto");
             }
         });
         return movies;
