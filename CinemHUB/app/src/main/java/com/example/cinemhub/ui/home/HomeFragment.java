@@ -14,6 +14,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.cinemhub.R;
+import com.example.cinemhub.model.Movie;
+import com.example.cinemhub.model.MoviesRepo;
+
+import java.util.List;
+
 
 public class HomeFragment extends Fragment {
 
@@ -21,7 +26,9 @@ public class HomeFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        homeViewModel =
+                new ViewModelProvider(this).get(HomeViewModel.class);
+        
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         final TextView textView = root.findViewById(R.id.text_home);
         homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
@@ -30,6 +37,15 @@ public class HomeFragment extends Fragment {
                 textView.setText(s);
             }
         });
+
+        List<Movie> movies = new MoviesRepo().loadJSON();
+        if(movies == null)
+            textView.setText("null");
+        else
+            textView.setText(movies.get(0).getOriginal_title());
+
+
         return root;
     }
 }
+

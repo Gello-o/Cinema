@@ -13,8 +13,11 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.cinemhub.R;
+import com.example.cinemhub.model.Movie;
+import com.example.cinemhub.model.MoviesRepo;
 
-import android.widget.Button;
+import java.util.List;
+
 
 public class CategorieFragment extends Fragment {
 
@@ -22,18 +25,22 @@ public class CategorieFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        categorieViewModel = new ViewModelProvider(this).get(CategorieViewModel.class);
+        categorieViewModel =
+                new ViewModelProvider(this).get(CategorieViewModel.class);
         View root = inflater.inflate(R.layout.fragment_categorie, container, false);
-        Button button;
         final TextView textView = root.findViewById(R.id.text_categorie);
         categorieViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
+                List<Movie> movies = MoviesRepo.loadJSON();
+                if(movies == null)
+                    textView.setText("adesso smadonno");
+                else
+                    textView.setText(movies.get(0).getOriginal_title());
             }
         });
+
+
         return root;
     }
-
-
 }

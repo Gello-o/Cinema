@@ -1,4 +1,4 @@
-package com.example.cinemhub.ui.piu_visti;
+package com.example.cinemhub.ui.nuovi_arrivi;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,21 +11,20 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.example.cinemhub.R;
-import com.example.cinemhub.ui.categorie.CategorieViewModel;
 
-public class piu_vistiFragment extends Fragment {
+public class NuoviArriviFragment extends Fragment {
 
-    private piu_vistiViewModel piu_vistiViewModel;
+    private NuoviArriviViewModel nuoviArriviViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        piu_vistiViewModel = new ViewModelProvider(this).get(piu_vistiViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_piu_visti, container, false);
-        final TextView textView = root.findViewById(R.id.text_piu_visti);
-        piu_vistiViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        nuoviArriviViewModel =
+                new ViewModelProvider(this).get(NuoviArriviViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_nuovi_arrivi, container, false);
+        final TextView textView = root.findViewById(R.id.text_nuovi_arrivi);
+        nuoviArriviViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);

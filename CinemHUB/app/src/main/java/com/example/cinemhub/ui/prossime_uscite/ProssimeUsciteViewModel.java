@@ -1,16 +1,16 @@
-package com.example.cinemhub.ui.piu_visti;
+package com.example.cinemhub.ui.prossime_uscite;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class piu_vistiViewModel extends ViewModel {
+public class ProssimeUsciteViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public piu_vistiViewModel() {
+    public ProssimeUsciteViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("Questa è la pagina dei film più visti");
+        mText.setValue("Questa è la pagina delle prossime uscite");
     }
 
     public LiveData<String> getText() {
