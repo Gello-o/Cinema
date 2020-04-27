@@ -32,14 +32,13 @@ public class CategorieFragment extends Fragment {
         categorieViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                List<Movie> movies = MoviesRepo.loadJSON();
+                List<Movie> movies = MoviesRepo.loadJSON("popular");
                 if(movies == null)
                     textView.setText("adesso smadonno");
                 else
                     textView.setText(movies.get(0).getOriginal_title());
             }
         });
-
 
         return root;
     }

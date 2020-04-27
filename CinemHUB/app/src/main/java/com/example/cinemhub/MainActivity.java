@@ -11,6 +11,7 @@ import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.api.Client;
 import com.example.cinemhub.api.Service;
 import com.example.cinemhub.model.Movie;
+import com.example.cinemhub.model.MoviesRepo;
 import com.example.cinemhub.model.MoviesResponse;
 import com.example.cinemhub.ui.add_list.AddListFragment;
 import com.example.cinemhub.ui.categorie.CategorieFragment;
@@ -39,11 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private static final String LOG_TAG = MoviesAdapter.class.getName();
-
-    private List<Movie> movieList;
-    private MoviesAdapter adapter;
     ProgressDialog pd;
-    private HomeFragment homeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        homeFragment = new HomeFragment();*/
+        */
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -118,16 +115,6 @@ public class MainActivity extends AppCompatActivity {
         */
 
     }
-
-    /*public Activity getActivity(){
-        Context context = this;
-        while(context instanceof ContextWrapper){
-            if(context instanceof Activity)
-                return (Activity) context;
-            context = ((ContextWrapper) context).getBaseContext();
-        }
-        return null;
-    }*/
 
     public void initViews(){
         pd = new ProgressDialog(this);

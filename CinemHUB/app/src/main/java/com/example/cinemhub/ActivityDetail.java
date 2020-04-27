@@ -42,14 +42,14 @@ public class ActivityDetail extends AppCompatActivity {
 
         if(intent.hasExtra("original_title")){
             try {
-                String thumnail = intent.getExtras().getString("poster_path");
+                String thumbnail = intent.getExtras().getString("poster_path");
                 String movieName = intent.getExtras().getString("original_title");
                 String synopsis = intent.getExtras().getString("overview");
                 String rating = intent.getExtras().getString("vote_average");
                 String release = intent.getExtras().getString("release_date");
 
                 Glide.with(this)
-                        .load(thumnail)
+                        .load(thumbnail)
                         .placeholder(R.drawable.ic_launcher_background)
                         .into(imageView);
 
