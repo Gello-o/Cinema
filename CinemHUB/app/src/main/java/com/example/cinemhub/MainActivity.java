@@ -2,25 +2,12 @@ package com.example.cinemhub;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.Menu;
-import android.widget.Toast;
 
 import com.example.cinemhub.adapter.MoviesAdapter;
-import com.example.cinemhub.api.Client;
-import com.example.cinemhub.api.Service;
-import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.model.MoviesRepo;
-import com.example.cinemhub.model.MoviesResponse;
-import com.example.cinemhub.ui.add_list.AddListFragment;
-import com.example.cinemhub.ui.categorie.CategorieFragment;
-import com.example.cinemhub.ui.home.HomeFragment;
-import com.example.cinemhub.ui.nuovi_arrivi.NuoviArriviFragment;
-import com.example.cinemhub.ui.prossime_uscite.ProssimeUsciteFragment;
 import com.google.android.material.navigation.NavigationView;
 
-import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -28,13 +15,6 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -2,6 +2,7 @@ package com.example.cinemhub;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,12 +19,14 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import java.util.Objects;
 
 public class ActivityDetail extends AppCompatActivity {
-    TextView nameOfMovie, plotSynopsis, userRating, releaseDate;
-    ImageView imageView;
+    private static final String TAG = "ActivityDetail";
+    private TextView nameOfMovie, plotSynopsis, userRating, releaseDate;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "creating ActivityDetail");
         setContentView(R.layout.activity_detail);
         Toolbar toolbar = findViewById(R.id.toolbar_activity_detail);
         setSupportActionBar(toolbar);
@@ -38,6 +41,7 @@ public class ActivityDetail extends AppCompatActivity {
         userRating = findViewById(R.id.usersRating);
         releaseDate = findViewById(R.id.releaseDate);
 
+        Log.d(TAG, "Receiving intent");
         Intent intent = getIntent();
 
         if(intent.hasExtra("original_title")){
@@ -64,9 +68,11 @@ public class ActivityDetail extends AppCompatActivity {
         }
         else
             Toast.makeText(this, "no api data", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "end of the intent");
     }
 
     public void initCollapsingToolbar(){
+        Log.d(TAG, "initializing CollapsingToolbar");
         final CollapsingToolbarLayout collapsingToolbarLayout;
         collapsingToolbarLayout = findViewById(R.id.ctoolbar_activity_detail);
         collapsingToolbarLayout.setTitle(" ");

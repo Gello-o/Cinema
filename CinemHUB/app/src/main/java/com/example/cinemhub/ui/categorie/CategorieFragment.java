@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.cinemhub.R;
 import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.model.MoviesRepo;
 
 import java.util.List;
 
@@ -29,17 +28,16 @@ public class CategorieFragment extends Fragment {
                 new ViewModelProvider(this).get(CategorieViewModel.class);
         View root = inflater.inflate(R.layout.fragment_categorie, container, false);
         final TextView textView = root.findViewById(R.id.text_categorie);
-        categorieViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+
+        categorieViewModel.getPopolari().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
-            public void onChanged(@Nullable String s) {
-                List<Movie> movies = MoviesRepo.loadJSON("popular");
+            public void onChanged(@Nullable List<Movie> movies) {
                 if(movies == null)
                     textView.setText("adesso smadonno");
                 else
                     textView.setText(movies.get(0).getOriginal_title());
             }
         });
-
         return root;
     }
 }

@@ -2,6 +2,7 @@ package com.example.cinemhub.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.GlideBuilder;
+import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.module.AppGlideModule;
 import com.example.cinemhub.ActivityDetail;
 import com.example.cinemhub.R;
 import com.example.cinemhub.model.Movie;
@@ -23,6 +27,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
 
     private Context context;
     private List<Movie> movieList;
+    private static final String TAG = "MoviesAdapter";
 
     public MoviesAdapter(Context context, List<Movie> movieList) {
         this.context = context;
@@ -32,25 +37,33 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
     @Override
     @NonNull
     public MoviesAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i){
+        Log.d(TAG, "onCreateViewHolder called");
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.movie_card, viewGroup, false);
         return new MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final MoviesAdapter.MyViewHolder viewHolder, int i){
-        viewHolder.title.setText(movieList.get(i).getOriginal_title());
-        String vote = Double.toString(movieList.get(i).getVote_average());
-        viewHolder.userrating.setText(vote);
+    public void onBindViewHolder(MyViewHolder viewHolder, int i){
+        Log.d(TAG, "onBindViewHolder called");
 
         Glide.with(context)
                 .load(movieList.get(i).getPosterPath())
-                .placeholder(R.drawable.ic_launcher_foreground)
+                .placeholder(R.drawable.ic_launcher_background)
                 .into(viewHolder.thumbnail);
+
+        if(movieList == null)
+            Log.d("NULL", "movieList nulla");
+        viewHolder.title.setText(movieList.get(i).getOriginal_title());
+        String vote = Double.toString(movieList.get(i).getVote_average());
+        viewHolder.userrating.setText(vote);
     }
 
     @Override
     public int getItemCount() {
-        return movieList.size();
+        if(movieList!=null)
+            return movieList.size();
+        else
+            return -1;
     }
 
 
@@ -61,6 +74,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
 
         public MyViewHolder(View view){
             super(view);
+            Log.d(TAG, "creating viewHolder for recyclerView");
             title = view.findViewById(R.id.movieTitle);
             userrating = view.findViewById(R.id.usersRating);
             thumbnail = view.findViewById(R.id.thumbnail);
@@ -70,6 +84,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
 
                 @Override
                 public void onClick(View v) {
+                    Log.d(TAG, "Clicked");
                     int pos = getAdapterPosition();
                     if(pos != RecyclerView.NO_POSITION){
                          clickedDataItem = movieList.get(pos);

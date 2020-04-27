@@ -14,7 +14,7 @@
 
     <fragment
         android:id="@+id/nav_preferiti"
-        android:name="com.example.cinemhub.ui.preferiti.preferitiFragment"
+        android:name="com.example.cinemhub.ui.preferiti.PreferitiFragment"
         android:label="@string/menu_preferiti"
         tools:layout="@layout/fragment_preferiti" />
 

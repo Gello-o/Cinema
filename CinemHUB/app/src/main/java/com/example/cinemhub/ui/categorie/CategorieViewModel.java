@@ -1,27 +1,30 @@
 package com.example.cinemhub.ui.categorie;
 
-import android.graphics.Movie;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.cinemhub.model.Movie;
+import com.example.cinemhub.model.MoviesPersistentData;
+
+import java.util.List;
+
 public class CategorieViewModel extends ViewModel {
 
-    private MutableLiveData<String> mText;
+    private static final String TAG = "CategorieViewModel";
+    private MutableLiveData<List<Movie>> mText;
 
     public CategorieViewModel() {
-
-        try{
-            mText = new MutableLiveData<>();
-            mText.setValue("Questa è la pagina delle categorie");
-        }catch(Exception exception){
-            System.out.println("sono andato in eccezione");
-        }
-
+        mText = new MutableLiveData<>();
+        List<Movie> movies = MoviesPersistentData.getInstance().getPopolari();
+        if(movies != null)
+            Log.d(TAG, "movies initialized");
+        mText.setValue(movies);
     }
 
-    public LiveData<String> getText() {
+    public LiveData<List<Movie>> getPopolari() {
         return mText;
     }
 }
