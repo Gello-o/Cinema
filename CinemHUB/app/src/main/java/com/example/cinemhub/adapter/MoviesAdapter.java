@@ -54,7 +54,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
                 .into(viewHolder.thumbnail);
 
         if(movieList == null)
-            Log.d("NULL", "movieList nulla");
+            Log.d(TAG, "movieList nulla");
         viewHolder.title.setText(movieList.get(i).getOriginal_title());
         String vote = Double.toString(movieList.get(i).getVote_average());
         viewHolder.userrating.setText(vote);
@@ -82,10 +82,11 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
             thumbnail = view.findViewById(R.id.thumbnail);
 
             view.setOnClickListener(new View.OnClickListener() {
-                Movie clickedDataItem;
 
                 @Override
                 public void onClick(View v) {
+                    Movie clickedDataItem;
+
                     Log.d(TAG, "Clicked");
                     int pos = getAdapterPosition();
                     if(pos != RecyclerView.NO_POSITION){

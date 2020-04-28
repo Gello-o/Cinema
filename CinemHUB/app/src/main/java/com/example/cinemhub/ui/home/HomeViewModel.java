@@ -20,7 +20,11 @@ public class HomeViewModel extends ViewModel {
     public HomeViewModel(SavedStateHandle savedStateHandle) {
         popolari = new MutableLiveData<>();
         List<Movie> movies = MoviesPersistentData.getInstance().getPopolari();
-        if(movies != null)
+        List<Movie> banane = MoviesPersistentData.getInstance().getAlCinema();
+        List<Movie> banane1= MoviesPersistentData.getInstance().getProssimeUscite();
+        List<Movie> banane2 = MoviesPersistentData.getInstance().getTopRated();
+
+        if(movies != null && banane !=null && banane1 != null && banane2 != null)
             Log.d(TAG, "movies initialized");
         popolari.setValue(movies);
     }
