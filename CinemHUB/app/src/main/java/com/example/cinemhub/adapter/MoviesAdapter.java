@@ -32,13 +32,15 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
     public MoviesAdapter(Context context, List<Movie> movieList) {
         this.context = context;
         this.movieList = movieList;
+        if(movieList != null)
+            Log.d(TAG, "costruito moviesAdapter correttamente");
     }
 
     @Override
     @NonNull
     public MoviesAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i){
         Log.d(TAG, "onCreateViewHolder called");
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.movie_card, viewGroup, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.movie_card, viewGroup, false);
         return new MyViewHolder(view);
     }
 
