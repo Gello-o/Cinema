@@ -49,6 +49,8 @@ public class Movie {
     @Expose
     private boolean video;
 
+    private final Trailer trailer = ; // brutto cane qua devi memorizzare i trailer in qualche modo
+
     private final String base_image_Url = "https/image.themoviedb.org/t/p/w1280";
 
     public String getOverview() {

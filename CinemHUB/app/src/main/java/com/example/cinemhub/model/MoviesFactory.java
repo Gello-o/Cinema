@@ -54,5 +54,28 @@ public class MoviesFactory {
             }
         });
     }
+
+    public static void getTrailers(Movie movie){
+        int movieID = movie.getId();
+        Service apiService = Client.getClient().create(Service.class);
+        Call<TrailerResponse> call;
+        call = apiService.getMovieTrailer(movieID, API_KEY);
+
+        call.enqueue(new Callback<TrailerResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<TrailerResponse> call, @NonNull Response<TrailerResponse> response){
+                List <Trailer> trailerResponse = response.body().getTrailers();
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<TrailerResponse> call, @NonNull Throwable t) {
+                if (t.getMessage() != null)
+                    Log.d("Error", t.getMessage());
+                else
+                    Log.d("Error", "qualcosa è andato storto");
+            }
+        });
+    }
 }
 
