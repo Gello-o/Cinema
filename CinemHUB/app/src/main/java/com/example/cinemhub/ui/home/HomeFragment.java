@@ -20,6 +20,9 @@ import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Movie;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -49,12 +52,14 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        homeViewModel.getPopular().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+        homeViewModel.getPopular().observe(getViewLifecycleOwner(), new Observer<HashSet<Movie>>() {
             @Override
-            public void onChanged(@Nullable List<Movie> list) {
-                if(list != null)
+            public void onChanged(@Nullable HashSet<Movie> moviesSet) {
+                List<Movie> moviesList = new ArrayList<>();
+                moviesList.addAll(moviesList);
+                if(!moviesSet.isEmpty())
                     Log.d(TAG, "tutto okay");
-                adapter = new MoviesAdapter(getContext(), list);
+                adapter = new MoviesAdapter(getContext(), moviesList);
                 popularRV.setAdapter(adapter);
             }
         });

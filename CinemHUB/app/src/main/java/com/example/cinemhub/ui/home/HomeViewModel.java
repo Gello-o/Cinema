@@ -10,26 +10,33 @@ import androidx.lifecycle.ViewModel;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesPersistentData;
 
+import java.util.HashSet;
 import java.util.List;
 
 public class HomeViewModel extends ViewModel {
 
     private static final String TAG = "HomeViewModel";
-    private MutableLiveData<List<Movie>> popolari;
+    private MutableLiveData<HashSet<Movie>> popolari;
 
     public HomeViewModel(SavedStateHandle savedStateHandle) {
         popolari = new MutableLiveData<>();
-        List<Movie> movies = MoviesPersistentData.getInstance().getPopolari();
-        List<Movie> banane = MoviesPersistentData.getInstance().getAlCinema();
-        List<Movie> banane1= MoviesPersistentData.getInstance().getProssimeUscite();
-        List<Movie> banane2 = MoviesPersistentData.getInstance().getTopRated();
+        HashSet<Movie> movies = MoviesPersistentData.getInstance().getPopolari();
+        HashSet<Movie> banane = MoviesPersistentData.getInstance().getAlCinema();
+        HashSet<Movie> banane1= MoviesPersistentData.getInstance().getProssimeUscite();
+        HashSet<Movie> banane2 = MoviesPersistentData.getInstance().getTopRated();
 
-        if(movies != null && banane !=null && banane1 != null && banane2 != null)
-            Log.d(TAG, "movies initialized");
+        if(!movies.isEmpty())
+            Log.d(TAG, "popolari initialized");
+        if(!banane.isEmpty())
+            Log.d(TAG, "al cinema initialized");
+        if(!banane1.isEmpty())
+            Log.d(TAG, "prossime initialized");
+        if(!banane2.isEmpty())
+            Log.d(TAG, "top rated initialized");
         popolari.setValue(movies);
     }
 
-    public LiveData<List<Movie>> getPopular() {
+    public LiveData<HashSet<Movie>> getPopular() {
         return popolari;
     }
 }

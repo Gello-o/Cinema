@@ -6,6 +6,8 @@ import android.view.MenuItem;
 import android.view.Menu;
 
 import com.example.cinemhub.adapter.MoviesAdapter;
+import com.example.cinemhub.model.Movie;
+import com.example.cinemhub.model.MoviesFactory;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.navigation.NavController;
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        //initViews();
+        initViews();
     }
 
     @Override
@@ -102,13 +104,12 @@ public class MainActivity extends AppCompatActivity {
         pd.setCancelable(false);
         pd.show();
 
-        /*getSupportFragmentManager().beginTransaction()
-                .replace(R.id.nav_host_fragment, homeFragment).commit();
-        //View view = homeFragment.getView(); apperò
-        adapter = homeFragment.getAdapter();
-        movieList = homeFragment.getMovieList();
+        MoviesFactory.getMovies("popular");
+        MoviesFactory.getMovies("top_rated");
+        MoviesFactory.getMovies("upcoming");
+        MoviesFactory.getMovies("now_playing");
 
-        loadJSON();*/
+        pd.dismiss();
     }
 
 }
