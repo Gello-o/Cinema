@@ -16,12 +16,7 @@ public class NuoviArriviViewModel extends ViewModel {
     private MutableLiveData<HashSet<Movie>> mText;
 
     public NuoviArriviViewModel() {
-        mText = new MutableLiveData<>();
-        HashSet <Movie> movies = MoviesPersistentData.getInstance().getAlCinema();
-        if(movies.isEmpty()){
-            Log.d(TAG, "Movies Empty");
-        }
-        mText.setValue(movies);
+
     }
 
     public LiveData<HashSet<Movie>> getText() {

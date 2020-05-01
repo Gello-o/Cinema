@@ -11,13 +11,7 @@ import java.util.ArrayList;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Handler;
+
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,7 +23,7 @@ public class MoviesFactory {
     private static final String TAG = "MoviesFactory";
     private static final String API_KEY = "740ef79d64b588653371072cdee99a0f";
     private static String LANGUAGE = "en-US";
-    private static final int PAGINE_TOT = 4;
+    private static final int PAGINE_TOT = 2;
 
     public synchronized static void getMovies(String categoria) {
         Service apiService = Client.getClient().create(Service.class);
@@ -42,12 +36,11 @@ public class MoviesFactory {
             call.enqueue(new Callback<MoviesResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
-
                     List<Movie> movies = response.body().getResults();
                     HashSet<Movie> moviesSet = new HashSet<>();
-                    for(Movie m : movies)
-                        moviesSet.add(m);
-
+                    moviesSet.addAll(movies);
+                    if(moviesSet.isEmpty())
+                        Log.d(TAG, "moviesSet NULL");
                     fillDB(categoria, moviesSet);
                 }
 
@@ -63,16 +56,25 @@ public class MoviesFactory {
         }
     }
 
-    public static void getTrailers(Movie movie){
-        int movieID = movie.getId();
+    public static void getTrailers(int id) {
         Service apiService = Client.getClient().create(Service.class);
         Call<TrailerResponse> call;
-        call = apiService.getMovieTrailer(movieID, API_KEY);
+        call = apiService.getMovieTrailer(id, API_KEY);
 
         call.enqueue(new Callback<TrailerResponse>() {
             @Override
             public void onResponse(@NonNull Call<TrailerResponse> call, @NonNull Response<TrailerResponse> response){
-                List <Trailer> trailerResponse = response.body().getTrailers();
+                List<Trailer> trailers = response.body().getTrailers();
+                if(trailers == null)
+                    Log.d(TAG, "siamo spacciati");
+
+                HashSet<Trailer> trailersSet = new HashSet<>();
+                trailersSet.addAll(trailers);
+
+                if(trailersSet.isEmpty())
+                    Log.d(TAG, "trailerSet NULL");
+
+                fillDB(trailersSet);
 
             }
 
@@ -86,19 +88,23 @@ public class MoviesFactory {
         });
     }
 
-    public static void fillDB(String categoria, HashSet<Movie> movieSet) {
 
+    public static void fillDB(String categoria, HashSet<Movie> movieSet) {
+        MoviesPersistentData db = MoviesPersistentData.getInstance();
         switch (categoria) {
             case "popular":
-                    MoviesPersistentData.getInstance().getPopolari().addAll(movieSet);
+                db.setPopolari(movieSet);
             case "upcoming":
-                    MoviesPersistentData.getInstance().getProssimeUscite().addAll(movieSet);
+                db.setProssimeUscite(movieSet);
             case "top_rated":
-                    MoviesPersistentData.getInstance().getTopRated().addAll(movieSet);
+                db.setTopRated(movieSet);
             default:
-                    MoviesPersistentData.getInstance().getAlCinema().addAll(movieSet);
+                db.setAlCinema(movieSet);
         }
+    }
 
+    public static void fillDB(HashSet<Trailer> trailers){
+        MoviesPersistentData.getInstance().setTrailer(trailers);
     }
 }
 

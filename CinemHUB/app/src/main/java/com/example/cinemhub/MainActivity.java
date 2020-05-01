@@ -1,15 +1,17 @@
 package com.example.cinemhub;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.Menu;
 
 import com.example.cinemhub.adapter.MoviesAdapter;
-import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.model.MoviesFactory;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -18,7 +20,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     private AppBarConfiguration mAppBarConfiguration;
     private static final String LOG_TAG = MoviesAdapter.class.getName();
@@ -38,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         */
 
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -52,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        initViews();
     }
 
     @Override
@@ -71,45 +71,24 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
-
-        if(item.getItemId() == R.id.menu_settings)
-            return true;
-        else
-            return super.onOptionsItemSelected(item);
-        /*
-        switch(id){
-            case R.id.categorie_fragment:
-                getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_container, new CategorieFragment()).commit();
-            case R.id.add_list_fragment:
-                getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_container, new AddListFragment()).commit();
-            case R.id.nuovi_arrivi_fragment:
-                getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_container, new NuoviArriviFragment()).commit();
-            case R.id.preferiti_fragment:
-                getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_container, new PreferitiFragment()).commit();
-            case R.id.piu_visti_fragment:
-                getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_container, new CategorieFragment()).commit();
-            case R.id.prossime_uscite_fragment:
-                getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_container, new ProssimeUsciteFragment()).commit();
+        switch (item.getItemId()){
+            case R.id.menu_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
             default:
-                getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_container, new HomeFragment()).commit();
-
+                return super.onOptionsItemSelected(item);
         }
-        */
-
     }
 
-    public void initViews(){
-        pd = new ProgressDialog(this);
-        pd.setMessage("fetching movies");
-        pd.setCancelable(false);
-        pd.show();
-
-        MoviesFactory.getMovies("popular");
-        MoviesFactory.getMovies("top_rated");
-        MoviesFactory.getMovies("upcoming");
-        MoviesFactory.getMovies("now_playing");
-
-        pd.dismiss();
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer;
+        drawer = findViewById(R.id.drawer_layout);
+        if(drawer.isDrawerOpen(GravityCompat.START))
+            drawer.closeDrawer(GravityCompat.START);
+        else
+            super.onBackPressed();
     }
 
 }

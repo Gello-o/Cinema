@@ -14,9 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.GlideBuilder;
-import com.bumptech.glide.annotation.GlideModule;
-import com.bumptech.glide.module.AppGlideModule;
+
 import com.example.cinemhub.ActivityDetail;
 import com.example.cinemhub.R;
 import com.example.cinemhub.model.Movie;
@@ -48,24 +46,26 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
     public void onBindViewHolder(MyViewHolder viewHolder, int i){
         Log.d(TAG, "onBindViewHolder called");
 
-        Glide.with(context)
-                .load(movieList.get(i).getPosterPath())
-                .placeholder(R.drawable.ic_launcher_background)
-                .into(viewHolder.thumbnail);
-
-        if(movieList == null)
+        if(movieList.isEmpty())
             Log.d(TAG, "movieList nulla");
+
         viewHolder.title.setText(movieList.get(i).getOriginal_title());
         String vote = Double.toString(movieList.get(i).getVote_average());
         viewHolder.userrating.setText(vote);
+
+        Log.d(TAG, "poster path" + movieList.get(i).getPosterPath());
+
+        Glide.with(context)
+                .load(movieList.get(i).getPosterPath())
+                .placeholder(R.drawable.ic_launcher_background)
+                .dontAnimate()
+                .into(viewHolder.thumbnail);
+
     }
 
     @Override
     public int getItemCount() {
-        if(movieList!=null)
             return movieList.size();
-        else
-            return -1;
     }
 
 
@@ -77,9 +77,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
         public MyViewHolder(View view){
             super(view);
             Log.d(TAG, "creating viewHolder for recyclerView");
-            title = view.findViewById(R.id.movieTitle);
-            userrating = view.findViewById(R.id.usersRating);
-            thumbnail = view.findViewById(R.id.thumbnail);
+            title = view.findViewById(R.id.card_movie_title);
+            userrating = view.findViewById(R.id.card_movie_userRating);
+            thumbnail = view.findViewById(R.id.card_view_thumbnail);
 
             view.setOnClickListener(new View.OnClickListener() {
 

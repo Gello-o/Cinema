@@ -33,16 +33,7 @@ public class NuoviArriviFragment extends Fragment {
         nuoviArriviViewModel.getText().observe(getViewLifecycleOwner(), new Observer<HashSet<Movie>>() {
             @Override
             public void onChanged(@Nullable HashSet<Movie> set) {
-                if(set.isEmpty()){
-                    Log.d(TAG, "set empty");
-                }
-                else {
-                    ArrayList<Movie> movieList = new ArrayList<>();
-                    for(Movie m: set){
-                        movieList.add(m);
-                    }
-                    textView.setText(movieList.get(0).getOriginal_title());
-                }
+
             }
         });
         return root;

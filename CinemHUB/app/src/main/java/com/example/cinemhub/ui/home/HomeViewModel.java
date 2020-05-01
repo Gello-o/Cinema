@@ -11,32 +11,40 @@ import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesPersistentData;
 
 import java.util.HashSet;
+import java.util.HashSet;
 import java.util.List;
 
 public class HomeViewModel extends ViewModel {
 
     private static final String TAG = "HomeViewModel";
     private MutableLiveData<HashSet<Movie>> popolari;
+    private MutableLiveData<HashSet<Movie>> alCinema;
+    private MutableLiveData<HashSet<Movie>> topRated;
+    private MutableLiveData<HashSet<Movie>> prossimeUscite;
+    MoviesPersistentData db;
 
     public HomeViewModel(SavedStateHandle savedStateHandle) {
-        popolari = new MutableLiveData<>();
-        HashSet<Movie> movies = MoviesPersistentData.getInstance().getPopolari();
-        HashSet<Movie> banane = MoviesPersistentData.getInstance().getAlCinema();
-        HashSet<Movie> banane1= MoviesPersistentData.getInstance().getProssimeUscite();
-        HashSet<Movie> banane2 = MoviesPersistentData.getInstance().getTopRated();
-
-        if(!movies.isEmpty())
-            Log.d(TAG, "popolari initialized");
-        if(!banane.isEmpty())
-            Log.d(TAG, "al cinema initialized");
-        if(!banane1.isEmpty())
-            Log.d(TAG, "prossime initialized");
-        if(!banane2.isEmpty())
-            Log.d(TAG, "top rated initialized");
-        popolari.setValue(movies);
+        if(popolari == null)
+            popolari = db.getInstance().getPopolari();
+        if(alCinema == null)
+            alCinema = db.getInstance().getAlCinema();
+        if(topRated == null)
+            topRated = db.getInstance().getTopRated();
+        if(prossimeUscite == null)
+            prossimeUscite = db.getInstance().getProssimeUscite();
     }
 
-    public LiveData<HashSet<Movie>> getPopular() {
-        return popolari;
+    public LiveData<HashSet<Movie>> getPopolari() { return popolari; }
+
+    public LiveData<HashSet<Movie>> getAlCinema() {
+        return alCinema;
+    }
+
+    public LiveData<HashSet<Movie>> getProssimeUscite() {
+        return prossimeUscite;
+    }
+
+    public LiveData<HashSet<Movie>> getTopRated() {
+        return topRated;
     }
 }

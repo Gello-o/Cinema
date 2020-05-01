@@ -36,8 +36,8 @@ public class ActivityDetail extends AppCompatActivity {
 
         initCollapsingToolbar();
 
-        imageView = findViewById(R.id.thumbnail);
-        nameOfMovie = findViewById(R.id.movieTitle);
+        imageView = findViewById(R.id.card_view_thumbnail);
+        nameOfMovie = findViewById(R.id.title);
         plotSynopsis = findViewById(R.id.plotsynopsis);
         userRating = findViewById(R.id.usersRating);
         releaseDate = findViewById(R.id.releaseDate);
@@ -48,6 +48,9 @@ public class ActivityDetail extends AppCompatActivity {
         if(intent.hasExtra("original_title")){
             try {
                 String thumbnail = intent.getExtras().getString("poster_path");
+                if(thumbnail == null){
+                    Log.d(TAG, "immagine nulla");
+                }
                 String movieName = intent.getExtras().getString("original_title");
                 String synopsis = intent.getExtras().getString("overview");
                 String rating = intent.getExtras().getString("vote_average");
@@ -64,7 +67,7 @@ public class ActivityDetail extends AppCompatActivity {
                 releaseDate.setText(release);
 
             }catch(NullPointerException e){
-                System.out.println("qualcuno degli assegnamenti è null");
+                Log.d(TAG, "qualcuno degli assegnamenti è null");
             }
         }
         else

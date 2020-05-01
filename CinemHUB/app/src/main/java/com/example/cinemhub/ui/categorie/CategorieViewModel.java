@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesPersistentData;
+import com.example.cinemhub.model.Trailer;
 
 import java.util.HashSet;
 import java.util.List;
@@ -15,20 +16,17 @@ import java.util.List;
 public class CategorieViewModel extends ViewModel {
 
     private static final String TAG = "CategorieViewModel";
-    private MutableLiveData<HashSet<Movie>> mText;
+    private MutableLiveData<HashSet<Trailer>> mText;
+    MoviesPersistentData db;
 
     public CategorieViewModel() {
-        mText = new MutableLiveData<>();
-        while(MoviesPersistentData.getInstance().getPopolari().isEmpty()){}
-
-        HashSet<Movie> movies = MoviesPersistentData.getInstance().getPopolari();
-
-        if(!movies.isEmpty())
-            Log.d(TAG, "movies initialized");
-        mText.setValue(movies);
+        if(mText ==null)
+            mText = db.getInstance().getTrailer();
+        if(mText == null || mText.getValue().isEmpty())
+            Log.d(TAG, "caricamento trailer fallito");
     }
 
-    public LiveData<HashSet<Movie>> getPopolari() {
+    public LiveData<HashSet<Trailer>> getPopolari() {
         return mText;
     }
 }

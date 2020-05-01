@@ -51,7 +51,7 @@ public class Movie {
 
     // brutto cane qua devi memorizzare i trailer in qualche modo
 
-    private final String base_image_Url = "https/image.themoviedb.org/t/p/w1280";
+    private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
 
     public String getOverview() {
         return overview;

@@ -12,9 +12,9 @@ public class TrailerResponse {
     @SerializedName("id")
     @Expose
     private Integer id;
-    @SerializedName("trailers")
+    @SerializedName("results")
     @Expose
-    private List<Trailer> trailers;
+    private List<Trailer> results;
 
     public Integer getId() {
         return id;
@@ -25,10 +25,8 @@ public class TrailerResponse {
     }
 
     public List<Trailer> getTrailers() {
-        return trailers;
+        return results;
     }
 
-    public void setTrailer(List<Trailer> trailers) {
-        this.trailers = trailers;
-    }
+    public void setTrailer(List<Trailer> trailers) { results = trailers; }
 }

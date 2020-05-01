@@ -1,6 +1,7 @@
 package com.example.cinemhub.ui.categorie;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.cinemhub.R;
 import com.example.cinemhub.model.Movie;
+import com.example.cinemhub.model.Trailer;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,7 +23,7 @@ import java.util.List;
 
 
 public class CategorieFragment extends Fragment {
-
+    private static final String TAG = "CategorieFragment";
     private CategorieViewModel categorieViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -31,16 +33,18 @@ public class CategorieFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_categorie, container, false);
         final TextView textView = root.findViewById(R.id.text_categorie);
 
-        categorieViewModel.getPopolari().observe(getViewLifecycleOwner(), new Observer<HashSet<Movie>>() {
+        categorieViewModel.getPopolari().observe(getViewLifecycleOwner(), new Observer<HashSet<Trailer>>() {
             @Override
-            public void onChanged(@Nullable HashSet<Movie> moviesSet) {
-                List<Movie> moviesList = new ArrayList<>();
-                moviesList.addAll(moviesSet);
+            public void onChanged(@Nullable HashSet<Trailer> trailersSet) {
+                if(trailersSet == null)
+                    Log.d(TAG, "caricamento trailer fallito");
+                List<Trailer> moviesList = new ArrayList<>();
+                moviesList.addAll(trailersSet);
 
                 if(moviesList.isEmpty())
                     textView.setText("adesso smadonno");
                 else
-                    textView.setText(moviesList.get(0).getOriginal_title());
+                    textView.setText(moviesList.get(0).getKey());
             }
         });
         return root;
