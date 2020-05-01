@@ -10,7 +10,7 @@ public class PreferitiViewModel extends ViewModel {
 
     public PreferitiViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("Questa è la pagina dei film più visti");
+        mText.setValue("Questa è la pagina dei preferiti");
     }
 
     public LiveData<String> getText() {

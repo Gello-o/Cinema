@@ -23,8 +23,8 @@ public class PreferitiFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         preferitiViewModel =
                 new ViewModelProvider(this).get(PreferitiViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_piu_visti, container, false);
-        final TextView textView = root.findViewById(R.id.text_piu_visti);
+        View root = inflater.inflate(R.layout.fragment_preferiti, container, false);
+        final TextView textView = root.findViewById(R.id.text_preferiti);
         preferitiViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {

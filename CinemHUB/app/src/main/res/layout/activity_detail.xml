@@ -37,6 +37,7 @@
                     android:fitsSystemWindows="true"
                     android:scaleType="centerCrop"
                     android:contentDescription="@string/movie_details" />
+
             </RelativeLayout>
 
             <androidx.appcompat.widget.Toolbar
