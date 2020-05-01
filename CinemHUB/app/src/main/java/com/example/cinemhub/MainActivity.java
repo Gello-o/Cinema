@@ -10,6 +10,7 @@ import android.view.Menu;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
@@ -91,4 +92,8 @@ public class MainActivity extends AppCompatActivity{
             super.onBackPressed();
     }
 
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
 }

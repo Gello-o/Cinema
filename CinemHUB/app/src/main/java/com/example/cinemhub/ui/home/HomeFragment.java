@@ -37,7 +37,9 @@ public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
     private HomeViewModel homeViewModel;
     private RecyclerView popularRV;
-    private MoviesAdapter adapter;
+    private MoviesAdapter popularAdapter;
+    private RecyclerView topRatedRV;
+    private MoviesAdapter topRatedAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -45,6 +47,7 @@ public class HomeFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         popularRV = root.findViewById(R.id.recycler_view_popular);
+        topRatedRV = root.findViewById(R.id.recycler_view_top_rated);
 
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
@@ -54,29 +57,52 @@ public class HomeFragment extends Fragment {
             public void onChanged(@Nullable HashSet<Movie> moviesSet) {
                 if(moviesSet.isEmpty())
                     Log.d(TAG, "moviesSet nullo");
-                Log.d(TAG, "contesto " + getContext());
-                Log.d(TAG, "activity " + getActivity());
-                adapter.notifyDataSetChanged();
+                popularAdapter.notifyDataSetChanged();
             }
         });
 
-        initRecyclerView();
+        homeViewModel.getTopRated().observe(getViewLifecycleOwner(), new Observer<HashSet<Movie>>() {
+            @Override
+            public void onChanged(@Nullable HashSet<Movie> moviesSet) {
+                if(moviesSet.isEmpty())
+                    Log.d(TAG, "moviesSet nullo");
+                topRatedAdapter.notifyDataSetChanged();
+            }
+        });
+
+        initPopularRV();
+
+        initTopRatedRV();
 
         return root;
     }
 
-    public void initRecyclerView (){
+    public void initPopularRV (){
         HashSet<Movie> set = homeViewModel.getPopolari().getValue();
         ArrayList<Movie> list = new ArrayList<>();
         list.addAll(set);
-        adapter = new MoviesAdapter(getContext(), list);
-        if(adapter == null)
+        popularAdapter = new MoviesAdapter(getContext(), list);
+        if(popularAdapter == null)
             Log.d(TAG, "adapter null");
         if(popularRV == null)
             Log.d(TAG, "RECYCLER null");
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         popularRV.setLayoutManager(layoutManager);
-        popularRV.setAdapter(adapter);
+        popularRV.setAdapter(popularAdapter);
+    }
+
+    public void initTopRatedRV (){
+        HashSet<Movie> set = homeViewModel.getTopRated().getValue();
+        ArrayList<Movie> list = new ArrayList<>();
+        list.addAll(set);
+        topRatedAdapter = new MoviesAdapter(getContext(), list);
+        if(topRatedAdapter == null)
+            Log.d(TAG, "adapter null");
+        if(topRatedRV == null)
+            Log.d(TAG, "RECYCLER null");
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        topRatedRV.setLayoutManager(layoutManager);
+        topRatedRV.setAdapter(topRatedAdapter);
     }
 
 }
