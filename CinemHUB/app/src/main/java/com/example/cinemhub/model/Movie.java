@@ -61,15 +61,15 @@ public class Movie {
         return adult;
     }
 
-    public List<Integer> getGenre_ids() {
+    public List<Integer> getGenreIds() {
         return genre_ids;
     }
 
-    public String getRelease_date() {
+    public String getReleaseDate() {
         return release_date;
     }
 
-    public void setRelease_date(String release_date) {
+    public void setReleaseDate(String release_date) {
         this.release_date = release_date;
     }
 
@@ -81,11 +81,11 @@ public class Movie {
         this.id = id;
     }
 
-    public String getOriginal_title() {
+    public String getOriginalTitle() {
         return original_title;
     }
 
-    public String getOriginal_language() {
+    public String getOriginalLanguage() {
         return original_language;
     }
 
@@ -93,7 +93,7 @@ public class Movie {
         return title;
     }
 
-    public String getBackdrop_path() {
+    public String getBackdropPath() {
         return backdrop_path;
     }
 
@@ -105,19 +105,19 @@ public class Movie {
         this.popularity = popularity;
     }
 
-    public Integer getVote_count() {
+    public Integer getVoteCount() {
         return vote_count;
     }
 
-    public void setVote_count(Integer vote_count) {
+    public void setVoteCount(Integer vote_count) {
         this.vote_count = vote_count;
     }
 
-    public Double getVote_average() {
+    public Double getVoteAverage() {
         return vote_average;
     }
 
-    public void setVote_average(Double vote_average) {
+    public void setVoteAverage(Double vote_average) {
         this.vote_average = vote_average;
     }
 

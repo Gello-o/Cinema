@@ -49,8 +49,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
         if(movieList.isEmpty())
             Log.d(TAG, "movieList nulla");
 
-        viewHolder.title.setText(movieList.get(i).getOriginal_title());
-        String vote = Double.toString(movieList.get(i).getVote_average());
+        viewHolder.title.setText(movieList.get(i).getOriginalTitle());
+        String vote = Double.toString(movieList.get(i).getVoteAverage());
         viewHolder.userrating.setText(vote);
 
         Log.d(TAG, "poster path" + movieList.get(i).getPosterPath());
@@ -92,14 +92,14 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
                     if(pos != RecyclerView.NO_POSITION){
                          clickedDataItem = movieList.get(pos);
                          Intent intent = new Intent(context, ActivityDetail.class);
-                         intent.putExtra("original_title", movieList.get(pos).getOriginal_title());
+                         intent.putExtra("original_title", movieList.get(pos).getOriginalTitle());
                          intent.putExtra("poster_path", movieList.get(pos).getPosterPath());
                          intent.putExtra("overview", movieList.get(pos).getOverview());
-                         intent.putExtra("released", movieList.get(pos).getRelease_date());
-                         intent.putExtra("vote_average", Double.toString(movieList.get(pos).getVote_average()));
+                         intent.putExtra("released", movieList.get(pos).getReleaseDate());
+                         intent.putExtra("vote_average", Double.toString(movieList.get(pos).getVoteAverage()));
                          intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                          context.startActivity(intent);
-                         Toast.makeText(v.getContext(), "you clicked " + clickedDataItem.getOriginal_title(), Toast.LENGTH_SHORT).show();
+                         Toast.makeText(v.getContext(), "you clicked " + clickedDataItem.getOriginalTitle(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });

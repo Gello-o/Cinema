@@ -36,7 +36,7 @@ public class ActivityDetail extends AppCompatActivity {
 
         initCollapsingToolbar();
 
-        imageView = findViewById(R.id.card_view_thumbnail);
+        imageView = findViewById(R.id.image_activity_detail);
         nameOfMovie = findViewById(R.id.title);
         plotSynopsis = findViewById(R.id.plotsynopsis);
         userRating = findViewById(R.id.usersRating);
@@ -46,29 +46,27 @@ public class ActivityDetail extends AppCompatActivity {
         Intent intent = getIntent();
 
         if(intent.hasExtra("original_title")){
-            try {
-                String thumbnail = intent.getExtras().getString("poster_path");
-                if(thumbnail == null){
-                    Log.d(TAG, "immagine nulla");
-                }
-                String movieName = intent.getExtras().getString("original_title");
-                String synopsis = intent.getExtras().getString("overview");
-                String rating = intent.getExtras().getString("vote_average");
-                String release = intent.getExtras().getString("release_date");
 
-                Glide.with(this)
-                        .load(thumbnail)
-                        .placeholder(R.drawable.ic_launcher_background)
-                        .into(imageView);
-
-                nameOfMovie.setText(movieName);
-                plotSynopsis.setText(synopsis);
-                userRating.setText(rating);
-                releaseDate.setText(release);
-
-            }catch(NullPointerException e){
-                Log.d(TAG, "qualcuno degli assegnamenti è null");
+            String thumbnail = intent.getExtras().getString("poster_path");
+            if(thumbnail == null){
+                Log.d(TAG, "immagine nulla");
             }
+            String movieName = intent.getExtras().getString("original_title");
+            String synopsis = intent.getExtras().getString("overview");
+            String rating = intent.getExtras().getString("vote_average");
+            String release = intent.getExtras().getString("release_date");
+
+            Glide.with(this)
+                    .load(thumbnail)
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .into(imageView);
+
+            nameOfMovie.setText(movieName);
+            plotSynopsis.setText(synopsis);
+            userRating.setText(rating);
+            releaseDate.setText("boh");
+
+
         }
         else
             Toast.makeText(this, "no api data", Toast.LENGTH_SHORT).show();
