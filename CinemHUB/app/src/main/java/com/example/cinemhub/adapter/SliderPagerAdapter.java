@@ -1,16 +1,29 @@
 package com.example.cinemhub.adapter;
-/*
+
 import android.content.Context;
+
+/*
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+
+*/
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.viewpager.widget.PagerAdapter;
+
+/*
 import com.blogapp.aws.movieuitemplate.R;
 import com.blogapp.aws.movieuitemplate.models.Slide;
+
+ */
+import com.example.cinemhub.R;
+import com.example.cinemhub.model.Slide;
 
 import java.util.List;
 
@@ -65,4 +78,3 @@ public class SliderPagerAdapter extends PagerAdapter {
         container.removeView((View)object);
     }
 }
-*/

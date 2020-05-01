@@ -16,11 +16,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.cinemhub.MainActivity;
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
+import com.example.cinemhub.adapter.SliderPagerAdapter;
 import com.example.cinemhub.model.Movie;
+import com.example.cinemhub.model.Slide;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -38,6 +41,8 @@ public class HomeFragment extends Fragment {
     private HomeViewModel homeViewModel;
     private RecyclerView popularRV;
     private MoviesAdapter adapter;
+    private List<Slide> lstSlides;
+    private ViewPager sliderpager;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -61,6 +66,20 @@ public class HomeFragment extends Fragment {
         });
 
         initRecyclerView();
+
+
+        sliderpager = root.findViewById(R.id.slider_pager);
+
+
+        lstSlides = new ArrayList<>();
+        lstSlides.add(new Slide(R.drawable.tolo, "tolo tolo"));
+        lstSlides.add(new Slide(R.drawable.future, "back to the future"));
+        lstSlides.add(new Slide(R.drawable.tolo, "tolo tolo"));
+        lstSlides.add(new Slide(R.drawable.future, "back to the future"));
+
+
+        SliderPagerAdapter adapter = new SliderPagerAdapter(getContext(), lstSlides);
+        sliderpager.setAdapter(adapter);
 
         return root;
     }
