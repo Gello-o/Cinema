@@ -1,4 +1,4 @@
-package com.example.cinemhub.ui.prossime_uscite;
+package com.example.cinemhub.ui.piu_visti;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,20 +14,20 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.cinemhub.R;
 
-public class prossime_usciteFragment extends Fragment {
+public class PiuVistiFragment extends Fragment {
 
-    private prossime_usciteViewModel prossime_usciteViewModel;
+    private PiuVistiViewModel piuVistiViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        prossime_usciteViewModel =
-                new ViewModelProvider(this).get(prossime_usciteViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_prossime_uscite, container, false);
-        final TextView textView = root.findViewById(R.id.text_prossime_uscite);
-        prossime_usciteViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        piuVistiViewModel =
+                new ViewModelProvider(this).get(PiuVistiViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_piu_visti, container, false);
+        final TextView textView = root.findViewById(R.id.text_piu_visti);
+        piuVistiViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
+                textView.setText(getContext().toString());
             }
         });
         return root;

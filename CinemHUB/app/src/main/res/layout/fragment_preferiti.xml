@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.preferiti.preferitiFragment">
+    android:id="@+id/preferiti_fragment"
+    tools:context=".ui.preferiti.PreferitiFragment">
 
     <TextView
         android:id="@+id/text_preferiti"

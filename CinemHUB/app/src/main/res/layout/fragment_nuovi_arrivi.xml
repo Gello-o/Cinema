@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.nuovi_arrivi.nuovi_arriviFragment">
+    android:id="@+id/nuovi_arrivi_fragment"
+    tools:context=".ui.nuovi_arrivi.NuoviArriviFragment">
 
     <TextView
         android:id="@+id/text_nuovi_arrivi"

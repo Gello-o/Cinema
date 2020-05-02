@@ -4,11 +4,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class preferitiViewModel extends ViewModel {
+public class PreferitiViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public preferitiViewModel() {
+    public PreferitiViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("Questa è la pagina dei preferiti");
     }
