@@ -1,6 +1,8 @@
 package com.example.cinemhub.ui.home;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,12 +26,15 @@ import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.adapter.SliderPagerAdapter;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.Slide;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
@@ -43,6 +48,8 @@ public class HomeFragment extends Fragment {
     private MoviesAdapter adapter;
     private List<Slide> lstSlides;
     private ViewPager sliderpager;
+    private TabLayout indicator;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -70,6 +77,7 @@ public class HomeFragment extends Fragment {
 
         sliderpager = root.findViewById(R.id.slider_pager);
 
+        indicator = root.findViewById(R.id.indicator);
 
         lstSlides = new ArrayList<>();
         lstSlides.add(new Slide(R.drawable.tolo, "tolo tolo"));
@@ -78,9 +86,17 @@ public class HomeFragment extends Fragment {
         lstSlides.add(new Slide(R.drawable.future, "back to the future"));
 
 
-        SliderPagerAdapter adapter = new SliderPagerAdapter(getContext(), lstSlides);
-        sliderpager.setAdapter(adapter);
+        SliderPagerAdapter adapter2 = new SliderPagerAdapter(getContext(), lstSlides);
+        sliderpager.setAdapter(adapter2);
 
+
+        messageHandler = new Handler(Looper.getMainLooper());
+        // setup timer
+       Timer timer = new Timer();
+       timer.scheduleAtFixedRate(new HomeFragment.SliderTimer(),4000,4000);
+
+
+        indicator.setupWithViewPager(sliderpager,true);
         return root;
     }
 
@@ -97,6 +113,43 @@ public class HomeFragment extends Fragment {
         popularRV.setLayoutManager(layoutManager);
         popularRV.setAdapter(adapter);
     }
+
+
+    class SliderTimer extends TimerTask {
+
+
+        @Override
+        public void run() {
+
+           HomeFragment.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (sliderpager.getCurrentItem()<lstSlides.size()-1) {
+                        sliderpager.setCurrentItem(sliderpager.getCurrentItem()+1);
+                    }
+                    else
+                        sliderpager.setCurrentItem(0);
+                }
+            });
+
+
+        }
+    }
+
+
+
+
+    private Handler messageHandler;
+    protected void runOnUiThread(Runnable action) {
+        messageHandler.post(action);
+    }
+
+
+
+
+
+
+
 
 }
 

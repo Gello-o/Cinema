@@ -49,9 +49,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
         if(movieList.isEmpty())
             Log.d(TAG, "movieList nulla");
 
-        viewHolder.title.setText(movieList.get(i).getOriginalTitle());
+
         String vote = Double.toString(movieList.get(i).getVoteAverage());
-        viewHolder.userrating.setText(vote);
+
 
         Log.d(TAG, "poster path" + movieList.get(i).getPosterPath());
 
@@ -70,15 +70,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView userrating;
-        TextView title;
+
         ImageView thumbnail;
 
         public MyViewHolder(View view){
             super(view);
             Log.d(TAG, "creating viewHolder for recyclerView");
-            title = view.findViewById(R.id.card_movie_title);
-            userrating = view.findViewById(R.id.card_movie_userRating);
             thumbnail = view.findViewById(R.id.card_view_thumbnail);
 
             view.setOnClickListener(new View.OnClickListener() {

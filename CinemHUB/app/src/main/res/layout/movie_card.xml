@@ -9,37 +9,14 @@
     android:layout_margin="@dimen/card_margin"
     card_view:cardCornerRadius="@dimen/card_movie_radius">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/card_view_thumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/a_description"
+                android:scaleType="centerCrop" />
 
-        <ImageView
-            android:id="@+id/card_view_thumbnail"
-            android:layout_width="match_parent"
-            android:layout_height="140dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/a_description"
-            android:scaleType="centerCrop" />
 
-        <TextView
-            android:id="@+id/card_movie_title"
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:layout_below="@id/card_view_thumbnail"
-            android:paddingLeft="@dimen/movie_title_padding"
-            android:paddingTop="@dimen/movie_title_padding"
-            android:paddingRight="@dimen/movie_title_padding"
-            android:textSize="@dimen/movie_title" />
-
-        <TextView
-            android:id="@+id/card_movie_userRating"
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:layout_below="@id/card_movie_title"
-            android:paddingLeft="@dimen/movie_title_padding"
-            android:paddingRight="@dimen/movie_title_padding"
-            android:textSize="@dimen/user_rating" />
-
-    </RelativeLayout>
 
 </androidx.cardview.widget.CardView>
