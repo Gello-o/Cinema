@@ -5,11 +5,8 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 public class MoviesPersistentData {
     private static final String TAG = "MoviesPersistentData";
@@ -18,7 +15,6 @@ public class MoviesPersistentData {
     private static HashSet<Movie> prossime_uscite = new HashSet<>();
     private static HashSet<Movie> top_rated = new HashSet<>();
     private static HashSet<Trailer> trailers = new HashSet<>();
-    private static Set<Trailer> trailers2;
 
     private static MoviesPersistentData singleton = null;
 
@@ -81,8 +77,7 @@ public class MoviesPersistentData {
     public static void setTopRated(HashSet<Movie> top_rated) {
         MoviesPersistentData.top_rated.addAll(top_rated);
     }
-
-    public MutableLiveData<HashSet<Trailer>> getTrailer(int id) {
+        public MutableLiveData<HashSet<Trailer>> getTrailer(int id) {
         MutableLiveData <HashSet<Trailer>> trailerLD = new MutableLiveData<>();
         if(trailers.isEmpty()) {
             Log.d(TAG, "GET TRAILERS");
@@ -97,10 +92,4 @@ public class MoviesPersistentData {
     public static void setTrailer(HashSet<Trailer> trailers) {
         MoviesPersistentData.trailers.addAll(trailers);
     }
-
-
-
-
-
-
 }

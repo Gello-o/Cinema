@@ -106,5 +106,7 @@ public class MoviesFactory {
     public static void fillDB(HashSet<Trailer> trailers){
         MoviesPersistentData.getInstance().setTrailer(trailers);
     }
+
+
 }
 

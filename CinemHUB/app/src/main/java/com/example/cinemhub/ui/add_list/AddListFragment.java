@@ -30,7 +30,6 @@ public class AddListFragment extends Fragment {
                 textView.setText(s);
             }
         });
-
         return root;
     }
 }

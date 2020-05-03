@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.cinemhub.R;
+import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.Trailer;
 
 import java.util.ArrayList;
@@ -46,8 +47,6 @@ public class CategorieFragment extends Fragment {
                     textView.setText(moviesList.get(0).getKey());
             }
         });
-
         return root;
     }
 }
-

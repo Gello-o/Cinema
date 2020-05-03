@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesPersistentData;
-import com.example.cinemhub.model.Trailer;
 
 import java.util.HashSet;
 import java.util.HashSet;
@@ -22,10 +21,10 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<HashSet<Movie>> alCinema;
     private MutableLiveData<HashSet<Movie>> topRated;
     private MutableLiveData<HashSet<Movie>> prossimeUscite;
-    private MutableLiveData<HashSet<Trailer>> trailer;
     MoviesPersistentData db;
 
     public HomeViewModel(SavedStateHandle savedStateHandle) {
+
         if(popolari == null)
             popolari = db.getInstance().getPopolari();
         if(alCinema == null)
@@ -34,6 +33,7 @@ public class HomeViewModel extends ViewModel {
             topRated = db.getInstance().getTopRated();
         if(prossimeUscite == null)
             prossimeUscite = db.getInstance().getProssimeUscite();
+
     }
 
     public LiveData<HashSet<Movie>> getPopolari() { return popolari; }

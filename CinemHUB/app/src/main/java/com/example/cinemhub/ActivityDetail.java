@@ -15,8 +15,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.MutableLiveData;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.cinemhub.api.Client;
@@ -27,10 +25,7 @@ import com.example.cinemhub.model.TrailerResponse;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 
-import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,9 +38,7 @@ public class ActivityDetail extends AppCompatActivity {
     private TextView nameOfMovie, plotSynopsis, userRating, releaseDate;
     private ImageView imageView;
     private WebView webView;
-    private final String API_KEY = "740ef79d64b588653371072cdee99a0f";
-    private List<Trailer> trailerList;
-    private RecyclerView recyclerView;
+    private static final String API_KEY = "740ef79d64b588653371072cdee99a0f";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,6 +86,8 @@ public class ActivityDetail extends AppCompatActivity {
 
 
 
+
+
             //Qua bisogna passare il trailer. Penso che è d'obbligo farlo qui perché non ci sono altri punti nel codice
             //Dove possiamo passare al metodo getMovieTrailer l'id del film che serve per fare la chiamata all'api.
 
@@ -111,16 +106,23 @@ public class ActivityDetail extends AppCompatActivity {
 
             call.enqueue(new Callback<TrailerResponse>() {
                 @Override
-                public void onResponse(@NonNull Call<TrailerResponse> call, @NonNull Response<TrailerResponse> response){
+                public void onResponse(@NonNull Call<TrailerResponse> call, @NonNull Response<TrailerResponse> response) {
                     List<Trailer> trailers = response.body().getTrailers();
                     //Gli diamo il primo trailer.
-                    String key = trailers.get(0).getKey();
+                    String key = "";
+
+                    //Temporaneo
+                    if(trailers== null || trailers.size() == 0) {
+                        key = "BdJKm16Co6M";
+                    }
+
+                    else key = trailers.get(0).getKey();
 
 
                     //La stringa che si andrà a formare da mettere nella webview di content detail
                     String frameVideo = "<html><body><iframe src=\"https://www.youtube.com/embed/";
-                    String link2 = key+"\" frameborder=\"0\" allowfullscreen></iframe></body></html>";
-                    String link3 = frameVideo+link2;
+                    String link2 = key + "\" frameborder=\"0\" allowfullscreen></iframe></body></html>";
+                    String link3 = frameVideo + link2;
 
                     webView.setWebViewClient(new WebViewClient() {
                         @Override
@@ -138,7 +140,7 @@ public class ActivityDetail extends AppCompatActivity {
                     HashSet<Trailer> trailersSet = new HashSet<>();
                     trailersSet.addAll(trailers);
 
-                    if(trailersSet.isEmpty())
+                    if (trailersSet.isEmpty())
                         Log.d(TAG, "trailerSet NULL");
                 }
 
@@ -150,17 +152,12 @@ public class ActivityDetail extends AppCompatActivity {
                         Log.d("Error", "qualcosa è andato storto");
                 }
             });
+
+
+
         }
-
-
-
-
-
         else
             Toast.makeText(this, "no api data", Toast.LENGTH_SHORT).show();
-
-
-
         Log.d(TAG, "end of the intent");
     }
 
@@ -193,4 +190,8 @@ public class ActivityDetail extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
 }
