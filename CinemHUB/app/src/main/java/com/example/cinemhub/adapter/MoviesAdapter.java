@@ -85,7 +85,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
                          intent.putExtra("original_title", movieList.get(pos).getOriginalTitle());
                          intent.putExtra("poster_path", movieList.get(pos).getPosterPath());
                          intent.putExtra("overview", movieList.get(pos).getOverview());
-                         intent.putExtra("released", movieList.get(pos).getReleaseDate());
+                         intent.putExtra("release_date", movieList.get(pos).getReleaseDate());
+                        intent.putExtra("id", Integer.toString(movieList.get(pos).getId()));
                          intent.putExtra("vote_average", Double.toString(movieList.get(pos).getVoteAverage()));
                          intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                          context.startActivity(intent);
