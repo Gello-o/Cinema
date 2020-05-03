@@ -41,6 +41,8 @@ public class HomeFragment extends Fragment {
     private MoviesAdapter popularAdapter;
     private RecyclerView topRatedRV;
     private MoviesAdapter topRatedAdapter;
+    private RecyclerView prossimeUsciteRV;
+    private MoviesAdapter prossimeUsciteAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public class HomeFragment extends Fragment {
 
         popularRV = root.findViewById(R.id.recycler_view_popular);
         topRatedRV = root.findViewById(R.id.recycler_view_top_rated);
+        prossimeUsciteRV = root.findViewById(R.id.recycler_prossime_uscite);
 
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
@@ -71,10 +74,20 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        homeViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<HashSet<Movie>>() {
+            @Override
+            public void onChanged(@Nullable HashSet<Movie> moviesSet) {
+                if(moviesSet.isEmpty())
+                    Log.d(TAG, "moviesSet nullo");
+                prossimeUsciteAdapter.notifyDataSetChanged();
+            }
+        });
+
         initPopularRV();
 
         initTopRatedRV();
 
+        initProssimeUscite();
         return root;
     }
 
@@ -98,14 +111,21 @@ public class HomeFragment extends Fragment {
         ArrayList<Movie> list = new ArrayList<>();
         list.addAll(set);
         topRatedAdapter = new MoviesAdapter(getContext(), list);
-        if(topRatedAdapter == null)
-            Log.d(TAG, "adapter null");
-        if(topRatedRV == null)
-            Log.d(TAG, "RECYCLER null");
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         topRatedRV.setLayoutManager(layoutManager);
         topRatedRV.setAdapter(topRatedAdapter);
         topRatedRV.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    public void initProssimeUscite (){
+        HashSet<Movie> set = homeViewModel.getProssimeUscite().getValue();
+        ArrayList<Movie> list = new ArrayList<>();
+        list.addAll(set);
+        prossimeUsciteAdapter = new MoviesAdapter(getContext(), list);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        prossimeUsciteRV.setLayoutManager(layoutManager);
+        prossimeUsciteRV.setAdapter(prossimeUsciteAdapter);
+        prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
     }
 
 }
