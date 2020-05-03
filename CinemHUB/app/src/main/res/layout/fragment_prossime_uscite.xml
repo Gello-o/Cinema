@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.prossime_uscite.prossime_usciteFragment">
+    android:id="@+id/prossime_uscite_fragment"
+    tools:context=".ui.prossime_uscite.ProssimeUsciteFragment">
 
     <TextView
         android:id="@+id/text_prossime_uscite"

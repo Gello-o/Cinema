@@ -1,16 +1,16 @@
-package com.example.cinemhub.ui.add_list;
+package com.example.cinemhub.ui.piu_visti;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class add_listViewModel extends ViewModel {
+public class PiuVistiViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public add_listViewModel() {
+    public PiuVistiViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("Questa è la pagina dei film aggiunti alla tua lista");
+        mText.setValue("Questa è la pagina dei film più visti");
     }
 
     public LiveData<String> getText() {

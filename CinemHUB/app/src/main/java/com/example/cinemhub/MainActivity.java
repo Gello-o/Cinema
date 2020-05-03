@@ -1,21 +1,18 @@
 package com.example.cinemhub;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.Menu;
-import android.widget.Toast;
 
 import com.example.cinemhub.adapter.MoviesAdapter;
-import com.example.cinemhub.api.Client;
-import com.example.cinemhub.api.Service;
-import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.model.MoviesResponse;
-import com.example.cinemhub.ui.home.HomeFragment;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -23,23 +20,12 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     private AppBarConfiguration mAppBarConfiguration;
     private static final String LOG_TAG = MoviesAdapter.class.getName();
-
-    private List<Movie> movieList;
-    private MoviesAdapter adapter;
     ProgressDialog pd;
-    private HomeFragment homeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +41,7 @@ public class MainActivity extends AppCompatActivity {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
-        homeFragment = new HomeFragment();*/
+        */
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -69,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        //initViews();
     }
 
     @Override
@@ -88,35 +72,28 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
-        if (item.getItemId() == R.id.menu_settings) {
-            return true;
+        switch (item.getItemId()){
+            case R.id.menu_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
-    /*public Activity getActivity(){
-        Context context = this;
-        while(context instanceof ContextWrapper){
-            if(context instanceof Activity)
-                return (Activity) context;
-            context = ((ContextWrapper) context).getBaseContext();
-        }
-        return null;
-    }*/
-
-    public void initViews(){
-        pd = new ProgressDialog(this);
-        pd.setMessage("fetching movies");
-        pd.setCancelable(false);
-        pd.show();
-
-        /*getSupportFragmentManager().beginTransaction()
-                .replace(R.id.nav_host_fragment, homeFragment).commit();
-        //View view = homeFragment.getView(); apperò
-        adapter = homeFragment.getAdapter();
-        movieList = homeFragment.getMovieList();
-
-        loadJSON();*/
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer;
+        drawer = findViewById(R.id.drawer_layout);
+        if(drawer.isDrawerOpen(GravityCompat.START))
+            drawer.closeDrawer(GravityCompat.START);
+        else
+            super.onBackPressed();
     }
 
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
 }
