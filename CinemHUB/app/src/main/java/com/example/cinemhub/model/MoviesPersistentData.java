@@ -77,12 +77,11 @@ public class MoviesPersistentData {
     public static void setTopRated(HashSet<Movie> top_rated) {
         MoviesPersistentData.top_rated.addAll(top_rated);
     }
-
-    public MutableLiveData<HashSet<Trailer>> getTrailer() {
+        public MutableLiveData<HashSet<Trailer>> getTrailer(int id) {
         MutableLiveData <HashSet<Trailer>> trailerLD = new MutableLiveData<>();
         if(trailers.isEmpty()) {
             Log.d(TAG, "GET TRAILERS");
-            MoviesFactory.getTrailers(550);
+            MoviesFactory.getTrailers(id);
         }
         if(trailers.isEmpty())
             Log.d(TAG, "trailersEmpty, tiro madonne");

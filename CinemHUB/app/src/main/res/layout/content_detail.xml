@@ -121,9 +121,16 @@
                 android:gravity="center_horizontal"
                 android:layout_marginStart="@dimen/layout_margin_left" />
 
+            <WebView
+                android:id="@+id/videoWebView"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_gravity="center_horizontal"
+                tools:ignore="MissingConstraints">
+            </WebView>
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
-
 
 </RelativeLayout>

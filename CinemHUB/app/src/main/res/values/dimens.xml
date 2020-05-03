@@ -9,7 +9,7 @@
     <dimen name="card_movie_radius">4dp</dimen>
     <dimen name="card_margin">5dp</dimen>
     <dimen name="user_rating_padding_bottom">5dp</dimen>
-    <dimen name="user_rating">120sp</dimen>
+    <dimen name="user_rating">15sp</dimen>
     <dimen name="detail_backdrop_height">500dp</dimen>
     <dimen name="layout_margin_left">10dp</dimen>
     <dimen name="layout_margin_top">3dp</dimen>

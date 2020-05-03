@@ -5,7 +5,6 @@ import android.content.Context;
 /*
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
-
 */
 
 import android.view.LayoutInflater;
@@ -20,7 +19,6 @@ import androidx.viewpager.widget.PagerAdapter;
 /*
 import com.blogapp.aws.movieuitemplate.R;
 import com.blogapp.aws.movieuitemplate.models.Slide;
-
  */
 import com.example.cinemhub.R;
 import com.example.cinemhub.model.Slide;
@@ -48,9 +46,9 @@ public class SliderPagerAdapter extends PagerAdapter {
         View slideLayout = inflater.inflate(R.layout.slide_item,null);
 
         ImageView slideImg = slideLayout.findViewById(R.id.slide_img);
-       // TextView slideText = slideLayout.findViewById(R.id.slide_title);
+        //TextView slideText = slideLayout.findViewById(R.id.slide_title);
         slideImg.setImageResource(mList.get(position).getImage());
-       // slideText.setText(mList.get(position).getTitle());
+        //slideText.setText(mList.get(position).getTitle());
 
         container.addView(slideLayout);
         return slideLayout;
