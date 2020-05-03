@@ -26,5 +26,7 @@
     <string name="pref_most_popular">Most Popular</string>
     <string name="pref_highest_rated">Highest Rated</string>
     <string name="a_description">a description</string>
+    
+    <string name="favorite"> Favorite Movies</string>
 
 </resources>

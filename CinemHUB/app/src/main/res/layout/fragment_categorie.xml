@@ -3,8 +3,8 @@
 xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context=".ui.preferiti.preferitiFragment">
+android:layout_height="match_parent" android:id="@+id/categorie_fragment"
+tools:context=".ui.categorie.CategorieFragment">
 
 <TextView
     android:id="@+id/text_categorie"
@@ -20,4 +20,5 @@ tools:context=".ui.preferiti.preferitiFragment">
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     android:gravity="center_horizontal" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

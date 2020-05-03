@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.piu_visti.piu_vistiFragment">
+    android:id="@+id/piu_visti_fragment"
+    tools:context=".ui.piu_visti.PiuVistiFragment">
 
     <TextView
         android:id="@+id/text_piu_visti"

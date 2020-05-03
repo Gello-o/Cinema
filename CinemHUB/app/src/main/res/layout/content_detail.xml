@@ -5,8 +5,8 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:context=".ActivityDetail"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".DetailActivity"
     tools:showIn="@layout/activity_detail"
     android:layout_marginTop="@dimen/activity_vertical_margin">
 
@@ -17,7 +17,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal">
+
+            <com.github.ivbaranov.mfb.MaterialFavoriteButton
+                android:id="@+id/favorite_button"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
 
             <TextView
                 android:id="@+id/movieTitle"
