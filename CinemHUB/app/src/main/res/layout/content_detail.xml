@@ -20,11 +20,6 @@
             android:orientation="vertical"
             android:layout_gravity="center_horizontal">
 
-            <com.github.ivbaranov.mfb.MaterialFavoriteButton
-                android:id="@+id/favorite_button"
-                android:layout_width="100dp"
-                android:layout_height="100dp" />
-
             <TextView
                 android:id="@+id/movieTitle"
                 android:layout_width="match_parent"
@@ -126,9 +121,39 @@
                 android:gravity="center_horizontal"
                 android:layout_marginStart="@dimen/layout_margin_left" />
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.like.LikeButton
+                    android:id="@+id/favorite_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:icon_size="10dp"
+                    app:icon_type="star"
+                    android:layout_marginLeft="10dp"/>
+
+                <com.like.LikeButton
+                    android:id="@+id/like_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:icon_size="10dp"
+                    app:icon_type="thumb"
+                    android:layout_marginRight="10dp"
+                    android:layout_alignParentRight="true"/>
+
+            </RelativeLayout>
+
+            <WebView
+                android:id="@+id/videoWebView"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_gravity="center_horizontal"
+                tools:ignore="MissingConstraints">
+            </WebView>
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
-
 
 </RelativeLayout>

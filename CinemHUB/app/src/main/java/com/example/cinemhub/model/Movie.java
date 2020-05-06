@@ -145,9 +145,4 @@ public class Movie {
         this.posterPath = posterPath;
     }
 
-    //Preferiti
-    public Movie(){
-        //empty
-    }
-
 }

@@ -24,6 +24,7 @@ public class HomeViewModel extends ViewModel {
     MoviesPersistentData db;
 
     public HomeViewModel(SavedStateHandle savedStateHandle) {
+
         if(popolari == null)
             popolari = db.getInstance().getPopolari();
         if(alCinema == null)
@@ -32,6 +33,7 @@ public class HomeViewModel extends ViewModel {
             topRated = db.getInstance().getTopRated();
         if(prossimeUscite == null)
             prossimeUscite = db.getInstance().getProssimeUscite();
+
     }
 
     public LiveData<HashSet<Movie>> getPopolari() { return popolari; }
