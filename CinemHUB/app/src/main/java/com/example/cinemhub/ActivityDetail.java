@@ -21,7 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.example.cinemhub.api.Client;
 import com.example.cinemhub.api.Service;
-import com.example.cinemhub.model.MoviesPersistentData;
+import com.example.cinemhub.dataFavorite.DbManagerFavorite;
+import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.Trailer;
 import com.example.cinemhub.model.TrailerResponse;
 import com.google.android.material.appbar.AppBarLayout;
@@ -39,11 +40,21 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ActivityDetail extends AppCompatActivity {
+
     private static final String TAG = "ActivityDetail";
     private TextView nameOfMovie, plotSynopsis, userRating, releaseDate;
     private ImageView imageView;
     private WebView webView;
     private static final String API_KEY = "740ef79d64b588653371072cdee99a0f";
+
+    private DbManagerFavorite dbManagerFavorite;
+    private DbManagerFavorite dbManagerLiked;
+    private Movie movie;
+    private final AppCompatActivity activityFavorite = ActivityDetail.this;
+
+    String thumbnail, movieName, synopsis, rating, dateOfRelease;
+    int movie_id;
+
 
 
     @Override
@@ -165,6 +176,7 @@ public class ActivityDetail extends AppCompatActivity {
         else {
             Toast.makeText(this, "no api data", Toast.LENGTH_SHORT).show();
         }
+
 //FAVORITE
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -179,7 +191,7 @@ public class ActivityDetail extends AppCompatActivity {
                 SharedPreferences.Editor editor = getSharedPreferences("com.example.cinemhub.ActivityDetail", MODE_PRIVATE).edit();
                 editor.putBoolean("Favorite Added", true);
                 editor.apply();
-                //saveFavorite();
+                saveFavorite();
                 Snackbar.make(likeButtonFavorite, "Added to Favorite",
                         Snackbar.LENGTH_SHORT).show();
             }
@@ -221,6 +233,23 @@ public class ActivityDetail extends AppCompatActivity {
 
 
         Log.d(TAG, "end of the intent");
+    }
+
+    private void saveFavorite() {
+
+        System.out.println("entrato nel save");
+
+        dbManagerFavorite = new DbManagerFavorite(activityFavorite);
+        movie = new Movie();
+
+        Double rate = movie.getVoteAverage();
+        movie.setId(movie_id);
+        movie.setOriginalTitle(movieName);
+        movie.setPosterPath(thumbnail);
+        movie.setVoteAverage(rate);
+        movie.setOverview(synopsis);
+
+        dbManagerFavorite.addFavorite(movie);
     }
 
     public void initCollapsingToolbar(){

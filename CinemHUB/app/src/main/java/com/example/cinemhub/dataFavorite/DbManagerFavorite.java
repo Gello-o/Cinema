@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
+import com.example.cinemhub.model.Movie;
+
 
 public class DbManagerFavorite {
 
@@ -16,16 +18,16 @@ public class DbManagerFavorite {
         dbhelper=new DbHelperFavorite(ctx);
     }
 
-    public void addFavorite(String id, String title, String userRating, String posterPath, String plotSynopsis) {
+    public void addFavorite(Movie movie) {
 
         SQLiteDatabase db = dbhelper.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(DbFavorite.FavoritesEntry.COLUMN_MOVIEID , id);
-        values.put(DbFavorite.FavoritesEntry.COLUMN_TITLE , title);
-        values.put(DbFavorite.FavoritesEntry.COLUMN_USERRATING , userRating);
-        values.put(DbFavorite.FavoritesEntry.COLUMN_POSTER_PATH , posterPath);
-        values.put(DbFavorite.FavoritesEntry.COLUMN_PLOT_SYNOPSIS , plotSynopsis);
+        values.put(DbFavorite.FavoritesEntry.COLUMN_MOVIEID , movie.getId());
+        values.put(DbFavorite.FavoritesEntry.COLUMN_TITLE , movie.getTitle());
+        values.put(DbFavorite.FavoritesEntry.COLUMN_USERRATING , movie.getVoteAverage());
+        values.put(DbFavorite.FavoritesEntry.COLUMN_POSTER_PATH , movie.getPosterPath());
+        values.put(DbFavorite.FavoritesEntry.COLUMN_PLOT_SYNOPSIS , movie.getOverview());
 
         try {
             db.insert(DbFavorite.FavoritesEntry.TABLE_NAME, null, values);

@@ -9,8 +9,7 @@ public class PreferitiViewModel extends ViewModel {
     private MutableLiveData<String> mText;
 
     public PreferitiViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("Questa è la pagina dei preferiti");
+
     }
 
     public LiveData<String> getText() {
