@@ -52,8 +52,7 @@ public class ActivityDetail extends AppCompatActivity {
     private Movie movie;
     private final AppCompatActivity activityFavorite = ActivityDetail.this;
 
-    String thumbnail, movieName, synopsis, rating, dateOfRelease;
-    int movie_id;
+    String thumbnail, movieName, synopsis, rating, release, movie_id;
 
 
 
@@ -85,11 +84,11 @@ public class ActivityDetail extends AppCompatActivity {
             if(thumbnail == null){
                 Log.d(TAG, "immagine nulla");
             }
-            String movieName = intent.getExtras().getString("original_title");
-            String synopsis = intent.getExtras().getString("overview");
-            String rating = intent.getExtras().getString("vote_average");
-            String release = intent.getExtras().getString("release_date");
-            String id = intent.getExtras().getString("id");
+            movieName = intent.getExtras().getString("original_title");
+            synopsis = intent.getExtras().getString("overview");
+            rating = intent.getExtras().getString("vote_average");
+            release = intent.getExtras().getString("release_date");
+            movie_id = intent.getExtras().getString("id");
 
             Glide.with(this)
                     .load(thumbnail)
@@ -119,7 +118,7 @@ public class ActivityDetail extends AppCompatActivity {
 
             Service apiService = Client.getClient().create(Service.class);
             Call<TrailerResponse> call;
-            call = apiService.getMovieTrailer(Integer.parseInt(id), API_KEY);
+            call = apiService.getMovieTrailer(Integer.parseInt(movie_id), API_KEY);
 
             call.enqueue(new Callback<TrailerResponse>() {
                 @Override
@@ -184,10 +183,11 @@ public class ActivityDetail extends AppCompatActivity {
         //favorite button
         LikeButton likeButtonFavorite =
                 (LikeButton) findViewById(R.id.favorite_button);
-
+        Log.d(TAG, "onClick per favorite");
         likeButtonFavorite.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButtonFavorite) {
+                Log.d(TAG, "called favorite");
                 SharedPreferences.Editor editor = getSharedPreferences("com.example.cinemhub.ActivityDetail", MODE_PRIVATE).edit();
                 editor.putBoolean("Favorite Added", true);
                 editor.apply();
@@ -198,6 +198,7 @@ public class ActivityDetail extends AppCompatActivity {
 
             @Override
             public void unLiked(LikeButton likeButtonFavorite) {
+                Log.d(TAG, "called unfavorite");
                 SharedPreferences.Editor editor = getSharedPreferences("com.example.cinemhub.ActivityDetail", MODE_PRIVATE).edit();
                 editor.putBoolean("Favorite Removed", true);
                 editor.apply();
@@ -209,10 +210,11 @@ public class ActivityDetail extends AppCompatActivity {
         //liked button
         LikeButton likeButton =
                 (LikeButton) findViewById(R.id.like_button);
-
+        Log.d(TAG, "onClick per like");
         likeButton.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButton) {
+                Log.d(TAG, "called like");
                 SharedPreferences.Editor editor = getSharedPreferences("com.example.cinemhub.ActivityDetail", MODE_PRIVATE).edit();
                 editor.putBoolean("Liked Added", true);
                 editor.apply();
@@ -223,6 +225,7 @@ public class ActivityDetail extends AppCompatActivity {
 
             @Override
             public void unLiked(LikeButton likeButton) {
+                Log.d(TAG, "called unlike");
                 SharedPreferences.Editor editor = getSharedPreferences("com.example.cinemhub.ActivityDetail", MODE_PRIVATE).edit();
                 editor.putBoolean("Liked Removed", true);
                 editor.apply();
@@ -242,11 +245,10 @@ public class ActivityDetail extends AppCompatActivity {
         dbManagerFavorite = new DbManagerFavorite(activityFavorite);
         movie = new Movie();
 
-        Double rate = movie.getVoteAverage();
-        movie.setId(movie_id);
+        movie.setId(Integer.parseInt(movie_id));
         movie.setOriginalTitle(movieName);
         movie.setPosterPath(thumbnail);
-        movie.setVoteAverage(rate);
+        movie.setVoteAverage(Double.parseDouble(rating));
         movie.setOverview(synopsis);
 
         dbManagerFavorite.addFavorite(movie);

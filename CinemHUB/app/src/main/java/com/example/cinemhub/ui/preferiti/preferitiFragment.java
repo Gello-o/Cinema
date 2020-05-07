@@ -28,4 +28,3 @@ public class PreferitiFragment extends Fragment {
         return root;
     }
 }
-
