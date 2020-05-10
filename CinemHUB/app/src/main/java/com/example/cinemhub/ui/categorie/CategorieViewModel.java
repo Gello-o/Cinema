@@ -20,10 +20,7 @@ public class CategorieViewModel extends ViewModel {
     MoviesPersistentData db;
 
     public CategorieViewModel() {
-        if(mText ==null)
-            mText = db.getInstance().getTrailer(550);
-        if(mText == null || mText.getValue().isEmpty())
-            Log.d(TAG, "caricamento trailer fallito");
+        mText = new MutableLiveData<>();
     }
 
     public LiveData<HashSet<Trailer>> getPopolari() {
