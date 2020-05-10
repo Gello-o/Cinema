@@ -9,7 +9,11 @@ import android.view.Menu;
 import android.widget.Toast;
 
 import com.example.cinemhub.adapter.MoviesAdapter;
+import com.example.cinemhub.model.MoviesFactory;
 import com.example.cinemhub.model.MoviesPersistentData;
+import com.example.cinemhub.ui.add_list.AddListFragment;
+import com.example.cinemhub.ui.home.HomeFragment;
+import com.example.cinemhub.ui.home.HomeViewModel;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;

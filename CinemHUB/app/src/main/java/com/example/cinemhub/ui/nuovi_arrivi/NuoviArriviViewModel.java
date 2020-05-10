@@ -14,10 +14,9 @@ import java.util.HashSet;
 public class NuoviArriviViewModel extends ViewModel {
     private static final String TAG = "NuoviArriviViewModel";
     private MutableLiveData<HashSet<Movie>> mText;
-    MoviesPersistentData db;
 
     public NuoviArriviViewModel() {
-        mText = db.getInstance().getProssimeUscite();
+        mText = MoviesPersistentData.getInstance().getProssimeUscite();
     }
 
     public LiveData<HashSet<Movie>> getProssimeUscite() {

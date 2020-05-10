@@ -1,5 +1,6 @@
 package com.example.cinemhub.ui.nuovi_arrivi;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,7 +62,11 @@ public class NuoviArriviFragment extends Fragment {
             Log.d(TAG, "adapter null");
         if(prossimeUsciteRV == null)
             Log.d(TAG, "RECYCLER null");
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
+        RecyclerView.LayoutManager layoutManager;
+        if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+            layoutManager = new GridLayoutManager(getContext(), 3);
+        else
+            layoutManager = new GridLayoutManager(getContext(), 4);
         prossimeUsciteRV.setLayoutManager(layoutManager);
         prossimeUsciteRV.setAdapter(moviesAdapter);
         prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());

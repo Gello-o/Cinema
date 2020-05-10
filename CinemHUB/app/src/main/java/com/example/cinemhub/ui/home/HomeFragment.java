@@ -25,6 +25,8 @@ import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.adapter.SliderPagerAdapter;
 import com.example.cinemhub.model.Movie;
+import com.example.cinemhub.model.MoviesFactory;
+import com.example.cinemhub.model.MoviesPersistentData;
 import com.example.cinemhub.model.Slide;
 import com.google.android.material.tabs.TabLayout;
 
@@ -95,7 +97,6 @@ public class HomeFragment extends Fragment {
 
         initProssimeUscite();
 
-
         sliderpager = root.findViewById(R.id.slider_pager);
 
         indicator = root.findViewById(R.id.indicator);
@@ -128,10 +129,6 @@ public class HomeFragment extends Fragment {
         ArrayList<Movie> list = new ArrayList<>();
         list.addAll(set);
         popularAdapter = new MoviesAdapter(getContext(), list);
-        if(popularAdapter == null)
-            Log.d(TAG, "adapter null");
-        if(popularRV == null)
-            Log.d(TAG, "RECYCLER null");
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         popularRV.setLayoutManager(layoutManager);
         popularRV.setAdapter(popularAdapter);
