@@ -56,39 +56,6 @@ public class MoviesFactory {
         }
     }
 
-    public static void getTrailers(int id) {
-        Service apiService = Client.getClient().create(Service.class);
-        Call<TrailerResponse> call;
-        call = apiService.getMovieTrailer(id, API_KEY);
-
-        call.enqueue(new Callback<TrailerResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<TrailerResponse> call, @NonNull Response<TrailerResponse> response){
-                List<Trailer> trailers = response.body().getTrailers();
-                if(trailers == null)
-                    Log.d(TAG, "siamo spacciati");
-
-                HashSet<Trailer> trailersSet = new HashSet<>();
-                trailersSet.addAll(trailers);
-
-                if(trailersSet.isEmpty())
-                    Log.d(TAG, "trailerSet NULL");
-
-                fillDB(trailersSet);
-
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<TrailerResponse> call, @NonNull Throwable t) {
-                if (t.getMessage() != null)
-                    Log.d("Error", t.getMessage());
-                else
-                    Log.d("Error", "qualcosa è andato storto");
-            }
-        });
-    }
-
-
     public static void fillDB(String categoria, HashSet<Movie> movieSet) {
         MoviesPersistentData db = MoviesPersistentData.getInstance();
         switch (categoria) {
@@ -102,11 +69,6 @@ public class MoviesFactory {
                 db.setAlCinema(movieSet);
         }
     }
-
-    public static void fillDB(HashSet<Trailer> trailers){
-        MoviesPersistentData.getInstance().setTrailer(trailers);
-    }
-
 
 }
 

@@ -21,19 +21,13 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<HashSet<Movie>> alCinema;
     private MutableLiveData<HashSet<Movie>> topRated;
     private MutableLiveData<HashSet<Movie>> prossimeUscite;
-    MoviesPersistentData db;
 
     public HomeViewModel(SavedStateHandle savedStateHandle) {
-
-        if(popolari == null)
-            popolari = db.getInstance().getPopolari();
-        if(alCinema == null)
-            alCinema = db.getInstance().getAlCinema();
-        if(topRated == null)
-            topRated = db.getInstance().getTopRated();
-        if(prossimeUscite == null)
-            prossimeUscite = db.getInstance().getProssimeUscite();
-
+        MoviesPersistentData db = MoviesPersistentData.getInstance();
+        popolari = db.getPopolari();
+        alCinema = db.getAlCinema();
+        topRated = db.getTopRated();
+        prossimeUscite = db.getProssimeUscite();
     }
 
     public LiveData<HashSet<Movie>> getPopolari() { return popolari; }

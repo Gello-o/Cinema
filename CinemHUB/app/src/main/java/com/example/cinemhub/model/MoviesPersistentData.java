@@ -10,17 +10,17 @@ import java.util.List;
 
 public class MoviesPersistentData {
     private static final String TAG = "MoviesPersistentData";
-    private static HashSet<Movie> popolari = new HashSet<>();
-    private static HashSet<Movie> al_cinema = new HashSet<>();
-    private static HashSet<Movie> prossime_uscite = new HashSet<>();
-    private static HashSet<Movie> top_rated = new HashSet<>();
-    private static HashSet<Trailer> trailers = new HashSet<>();
+    private HashSet<Movie> popolari = new HashSet<>();
+    private HashSet<Movie> al_cinema = new HashSet<>();
+    private HashSet<Movie> prossime_uscite = new HashSet<>();
+    private HashSet<Movie> top_rated = new HashSet<>();
+    private HashSet<Trailer> trailers = new HashSet<>();
 
     private static MoviesPersistentData singleton = null;
 
     private MoviesPersistentData(){}
 
-    public synchronized static MoviesPersistentData getInstance(){
+    public static synchronized  MoviesPersistentData getInstance(){
         if(singleton == null)
             singleton = new MoviesPersistentData();
         return singleton;
@@ -62,34 +62,20 @@ public class MoviesPersistentData {
         return topRatedLD;
     }
 
-    public static void setPopolari(HashSet<Movie> popolari) {
-        MoviesPersistentData.popolari.addAll(popolari);
+    public  void setPopolari(HashSet<Movie> popolari) {
+        this.popolari.addAll(popolari);
     }
 
-    public static void setAlCinema(HashSet<Movie> al_cinema) {
-        MoviesPersistentData.al_cinema.addAll(al_cinema);
+    public  void setAlCinema(HashSet<Movie> al_cinema) {
+        this.al_cinema.addAll(al_cinema);
     }
 
-    public static void setProssimeUscite(HashSet<Movie> prossime_uscite) {
-        MoviesPersistentData.prossime_uscite.addAll(prossime_uscite);
+    public  void setProssimeUscite(HashSet<Movie> prossime_uscite) {
+        this.prossime_uscite.addAll(prossime_uscite);
     }
 
-    public static void setTopRated(HashSet<Movie> top_rated) {
-        MoviesPersistentData.top_rated.addAll(top_rated);
-    }
-        public MutableLiveData<HashSet<Trailer>> getTrailer(int id) {
-        MutableLiveData <HashSet<Trailer>> trailerLD = new MutableLiveData<>();
-        if(trailers.isEmpty()) {
-            Log.d(TAG, "GET TRAILERS");
-            MoviesFactory.getTrailers(id);
-        }
-        if(trailers.isEmpty())
-            Log.d(TAG, "trailersEmpty, tiro madonne");
-        trailerLD.setValue(trailers);
-        return trailerLD;
+    public  void setTopRated(HashSet<Movie> top_rated) {
+        this.top_rated.addAll(top_rated);
     }
 
-    public static void setTrailer(HashSet<Trailer> trailers) {
-        MoviesPersistentData.trailers.addAll(trailers);
-    }
 }

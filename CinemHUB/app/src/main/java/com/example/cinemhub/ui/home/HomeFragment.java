@@ -30,18 +30,10 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
-import java.util.concurrent.atomic.AtomicBoolean;
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import java.util.TimerTask;
-import com.example.cinemhub.adapter.SliderPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-
-import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
 
 
 public class HomeFragment extends Fragment {
