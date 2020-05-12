@@ -22,9 +22,9 @@ import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Movie;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 
 public class NuoviArriviFragment extends Fragment {
     private static final String TAG = "NuoviArriviFragment";
@@ -41,29 +41,21 @@ public class NuoviArriviFragment extends Fragment {
 
         prossimeUsciteRV = root.findViewById(R.id.recycler_view_nuovi_arrivi);
 
-        nuoviArriviViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<HashSet<Movie>>() {
+        nuoviArriviViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
-            public void onChanged(@Nullable HashSet<Movie> set) {
+            public void onChanged(@Nullable List<Movie> set) {
+                initMoviesRV(set);
                 moviesAdapter.notifyDataSetChanged();
             }
         });
 
-        initMoviesRV();
-
         return root;
     }
 
-    public void initMoviesRV (){
-        HashSet<Movie> set = nuoviArriviViewModel.getProssimeUscite().getValue();
-        ArrayList<Movie> list = new ArrayList<>();
-        list.addAll(set);
+    public void initMoviesRV (List<Movie>list){
         moviesAdapter = new MoviesAdapter(getContext(), list);
-        if(moviesAdapter == null)
-            Log.d(TAG, "adapter null");
-        if(prossimeUsciteRV == null)
-            Log.d(TAG, "RECYCLER null");
         RecyclerView.LayoutManager layoutManager;
-        if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+        if(getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
             layoutManager = new GridLayoutManager(getContext(), 3);
         else
             layoutManager = new GridLayoutManager(getContext(), 4);

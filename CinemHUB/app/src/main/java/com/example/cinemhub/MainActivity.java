@@ -3,17 +3,11 @@ package com.example.cinemhub;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.Menu;
-import android.widget.Toast;
 
-import com.example.cinemhub.adapter.MoviesAdapter;
-import com.example.cinemhub.model.MoviesFactory;
-import com.example.cinemhub.model.MoviesPersistentData;
-import com.example.cinemhub.ui.add_list.AddListFragment;
-import com.example.cinemhub.ui.home.HomeFragment;
-import com.example.cinemhub.ui.home.HomeViewModel;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
@@ -30,7 +24,7 @@ import androidx.appcompat.widget.Toolbar;
 public class MainActivity extends AppCompatActivity{
 
     private AppBarConfiguration mAppBarConfiguration;
-    private static final String LOG_TAG = MoviesAdapter.class.getName();
+    private static final String TAG = "MainActivity";
     ProgressDialog pd;
 
     @Override
@@ -59,7 +53,6 @@ public class MainActivity extends AppCompatActivity{
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-
     }
 
     @Override
