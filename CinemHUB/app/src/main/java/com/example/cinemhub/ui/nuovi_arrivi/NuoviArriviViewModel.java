@@ -11,13 +11,13 @@ import java.util.List;
 
 public class NuoviArriviViewModel extends ViewModel {
     private static final String TAG = "NuoviArriviViewModel";
-    MoviesRepository db;
     private MutableLiveData<List<Movie>> mText = new MutableLiveData<>();
+    MoviesRepository db;
 
     public MutableLiveData<List<Movie>> getProssimeUscite() {
         if(mText == null) {
-            db = MoviesRepository.getInstance();
             mText = new MutableLiveData<>();
+            db = MoviesRepository.getInstance();
             db.getMovies("upcoming", 1, mText);
         }
         return mText;
