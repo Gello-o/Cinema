@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.example.cinemhub.api.Client;
 import com.example.cinemhub.api.Service;
-import com.example.cinemhub.model.MoviesPersistentData;
 import com.example.cinemhub.model.Trailer;
 import com.example.cinemhub.model.TrailerResponse;
 import com.google.android.material.appbar.AppBarLayout;

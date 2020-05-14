@@ -23,22 +23,36 @@ import java.util.List;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHolder>{
 
+    public Context getContext() {
+        return context;
+    }
+
+    public List<Movie> getMovieList() {
+        return movieList;
+    }
+
     private Context context;
     private List<Movie> movieList;
+    LayoutInflater layoutInflater;
     private static final String TAG = "MoviesAdapter";
 
     public MoviesAdapter(Context context, List<Movie> movieList) {
+        if(movieList != null)
+            Log.d(TAG, "costruito lista correttamente");
+
+        if(context != null)
+            Log.d(TAG, "costruito context correttamente");
         this.context = context;
         this.movieList = movieList;
-        if(movieList != null)
-            Log.d(TAG, "costruito moviesAdapter correttamente");
+        layoutInflater  = layoutInflater.from(context);
+
     }
 
     @Override
     @NonNull
     public MoviesAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i){
         Log.d(TAG, "onCreateViewHolder called");
-        View view = LayoutInflater.from(context).inflate(R.layout.movie_card, viewGroup, false);
+        View view = layoutInflater.inflate(R.layout.movie_card, viewGroup, false);
         return new MyViewHolder(view);
     }
 
@@ -97,4 +111,5 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
         }
 
     }
+
 }

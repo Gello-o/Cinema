@@ -1,5 +1,7 @@
 package com.example.cinemhub.ui.nuovi_arrivi;
 
+import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,53 +19,70 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cinemhub.MainActivity;
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Movie;
+import com.example.cinemhub.ui.home.HomeViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 
 public class NuoviArriviFragment extends Fragment {
     private static final String TAG = "NuoviArriviFragment";
     private NuoviArriviViewModel nuoviArriviViewModel;
-    private RecyclerView prossimeUsciteRV;
     private MoviesAdapter moviesAdapter;
+    RecyclerView prossimeUsciteRV;
+    ArrayList<Movie> lista = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        nuoviArriviViewModel =
-                new ViewModelProvider(this).get(NuoviArriviViewModel.class);
-
         View root = inflater.inflate(R.layout.fragment_nuovi_arrivi, container, false);
 
         prossimeUsciteRV = root.findViewById(R.id.recycler_view_nuovi_arrivi);
 
-        nuoviArriviViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<HashSet<Movie>>() {
+        nuoviArriviViewModel =
+                new ViewModelProvider(this).get(NuoviArriviViewModel.class);
+
+        nuoviArriviViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
-            public void onChanged(@Nullable HashSet<Movie> set) {
+            public void onChanged(@Nullable List<Movie> set) {
+                lista.addAll(set);
+                initMoviesRV();
+                if(set != null)
+                    Log.d(TAG, "" + set.size());
                 moviesAdapter.notifyDataSetChanged();
             }
         });
-
-        initMoviesRV();
-
+        /*
+        prossimeUsciteRV = root.findViewById(R.id.recycler_view_nuovi_arrivi);
+        initFirst();
+         */
         return root;
     }
 
+
     public void initMoviesRV (){
-        HashSet<Movie> set = nuoviArriviViewModel.getProssimeUscite().getValue();
-        ArrayList<Movie> list = new ArrayList<>();
-        list.addAll(set);
-        moviesAdapter = new MoviesAdapter(getContext(), list);
+        moviesAdapter = new MoviesAdapter(getActivity(), lista);
         if(moviesAdapter == null)
             Log.d(TAG, "adapter null");
-        if(prossimeUsciteRV == null)
-            Log.d(TAG, "RECYCLER null");
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
+        else {
+            if (moviesAdapter.getMovieList() == null)
+                Log.d(TAG, "lista null");
+            if (moviesAdapter.getContext() == null)
+                Log.d(TAG, "contesto null");
+        }
+        RecyclerView.LayoutManager layoutManager;
+        if(getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+            layoutManager = new GridLayoutManager(getActivity(), 3);
+        else
+            layoutManager = new GridLayoutManager(getActivity(), 3);
         prossimeUsciteRV.setLayoutManager(layoutManager);
         prossimeUsciteRV.setAdapter(moviesAdapter);
         prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
+
     }
+
 }
