@@ -11,7 +11,7 @@ import java.util.List;
 
 public class NuoviArriviViewModel extends ViewModel {
     private static final String TAG = "NuoviArriviViewModel";
-    private MutableLiveData<List<Movie>> mText = new MutableLiveData<>();
+    private MutableLiveData<List<Movie>> mText;
     MoviesRepository db;
 
     public MutableLiveData<List<Movie>> getProssimeUscite() {

@@ -42,8 +42,6 @@ public class NuoviArriviFragment extends Fragment {
 
         prossimeUsciteRV = root.findViewById(R.id.recycler_view_nuovi_arrivi);
 
-        initMoviesRV(new ArrayList<>());
-
         nuoviArriviViewModel =
                 new ViewModelProvider(this).get(NuoviArriviViewModel.class);
 
@@ -64,8 +62,8 @@ public class NuoviArriviFragment extends Fragment {
     }
 
 
-    public void initMoviesRV (List<Movie>set){
-        moviesAdapter = new MoviesAdapter(getActivity(), set);
+    public void initMoviesRV (List<Movie> lista){
+        moviesAdapter = new MoviesAdapter(getActivity(), lista);
         if(moviesAdapter == null)
             Log.d(TAG, "adapter null");
         else {
@@ -75,7 +73,7 @@ public class NuoviArriviFragment extends Fragment {
                 Log.d(TAG, "contesto null");
         }
         RecyclerView.LayoutManager layoutManager;
-        if(this.getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+        if(getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
             layoutManager = new GridLayoutManager(getActivity(), 3);
         else
             layoutManager = new GridLayoutManager(getActivity(), 3);
