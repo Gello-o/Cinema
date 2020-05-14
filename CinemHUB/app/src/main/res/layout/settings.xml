@@ -4,7 +4,10 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/menu_settings"
+<<<<<<< HEAD
     android:background="@color/colorPrimary"
+=======
+>>>>>>> a4bb7a07b97f06a92c9cb149cae6d6a8c923c3c6
     tools:context=".SettingsActivity">
 
     <TextView
@@ -18,6 +21,9 @@
         android:layout_marginRight="180dp"
         android:layout_marginBottom="397dp"
         android:text="@string/action_settings"
+<<<<<<< HEAD
         android:textColor="#ECEFF3"
+=======
+>>>>>>> a4bb7a07b97f06a92c9cb149cae6d6a8c923c3c6
         tools:ignore="MissingConstraints" />
 </androidx.constraintlayout.widget.ConstraintLayout>
