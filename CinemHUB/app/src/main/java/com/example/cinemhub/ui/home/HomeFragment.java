@@ -1,5 +1,7 @@
 package com.example.cinemhub.ui.home;
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -15,33 +17,23 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.cinemhub.MainActivity;
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
+import com.example.cinemhub.adapter.RetrieveFeedTask;
 import com.example.cinemhub.adapter.SliderPagerAdapter;
 import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.model.Slide;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
-import java.util.concurrent.atomic.AtomicBoolean;
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import java.util.TimerTask;
-import com.example.cinemhub.adapter.SliderPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-
-import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
+import java.util.concurrent.ExecutionException;
 
 
 public class HomeFragment extends Fragment {
@@ -54,9 +46,10 @@ public class HomeFragment extends Fragment {
     private MoviesAdapter topRatedAdapter;
     private RecyclerView prossimeUsciteRV;
     private MoviesAdapter prossimeUsciteAdapter;
-    private List<Slide> lstSlides;
+    private List<Movie> lstSlides;
     private ViewPager sliderpager;
     private TabLayout indicator;
+    private Context mContext = getContext();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -67,57 +60,134 @@ public class HomeFragment extends Fragment {
         topRatedRV = root.findViewById(R.id.recycler_view_top_rated);
         prossimeUsciteRV = root.findViewById(R.id.recycler_prossime_uscite);
 
+        sliderpager = root.findViewById(R.id.slider_pager);
+        indicator = root.findViewById(R.id.indicator);
+
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
 
-        homeViewModel.getPopolari().observe(getViewLifecycleOwner(), new Observer<HashSet<Movie>>() {
+        homeViewModel.getPopolari().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
-            public void onChanged(@Nullable HashSet<Movie> moviesSet) {
-                if(moviesSet.isEmpty())
+            public void onChanged(@Nullable List<Movie> moviesSet) {
+                if(moviesSet == null)
                     Log.d(TAG, "moviesSet nullo");
+                else
+                    Log.d(TAG, ""+moviesSet.size());
+                initPopularRV(moviesSet);
                 popularAdapter.notifyDataSetChanged();
             }
         });
 
-        homeViewModel.getTopRated().observe(getViewLifecycleOwner(), new Observer<HashSet<Movie>>() {
+        homeViewModel.getTopRated().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
-            public void onChanged(@Nullable HashSet<Movie> moviesSet) {
-                if(moviesSet.isEmpty())
+            public void onChanged(@Nullable List<Movie> moviesSet) {
+                if(moviesSet == null)
                     Log.d(TAG, "moviesSet nullo");
+                else
+                    Log.d(TAG, ""+moviesSet.size());
+                initTopRatedRV(moviesSet);
                 topRatedAdapter.notifyDataSetChanged();
             }
         });
 
-        homeViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<HashSet<Movie>>() {
+        homeViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
-            public void onChanged(@Nullable HashSet<Movie> moviesSet) {
-                if(moviesSet.isEmpty())
+            public void onChanged(@Nullable List<Movie> moviesSet) {
+                if(moviesSet == null)
                     Log.d(TAG, "moviesSet nullo");
+                else
+                    Log.d(TAG, ""+moviesSet.size());
+                initProssimeUscite(moviesSet);
                 prossimeUsciteAdapter.notifyDataSetChanged();
             }
         });
 
-        initPopularRV();
-
-        initTopRatedRV();
-
-        initProssimeUscite();
+        initAlCinema();
 
 
-        sliderpager = root.findViewById(R.id.slider_pager);
+        return root;
+    }
 
-        indicator = root.findViewById(R.id.indicator);
+    public void initPopularRV (List<Movie>set){
+        if(set == null)
+            Log.d(TAG, "SET POPOLARI NULL");
+        else if(set.isEmpty())
+            Log.d(TAG, "SET POPOLARI vuoto");
+        popularAdapter = new MoviesAdapter(getContext(), set);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        popularRV.setLayoutManager(layoutManager);
+        popularRV.setAdapter(popularAdapter);
+        popularRV.setItemAnimator(new DefaultItemAnimator());
+    }
 
+    public void initTopRatedRV (List<Movie>set){
+        if(set == null)
+            Log.d(TAG, "SET top NULL");
+        else if(set.isEmpty())
+            Log.d(TAG, "SET top vuoto");
+        topRatedAdapter = new MoviesAdapter(getContext(), set);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        topRatedRV.setLayoutManager(layoutManager);
+        topRatedRV.setAdapter(topRatedAdapter);
+        topRatedRV.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    public void initProssimeUscite (List<Movie>set){
+        if(set == null)
+            Log.d(TAG, "SET Prossime NULL");
+        else if(set.isEmpty())
+            Log.d(TAG, "SET Prossime vuoto");
+        prossimeUsciteAdapter = new MoviesAdapter(getContext(), set);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        prossimeUsciteRV.setLayoutManager(layoutManager);
+        prossimeUsciteRV.setAdapter(prossimeUsciteAdapter);
+        prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
+    }
+
+
+
+    public void initAlCinema () {
+        if(mContext == null) mContext = getContext();
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View slideLayout = inflater.inflate(R.layout.slide_item,null);
+
+        //Prendo immagini a caso
+        String[] s = new String[4];
+        s[0] = "https://www.latestatamagazine.it/wp-content/uploads/2019/02/Old-Boy-la-fenomenologia-della-vendetta.jpg";
+        s[1] = "https://nerdando.com/wp-content/uploads/2019/10/Fight-Club.jpg";
+        s[2] = "https://www.vitactiva.it/wp-content/uploads/2018/04/watch-No-Country-For-Old-Men-Full-Movie-online.jpg";
+        s[3] = "https://media.cineblog.it/a/abe/parasite.jpg";
+
+
+        //Trasformo le stringhe in bitmap
+        RetrieveFeedTask task = (RetrieveFeedTask) new RetrieveFeedTask().execute(s);
+        Bitmap[] image2 = new Bitmap[s.length];
+        try {
+            image2 = task.get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+        //Inserisco i bitmap nello slider
         lstSlides = new ArrayList<>();
+        lstSlides.add(new Movie(image2[0]));
+        lstSlides.add(new Movie(image2[1]));
+        lstSlides.add(new Movie(image2[2]));
+        lstSlides.add(new Movie(image2[3]));
+
+
+
+        /*lstSlides = new ArrayList<>();
         lstSlides.add(new Slide(R.drawable.tolo, "tolo tolo"));
         lstSlides.add(new Slide(R.drawable.future, "back to the future"));
         lstSlides.add(new Slide(R.drawable.tolo, "tolo tolo"));
-        lstSlides.add(new Slide(R.drawable.future, "back to the future"));
+        lstSlides.add(new Slide(R.drawable.future, "back to the future"));*/
 
-
-        SliderPagerAdapter adapter2 = new SliderPagerAdapter(getContext(), lstSlides);
+        SliderPagerAdapter adapter2 = new SliderPagerAdapter(getContext(), lstSlides); //(List<Movie>) list
         sliderpager.setAdapter(adapter2);
-
 
         messageHandler = new Handler(Looper.getMainLooper());
         // setup timer
@@ -127,45 +197,6 @@ public class HomeFragment extends Fragment {
 
         indicator.setupWithViewPager(sliderpager,true);
 
-
-        return root;
-    }
-
-    public void initPopularRV (){
-        HashSet<Movie> set = homeViewModel.getPopolari().getValue();
-        ArrayList<Movie> list = new ArrayList<>();
-        list.addAll(set);
-        popularAdapter = new MoviesAdapter(getContext(), list);
-        if(popularAdapter == null)
-            Log.d(TAG, "adapter null");
-        if(popularRV == null)
-            Log.d(TAG, "RECYCLER null");
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        popularRV.setLayoutManager(layoutManager);
-        popularRV.setAdapter(popularAdapter);
-        popularRV.setItemAnimator(new DefaultItemAnimator());
-    }
-
-    public void initTopRatedRV (){
-        HashSet<Movie> set = homeViewModel.getTopRated().getValue();
-        ArrayList<Movie> list = new ArrayList<>();
-        list.addAll(set);
-        topRatedAdapter = new MoviesAdapter(getContext(), list);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        topRatedRV.setLayoutManager(layoutManager);
-        topRatedRV.setAdapter(topRatedAdapter);
-        topRatedRV.setItemAnimator(new DefaultItemAnimator());
-    }
-
-    public void initProssimeUscite (){
-        HashSet<Movie> set = homeViewModel.getProssimeUscite().getValue();
-        ArrayList<Movie> list = new ArrayList<>();
-        list.addAll(set);
-        prossimeUsciteAdapter = new MoviesAdapter(getContext(), list);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        prossimeUsciteRV.setLayoutManager(layoutManager);
-        prossimeUsciteRV.setAdapter(prossimeUsciteAdapter);
-        prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
     }
 
 

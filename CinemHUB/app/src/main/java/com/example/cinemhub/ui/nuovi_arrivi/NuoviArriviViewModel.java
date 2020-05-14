@@ -1,26 +1,26 @@
 package com.example.cinemhub.ui.nuovi_arrivi;
 
-import android.util.Log;
-
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.model.MoviesPersistentData;
+import com.example.cinemhub.model.MoviesRepository;
 
-import java.util.HashSet;
+
+import java.util.List;
 
 public class NuoviArriviViewModel extends ViewModel {
     private static final String TAG = "NuoviArriviViewModel";
-    private MutableLiveData<HashSet<Movie>> mText;
-    MoviesPersistentData db;
+    private MutableLiveData<List<Movie>> mText = new MutableLiveData<>();
+    MoviesRepository db;
 
-    public NuoviArriviViewModel() {
-        mText = db.getInstance().getProssimeUscite();
-    }
 
-    public LiveData<HashSet<Movie>> getProssimeUscite() {
+    public MutableLiveData<List<Movie>> getProssimeUscite() {
+        if(mText == null) {
+            mText = new MutableLiveData<>();
+            db = MoviesRepository.getInstance();
+            db.getMovies("upcoming", 1, mText);
+        }
         return mText;
     }
 }
