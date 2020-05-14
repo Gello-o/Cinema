@@ -2,6 +2,7 @@ package com.example.cinemhub;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -48,7 +49,6 @@ public class ActivityDetail extends AppCompatActivity {
     private static final String API_KEY = "740ef79d64b588653371072cdee99a0f";
 
     private DbManagerFavorite dbManagerFavorite;
-    private DbManagerFavorite dbManagerLiked;
     private Movie movie;
     private final AppCompatActivity activityFavorite = ActivityDetail.this;
 
@@ -183,11 +183,11 @@ public class ActivityDetail extends AppCompatActivity {
         //favorite button
         LikeButton likeButtonFavorite =
                 (LikeButton) findViewById(R.id.favorite_button);
-        Log.d(TAG, "onClick per favorite");
+
         likeButtonFavorite.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButtonFavorite) {
-                Log.d(TAG, "called favorite");
+                Log.d(TAG, "cliccato favorite");
                 SharedPreferences.Editor editor = getSharedPreferences("com.example.cinemhub.ActivityDetail", MODE_PRIVATE).edit();
                 editor.putBoolean("Favorite Added", true);
                 editor.apply();
@@ -207,40 +207,13 @@ public class ActivityDetail extends AppCompatActivity {
             }
         });
 
-        //liked button
-        LikeButton likeButton =
-                (LikeButton) findViewById(R.id.like_button);
-        Log.d(TAG, "onClick per like");
-        likeButton.setOnLikeListener(new OnLikeListener() {
-            @Override
-            public void liked(LikeButton likeButton) {
-                Log.d(TAG, "called like");
-                SharedPreferences.Editor editor = getSharedPreferences("com.example.cinemhub.ActivityDetail", MODE_PRIVATE).edit();
-                editor.putBoolean("Liked Added", true);
-                editor.apply();
-                //saveFavorite();
-                Snackbar.make(likeButton, "Added to Liked",
-                        Snackbar.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void unLiked(LikeButton likeButton) {
-                Log.d(TAG, "called unlike");
-                SharedPreferences.Editor editor = getSharedPreferences("com.example.cinemhub.ActivityDetail", MODE_PRIVATE).edit();
-                editor.putBoolean("Liked Removed", true);
-                editor.apply();
-                Snackbar.make(likeButton, "Removed to Liked",
-                        Snackbar.LENGTH_SHORT).show();
-            }
-        });
-
 
         Log.d(TAG, "end of the intent");
     }
 
     private void saveFavorite() {
 
-        System.out.println("entrato nel save");
+        Log.d(TAG,"entrato nel save");
 
         dbManagerFavorite = new DbManagerFavorite(activityFavorite);
         movie = new Movie();

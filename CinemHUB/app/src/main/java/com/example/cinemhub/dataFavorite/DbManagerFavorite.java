@@ -5,11 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.util.Log;
 
 import com.example.cinemhub.model.Movie;
 
 
 public class DbManagerFavorite {
+    private final String TAG = "DbManagerFavorite";
 
     private DbHelperFavorite dbhelper;
 
@@ -31,15 +33,18 @@ public class DbManagerFavorite {
 
         try {
             db.insert(DbFavorite.FavoritesEntry.TABLE_NAME, null, values);
+            Log.d(TAG,"Inserimento Favorite Riuscito: " + movie.getId());
+
         }
         catch (SQLiteException exeptionFavorite) {
-            System.out.println("Inserimento Favorite Non Riuscito");
+            Log.d(TAG,"Inserimento Favorite Non Riuscito");
         }
     }
 
     public void deleteFavorite(long id) {
         SQLiteDatabase db = dbhelper.getWritableDatabase();
         db.delete(DbFavorite.FavoritesEntry.TABLE_NAME, DbFavorite.FavoritesEntry.COLUMN_MOVIEID + "=" + id, null);
+        Log.d(TAG,"Film eliminato" );
     }
 
     public Cursor getInformationFavorite()
@@ -47,10 +52,17 @@ public class DbManagerFavorite {
         Cursor cursor = null;
         try {
             SQLiteDatabase db=dbhelper.getReadableDatabase();
-            cursor=db.query(DbFavorite.FavoritesEntry.TABLE_NAME, null, null, null, null, null, null, null);
+            cursor=db.query(DbFavorite.FavoritesEntry.TABLE_NAME,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null);
         }
         catch(SQLiteException sqle) {
-            System.out.println("Info Non Disponibili Favorite");
+           Log.d(TAG,"Info del film Non Disponibili");
         }
         return cursor;
     }
