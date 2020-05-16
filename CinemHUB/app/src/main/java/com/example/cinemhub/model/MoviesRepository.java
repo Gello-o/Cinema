@@ -9,6 +9,7 @@ import com.example.cinemhub.api.Client;
 import com.example.cinemhub.api.Service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -35,11 +36,15 @@ public class MoviesRepository {
         Service apiService = Client.getClient().create(Service.class);
         Call<MoviesResponse> call = apiService.getTMDB(categoria, API_KEY, LANGUAGE, pagina);
 
+
         call.enqueue(new Callback<MoviesResponse>() {
 
             @Override
             public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
-                moviesData.postValue(response.body().getResults());
+                 if(response.body() != null)
+                    moviesData.postValue(response.body().getResults());
+                 else
+                     moviesData.postValue(new ArrayList<>());
             }
 
             @Override

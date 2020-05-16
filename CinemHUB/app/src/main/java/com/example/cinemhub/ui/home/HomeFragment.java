@@ -45,9 +45,10 @@ public class HomeFragment extends Fragment {
     private MoviesAdapter topRatedAdapter;
     private RecyclerView prossimeUsciteRV;
     private MoviesAdapter prossimeUsciteAdapter;
-    private List<Slide> lstSlides;
     private ViewPager sliderpager;
     private TabLayout indicator;
+    List<Movie> slides;
+    SliderPagerAdapter slideAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -57,6 +58,8 @@ public class HomeFragment extends Fragment {
         popularRV = root.findViewById(R.id.recycler_view_popular);
         topRatedRV = root.findViewById(R.id.recycler_view_top_rated);
         prossimeUsciteRV = root.findViewById(R.id.recycler_prossime_uscite);
+        sliderpager = root.findViewById(R.id.slider_pager);
+        indicator = root.findViewById(R.id.indicator);
 
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
@@ -97,29 +100,24 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        sliderpager = root.findViewById(R.id.slider_pager);
 
-        indicator = root.findViewById(R.id.indicator);
-
-        lstSlides = new ArrayList<>();
-        lstSlides.add(new Slide(R.drawable.tolo, "tolo tolo"));
-        lstSlides.add(new Slide(R.drawable.future, "back to the future"));
-        lstSlides.add(new Slide(R.drawable.tolo, "tolo tolo"));
-        lstSlides.add(new Slide(R.drawable.future, "back to the future"));
-
-
-        SliderPagerAdapter adapter2 = new SliderPagerAdapter(getContext(), lstSlides);
-        sliderpager.setAdapter(adapter2);
-
+        homeViewModel.getAlCinema().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> moviesSet) {
+                slides = new ArrayList<>();
+                for(int i=0; i<4; i++){
+                    slides.add(moviesSet.get(i));
+                }
+                initSlider();
+                slideAdapter.notifyDataSetChanged();
+            }
+        });
 
         messageHandler = new Handler(Looper.getMainLooper());
         // setup timer
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new HomeFragment.SliderTimer(),4000,4000);
-
-
         indicator.setupWithViewPager(sliderpager,true);
-
 
         return root;
     }
@@ -160,6 +158,16 @@ public class HomeFragment extends Fragment {
         prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
     }
 
+    public void initSlider(){
+        if(slides == null)
+            Log.d(TAG, "Slider null");
+        else if(slides.isEmpty())
+            Log.d(TAG, "Slider vuoto");
+
+        slideAdapter = new SliderPagerAdapter(getContext(), slides);
+        sliderpager.setAdapter(slideAdapter);
+    }
+
 
     class SliderTimer extends TimerTask {
 
@@ -170,7 +178,7 @@ public class HomeFragment extends Fragment {
             HomeFragment.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (sliderpager.getCurrentItem()<lstSlides.size()-1) {
+                    if (sliderpager.getCurrentItem()<slides.size()-1) {
                         sliderpager.setCurrentItem(sliderpager.getCurrentItem()+1);
                     }
                     else
