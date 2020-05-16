@@ -78,7 +78,7 @@ public class NuoviArriviFragment extends Fragment {
         if(getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
             layoutManager = new GridLayoutManager(getActivity(), 3);
         else
-            layoutManager = new GridLayoutManager(getActivity(), 3);
+            layoutManager = new GridLayoutManager(getActivity(), 4);
         prossimeUsciteRV.setLayoutManager(layoutManager);
         prossimeUsciteRV.setAdapter(moviesAdapter);
         prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());

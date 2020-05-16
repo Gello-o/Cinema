@@ -67,6 +67,7 @@ public class SliderPagerAdapter extends PagerAdapter {
             slideImg.setImageResource(R.drawable.ic_launcher_background);
             slideText.setText("volano madonne");
         }
+
         slideImg.setOnClickListener(new View.OnClickListener() {
 
             @Override

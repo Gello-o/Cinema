@@ -33,7 +33,9 @@ public class NuoviArriviViewModel extends ViewModel {
         if(tutti == null) {
             db = MoviesRepository.getInstance();
             tutti = new MutableLiveData<>();
-            db.getMovies("upcoming", 1, tutti);
+            for(int i = 1; i < 3; i++){
+                db.getMovies("upcoming", i, tutti);
+            }
         }
         return tutti;
     }
