@@ -1,14 +1,15 @@
 package com.example.cinemhub;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.Menu;
 
-import com.example.cinemhub.model.Movie;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
@@ -22,11 +23,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import java.util.ArrayList;
-
 public class MainActivity extends AppCompatActivity{
-
-    ArrayList<Movie>  movieArrayList = new ArrayList<>();
 
     private AppBarConfiguration mAppBarConfiguration;
     private static final String TAG = "MainActivity";
@@ -77,20 +74,12 @@ public class MainActivity extends AppCompatActivity{
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
-
-            case R.id.button:
-                Intent intent = new Intent(this, ActivitySearch.class);
+            case R.id.menu_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
                 return true;
-
-            case R.id.menu_settings:
-                Intent intent2 = new Intent(this, SettingsActivity.class);
-                startActivity(intent2);
-                return true;
-
             default:
                 return super.onOptionsItemSelected(item);
-
         }
     }
 
@@ -108,4 +97,5 @@ public class MainActivity extends AppCompatActivity{
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
     }
+
 }

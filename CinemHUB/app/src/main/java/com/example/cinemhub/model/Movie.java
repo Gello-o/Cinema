@@ -1,7 +1,5 @@
 package com.example.cinemhub.model;
 
-import android.graphics.Bitmap;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -54,12 +52,6 @@ public class Movie {
     // brutto cane qua devi memorizzare i trailer in qualche modo
 
     private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
-    private Bitmap image;
-    private String title2;
-
-    public Movie(Bitmap image) {
-        this.image = image;
-    }
 
     public String getOverview() {
         return overview;
@@ -139,10 +131,6 @@ public class Movie {
 
     public String getPosterPath() {
         return base_image_Url + this.posterPath;
-    }
-
-    public Bitmap getImage() {
-        return image;
     }
 
 }

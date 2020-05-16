@@ -2,6 +2,7 @@ package com.example.cinemhub.ui.nuovi_arrivi;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -35,7 +37,6 @@ public class NuoviArriviFragment extends Fragment {
     private NuoviArriviViewModel nuoviArriviViewModel;
     private MoviesAdapter moviesAdapter;
     RecyclerView prossimeUsciteRV;
-    ArrayList<Movie> lista = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -49,8 +50,7 @@ public class NuoviArriviFragment extends Fragment {
         nuoviArriviViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> set) {
-                lista.addAll(set);
-                initMoviesRV();
+                initMoviesRV(set);
                 if(set != null)
                     Log.d(TAG, "" + set.size());
                 moviesAdapter.notifyDataSetChanged();
@@ -64,7 +64,7 @@ public class NuoviArriviFragment extends Fragment {
     }
 
 
-    public void initMoviesRV (){
+    public void initMoviesRV (List<Movie> lista){
         moviesAdapter = new MoviesAdapter(getActivity(), lista);
         if(moviesAdapter == null)
             Log.d(TAG, "adapter null");
@@ -78,7 +78,7 @@ public class NuoviArriviFragment extends Fragment {
         if(getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
             layoutManager = new GridLayoutManager(getActivity(), 3);
         else
-            layoutManager = new GridLayoutManager(getActivity(), 3);
+            layoutManager = new GridLayoutManager(getActivity(), 4);
         prossimeUsciteRV.setLayoutManager(layoutManager);
         prossimeUsciteRV.setAdapter(moviesAdapter);
         prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
