@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
+import androidx.paging.PagedList;
 
 import com.example.cinemhub.api.Client;
 import com.example.cinemhub.api.Service;
@@ -34,7 +35,7 @@ public class MoviesRepository {
         return instance;
     }
 
-    public void getMovies(String categoria, int pagina, MutableLiveData<List<Movie>> moviesData) {
+    public void getMovies(String categoria, int pagina, MutableLiveData<PagedList<Movie>> moviesData) {
         Service apiService = Client.getClient().create(Service.class);
         Call<MoviesResponse> call;
 
@@ -47,7 +48,7 @@ public class MoviesRepository {
                 @Override
                 public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
                     MoviesResponse moviesResponse = response.body();
-                    List<Movie> movies = moviesResponse.getResults();
+                    PagedList<Movie> movies = (PagedList<Movie>) moviesResponse.getResults();
 
                     if(moviesResponse == null){
                         Log.d(TAG, "response null");
@@ -57,24 +58,6 @@ public class MoviesRepository {
                         Log.d(TAG, "movies null");
                         //gestione movies null
                     }
-
-                    for(Movie m: movies) {
-                        Log.d(TAG, m.getOriginalTitle());
-                    }
-
-                    if(pagina == 1)
-                        moviesData.postValue(movies);
-                    else{
-                        if(moviesData.getValue() != null){
-                            List<Movie> a = moviesData.getValue();
-                            a.addAll(movies);
-                            moviesData.setValue(a);
-                        }
-                        else
-                            Log.d(TAG, "null diocaro");
-                    }
-
-
                 }
 
                 @Override

@@ -54,6 +54,17 @@ public class NuoviArriviFragment extends Fragment {
                 if(set != null)
                     Log.d(TAG, "" + set.size());
                 moviesAdapter.notifyDataSetChanged();
+
+                moviesAdapter.notifyItemRangeChanged(1, 9);
+
+                moviesAdapter.notifyItemRangeRemoved(9, 1);
+                //DiffUtil invece di notifyDataSetChanged
+
+                //metodo che notifica che il range è cambiato => lo user ha scrollato in basso
+
+                //metodo che notifica che il range è cambiato => lo user ha scrollato in alto
+
+                //background thread che si occupa di loaddare ad esempio i secondi venti film
             }
         });
         /*
