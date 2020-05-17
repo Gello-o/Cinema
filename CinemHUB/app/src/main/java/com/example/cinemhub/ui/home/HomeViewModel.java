@@ -17,6 +17,7 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<List<Movie>> alCinema;
     private MutableLiveData<List<Movie>> topRated;
     private MutableLiveData<List<Movie>> prossimeUscite;
+
     MoviesRepository db;
 
     public MutableLiveData<List<Movie>> getPopolari() {

@@ -1,19 +1,26 @@
 package com.example.cinemhub.ui.preferiti;
 
+import android.net.DnsResolver;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.cinemhub.model.Movie;
+
+import java.util.List;
+
 public class PreferitiViewModel extends ViewModel {
 
-    private MutableLiveData<String> mText;
+    private MutableLiveData<List<Movie>> mText;
 
-    public PreferitiViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("Questa è la pagina dei preferiti");
-    }
+    public MutableLiveData<List<Movie>> queryRoom() {
+        if(mText == null) {
+            mText = new MutableLiveData<>();
 
-    public LiveData<String> getText() {
+            //qua dentro ci sarà la query che recupera i preferiti e li salvi in mtext
+
+        }
         return mText;
     }
 }

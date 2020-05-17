@@ -1,7 +1,5 @@
 package com.example.cinemhub.ui.home;
 
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -23,17 +21,18 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
-import com.example.cinemhub.adapter.RetrieveFeedTask;
 import com.example.cinemhub.adapter.SliderPagerAdapter;
 import com.example.cinemhub.model.Movie;
+import com.example.cinemhub.model.Slide;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.List;
+import java.util.List;
 import java.util.Timer;
 import android.os.Handler;
 import java.util.TimerTask;
-import java.util.concurrent.ExecutionException;
 
 
 public class HomeFragment extends Fragment {
@@ -46,10 +45,10 @@ public class HomeFragment extends Fragment {
     private MoviesAdapter topRatedAdapter;
     private RecyclerView prossimeUsciteRV;
     private MoviesAdapter prossimeUsciteAdapter;
-    private List<Movie> lstSlides;
     private ViewPager sliderpager;
     private TabLayout indicator;
-    private Context mContext = getContext();
+    List<Movie> slides;
+    SliderPagerAdapter slideAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -59,7 +58,6 @@ public class HomeFragment extends Fragment {
         popularRV = root.findViewById(R.id.recycler_view_popular);
         topRatedRV = root.findViewById(R.id.recycler_view_top_rated);
         prossimeUsciteRV = root.findViewById(R.id.recycler_prossime_uscite);
-
         sliderpager = root.findViewById(R.id.slider_pager);
         indicator = root.findViewById(R.id.indicator);
 
@@ -102,8 +100,24 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        initAlCinema();
 
+        homeViewModel.getAlCinema().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> moviesSet) {
+                slides = new ArrayList<>();
+                for(int i=0; i<4; i++){
+                    slides.add(moviesSet.get(i));
+                }
+                initSlider();
+                slideAdapter.notifyDataSetChanged();
+            }
+        });
+
+        messageHandler = new Handler(Looper.getMainLooper());
+        // setup timer
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new HomeFragment.SliderTimer(),4000,4000);
+        indicator.setupWithViewPager(sliderpager,true);
 
         return root;
     }
@@ -144,59 +158,14 @@ public class HomeFragment extends Fragment {
         prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
     }
 
+    public void initSlider(){
+        if(slides == null)
+            Log.d(TAG, "Slider null");
+        else if(slides.isEmpty())
+            Log.d(TAG, "Slider vuoto");
 
-
-    public void initAlCinema () {
-        if(mContext == null) mContext = getContext();
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View slideLayout = inflater.inflate(R.layout.slide_item,null);
-
-        //Prendo immagini a caso
-        String[] s = new String[4];
-        s[0] = "https://www.latestatamagazine.it/wp-content/uploads/2019/02/Old-Boy-la-fenomenologia-della-vendetta.jpg";
-        s[1] = "https://nerdando.com/wp-content/uploads/2019/10/Fight-Club.jpg";
-        s[2] = "https://www.vitactiva.it/wp-content/uploads/2018/04/watch-No-Country-For-Old-Men-Full-Movie-online.jpg";
-        s[3] = "https://media.cineblog.it/a/abe/parasite.jpg";
-
-
-        //Trasformo le stringhe in bitmap
-        RetrieveFeedTask task = (RetrieveFeedTask) new RetrieveFeedTask().execute(s);
-        Bitmap[] image2 = new Bitmap[s.length];
-        try {
-            image2 = task.get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-
-        //Inserisco i bitmap nello slider
-        lstSlides = new ArrayList<>();
-        lstSlides.add(new Movie(image2[0]));
-        lstSlides.add(new Movie(image2[1]));
-        lstSlides.add(new Movie(image2[2]));
-        lstSlides.add(new Movie(image2[3]));
-
-
-
-        /*lstSlides = new ArrayList<>();
-        lstSlides.add(new Slide(R.drawable.tolo, "tolo tolo"));
-        lstSlides.add(new Slide(R.drawable.future, "back to the future"));
-        lstSlides.add(new Slide(R.drawable.tolo, "tolo tolo"));
-        lstSlides.add(new Slide(R.drawable.future, "back to the future"));*/
-
-        SliderPagerAdapter adapter2 = new SliderPagerAdapter(getContext(), lstSlides); //(List<Movie>) list
-        sliderpager.setAdapter(adapter2);
-
-        messageHandler = new Handler(Looper.getMainLooper());
-        // setup timer
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new HomeFragment.SliderTimer(),4000,4000);
-
-
-        indicator.setupWithViewPager(sliderpager,true);
-
+        slideAdapter = new SliderPagerAdapter(getContext(), slides);
+        sliderpager.setAdapter(slideAdapter);
     }
 
 
@@ -209,7 +178,7 @@ public class HomeFragment extends Fragment {
             HomeFragment.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (sliderpager.getCurrentItem()<lstSlides.size()-1) {
+                    if (sliderpager.getCurrentItem()<slides.size()-1) {
                         sliderpager.setCurrentItem(sliderpager.getCurrentItem()+1);
                     }
                     else
