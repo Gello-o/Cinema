@@ -66,19 +66,24 @@ public class ActivityDetail extends AppCompatActivity {
         if(intent.hasExtra("original_title")){
 
             String thumbnail = intent.getExtras().getString("poster_path");
-            if(thumbnail == null){
-                Log.d(TAG, "immagine nulla");
-            }
             String movieName = intent.getExtras().getString("original_title");
             String synopsis = intent.getExtras().getString("overview");
             String rating = intent.getExtras().getString("vote_average");
             String release = intent.getExtras().getString("release_date");
             String id = intent.getExtras().getString("id");
 
-            Glide.with(this)
-                    .load(thumbnail)
-                    .placeholder(R.drawable.ic_launcher_background)
-                    .into(imageView);
+            if(thumbnail == null){
+                Log.d(TAG, "immagine nulla");
+                Glide.with(this)
+                        .load(R.drawable.placeholder)
+                        .into(imageView);
+            }
+            else{
+                Glide.with(this)
+                        .load(thumbnail)
+                        .dontAnimate()
+                        .into(imageView);
+            }
 
             nameOfMovie.setText(movieName);
             plotSynopsis.setText(synopsis);

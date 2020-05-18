@@ -63,11 +63,18 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
         if(movieList.isEmpty())
             Log.d(TAG, "movieList nulla");
 
-        Glide.with(context)
-                .load(movieList.get(i).getPosterPath())
-                .placeholder(R.drawable.ic_launcher_background)
-                .dontAnimate()
-                .into(viewHolder.thumbnail);
+        if(movieList.get(i).getPosterPath() == null){
+            Glide.with(context)
+                    .load(R.drawable.placeholder)
+                    .dontAnimate()
+                    .into(viewHolder.thumbnail);
+        }
+        else{
+            Glide.with(context)
+                    .load(movieList.get(i).getPosterPath())
+                    .dontAnimate()
+                    .into(viewHolder.thumbnail);
+        }
 
     }
 

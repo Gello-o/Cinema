@@ -32,4 +32,13 @@ public interface Service {
             @Query("with_genres") int genre,
             @Query("page") int page
     );
+
+    @GET("/3/search/movie")
+    Call<MoviesResponse> search(
+            @Query("api_key") String apiKey,
+            @Query("language") String language,
+            @Query("page") int page,
+            @Query("query") String query,
+            @Query("include_adult") boolean adult
+    );
 }
