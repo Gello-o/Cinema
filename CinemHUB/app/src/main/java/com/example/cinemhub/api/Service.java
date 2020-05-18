@@ -23,4 +23,13 @@ public interface Service {
             @Path("movie_id") int id,
             @Query("api_key") String apiKey
     );
+
+    @GET("/3/discover/movie")
+    Call<MoviesResponse> getGenres(
+            @Query("api_key") String apiKey,
+            @Query("sort_by") String sortBy,
+            @Query("language") String language,
+            @Query("with_genres") int genre,
+            @Query("page") int page
+    );
 }
