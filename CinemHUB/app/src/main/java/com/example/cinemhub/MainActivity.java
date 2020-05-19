@@ -9,7 +9,12 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.Menu;
+import android.view.View;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.SearchView;
 
+import com.example.cinemhub.adapter.MoviesAdapter;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
@@ -22,6 +27,11 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import android.app.SearchManager;
+import android.widget.SearchView;
+import android.widget.SearchView.OnQueryTextListener;
+
+import java.io.Serializable;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -45,6 +55,19 @@ public class MainActivity extends AppCompatActivity{
         toggle.syncState();
         */
 
+
+
+        //creato per provare a lanciare search result activity
+        Intent intent = getIntent();
+        if (intent.hasExtra("result")) {
+            // Launched from search results
+            Serializable selectedResult = (Serializable) intent.getSerializableExtra("result");
+        }
+
+
+
+
+
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -61,9 +84,66 @@ public class MainActivity extends AppCompatActivity{
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+
+        // Associa la configurazione ricercabile a SearchView
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+
+        //Per creare finestra di digitazione
+
+        SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
+
+        SearchView searchView = null;
+        if (searchItem != null) {
+            searchView = (SearchView) searchItem.getActionView();
+        }
+        if (searchView != null) {
+            assert searchManager != null;
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(MainActivity.this.getComponentName()));
+        }
+
+        return super.onCreateOptionsMenu(menu);}
+        //parte per lanciare SearchResultActivity
+/*
+        AdapterView<Adapter> listResults = null;
+        listResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Serializable selectedResult = (Serializable) parent.getItemAtPosition(position);
+                Intent intent = new Intent();
+                intent.putExtra("result", selectedResult);
+                intent.setClass(Context, SearchResultsActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+
+    }
+       /*
+        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) searchItem.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                MoviesAdapter.filter(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                MoviesAdapter.filter(newText);
+                return true;
+            }
+        });
+
+
+    return true;
     }
 
+  */
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -90,6 +170,8 @@ public class MainActivity extends AppCompatActivity{
 
         }
     }
+
+
 
     @Override
     public void onBackPressed() {

@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.example.cinemhub.ActivityDetail;
 import com.example.cinemhub.R;
 import com.example.cinemhub.model.Movie;
+import com.example.cinemhub.model.MoviesRepository;
 
 import java.util.List;
 
@@ -77,6 +78,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
         }
 
     }
+
 
     @Override
     public int getItemCount() {
