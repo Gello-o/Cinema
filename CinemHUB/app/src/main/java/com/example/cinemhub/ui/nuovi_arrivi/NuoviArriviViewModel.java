@@ -28,12 +28,10 @@ public class NuoviArriviViewModel extends ViewModel {
     MoviesRepository repo;
 
     public MutableLiveData<List<Movie>> getProssimeUscite(Context context) {
-        repo = MoviesRepository.getInstance();
 
         if(pagina == null) {
             pagina = new MutableLiveData<>();
             repo = MoviesRepository.getInstance();
-            repo.getMovies("upcoming", 1, pagina);
         }
         return pagina;
 
@@ -44,9 +42,14 @@ public class NuoviArriviViewModel extends ViewModel {
 
         @Override
         protected LiveData<List<Movie>> doInBackground(Void... voids) {
-            index++;
             Log.d(TAG, "indice " + index);
+            if(index == 15) {
+                stopRepeatingTask();
+                nullifyTask();
+                resetIndex();
+            }
             repo.getMovies("upcoming", index, pagina);
+            index++;
             return pagina;
         }
     }
@@ -89,4 +92,7 @@ public class NuoviArriviViewModel extends ViewModel {
         timerTask = null;
     }
 
+    public void resetIndex(){
+        index = 1;
+    }
 }

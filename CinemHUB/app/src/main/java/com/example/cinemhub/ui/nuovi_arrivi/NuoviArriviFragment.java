@@ -77,6 +77,7 @@ public class NuoviArriviFragment extends Fragment {
     public void onStop() {
         super.onStop();
         nuoviArriviViewModel.stopRepeatingTask();
+        nuoviArriviViewModel.resetIndex();
     }
 
     @Override
@@ -89,7 +90,7 @@ public class NuoviArriviFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         nuoviArriviViewModel.stopRepeatingTask();
-        nuoviArriviViewModel.nullifyTask();
+        nuoviArriviViewModel.resetIndex();
     }
 
     @Override
@@ -99,6 +100,7 @@ public class NuoviArriviFragment extends Fragment {
     }
 
     public void initMoviesRV (List<Movie> lista){
+
         moviesAdapter = new MoviesAdapter(getActivity(), lista);
         if(moviesAdapter == null)
             Log.d(TAG, "adapter null");

@@ -1,5 +1,6 @@
 package com.example.cinemhub;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,7 +23,7 @@ import com.example.cinemhub.api.Client;
 import com.example.cinemhub.api.Service;
 import com.example.cinemhub.model.Trailer;
 import com.example.cinemhub.model.TrailerResponse;
-import com.example.cinemhub.ui.home.HomeFragment;
+
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 
@@ -202,20 +203,14 @@ public class ActivityDetail extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.home) {
-            finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     @Override
-    public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() == 0) {
-            this.finish();
-        } else {
-            super.onBackPressed(); //replaced
-        }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return true;
     }
+
 }

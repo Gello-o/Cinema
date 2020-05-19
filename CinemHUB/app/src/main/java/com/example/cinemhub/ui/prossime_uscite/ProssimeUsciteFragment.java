@@ -32,4 +32,6 @@ public class ProssimeUsciteFragment extends Fragment {
         });
         return root;
     }
+
+
 }
