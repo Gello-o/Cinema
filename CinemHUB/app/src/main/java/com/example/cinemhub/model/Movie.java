@@ -57,10 +57,6 @@ public class Movie {
         return overview;
     }
 
-    public void setOverview(String overview){
-        this.overview = overview;
-    }
-
     public boolean isAdult() {
         return adult;
     }
@@ -87,10 +83,6 @@ public class Movie {
 
     public String getOriginalTitle() {
         return original_title;
-    }
-
-    public void setOriginalTitle(String original_title){
-        this.original_title = original_title;
     }
 
     public String getOriginalLanguage() {
@@ -141,8 +133,19 @@ public class Movie {
         return base_image_Url + this.posterPath;
     }
 
+    public void setTitle(String movieName) {
+        this.title = movieName;
+    }
+
     public void setPosterPath(String posterPath){
         this.posterPath = posterPath;
     }
 
+    public void setOriginalTitle(String original_title){
+        this.original_title = original_title;
+    }
+
+    public void setOverview(String overview){
+        this.overview = overview;
+    }
 }

@@ -2,17 +2,18 @@ package com.example.cinemhub;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
+import android.nfc.Tag;
 import android.os.Bundle;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.Menu;
 
 import com.example.cinemhub.adapter.MoviesAdapter;
+import com.example.cinemhub.room.DbStructure;
+import com.example.cinemhub.room.Favorite;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -21,12 +22,16 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.room.Room;
 
 public class MainActivity extends AppCompatActivity{
+    private static final String TAG = "MainActivity";
 
     private AppBarConfiguration mAppBarConfiguration;
     private static final String LOG_TAG = MoviesAdapter.class.getName();
     ProgressDialog pd;
+
+    public static DbStructure dbStructure;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +59,11 @@ public class MainActivity extends AppCompatActivity{
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-    }
 
+        //creazione del Db
+        dbStructure = Room.databaseBuilder(getApplicationContext(), DbStructure.class,"Favorite").allowMainThreadQueries().build();
+        Log.d(TAG,"creato il Db");
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

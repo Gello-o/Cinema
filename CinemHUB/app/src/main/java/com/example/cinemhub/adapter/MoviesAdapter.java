@@ -62,7 +62,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
             return movieList.size();
     }
 
-
     public class MyViewHolder extends RecyclerView.ViewHolder{
         ImageView thumbnail;
 
@@ -83,7 +82,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
                          clickedDataItem = movieList.get(pos);
                          Intent intent = new Intent(context, ActivityDetail.class);
                          intent.putExtra("original_title", movieList.get(pos).getOriginalTitle());
-                         intent.putExtra("poster_path", movieList.get(pos).getPosterPath());
+                        intent.putExtra("title", movieList.get(pos).getTitle());
+                        intent.putExtra("poster_path", movieList.get(pos).getPosterPath());
                          intent.putExtra("overview", movieList.get(pos).getOverview());
                          intent.putExtra("release_date", movieList.get(pos).getReleaseDate());
                         intent.putExtra("id", Integer.toString(movieList.get(pos).getId()));

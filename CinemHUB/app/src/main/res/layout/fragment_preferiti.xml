@@ -7,9 +7,9 @@
     android:id="@+id/preferiti_fragment"
     tools:context=".ui.preferiti.PreferitiFragment">
 
-    <ListView
-        android:id="@+id/favorite_view"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_preferiti"
+        android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
+        android:orientation="vertical" />
 </androidx.constraintlayout.widget.ConstraintLayout>
