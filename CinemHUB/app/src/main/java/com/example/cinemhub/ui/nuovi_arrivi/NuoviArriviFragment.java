@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -51,22 +52,11 @@ public class NuoviArriviFragment extends Fragment {
         nuoviArriviViewModel =
                 new ViewModelProvider(this).get(NuoviArriviViewModel.class);
 
-        nuoviArriviViewModel.getProssimeUscite(getContext()).observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+        nuoviArriviViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> set) {
                 initMoviesRV(set);
                 moviesAdapter.notifyDataSetChanged();
-
-                //moviesAdapter.notifyItemRangeChanged(1, 9);
-
-                //moviesAdapter.notifyItemRangeRemoved(9, 1);
-                //DiffUtil invece di notifyDataSetChanged
-
-                //metodo che notifica che il range è cambiato => lo user ha scrollato in basso
-
-                //metodo che notifica che il range è cambiato => lo user ha scrollato in alto
-
-                //background thread che si occupa di loaddare ad esempio i secondi venti film
             }
         });
 
@@ -93,11 +83,6 @@ public class NuoviArriviFragment extends Fragment {
         nuoviArriviViewModel.resetIndex();
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        nuoviArriviViewModel.stopRepeatingTask();
-    }
 
     public void initMoviesRV (List<Movie> lista){
 

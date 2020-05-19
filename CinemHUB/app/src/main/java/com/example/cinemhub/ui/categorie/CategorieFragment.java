@@ -2,6 +2,8 @@ package com.example.cinemhub.ui.categorie;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,66 +17,117 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.Trailer;
+import com.example.cinemhub.ui.home.HomeFragment;
+import com.example.cinemhub.ui.home.HomeViewModel;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-
+import java.util.Timer;
 
 public class CategorieFragment extends Fragment {
     private static final String TAG = "CategorieFragment";
     private CategorieViewModel categorieViewModel;
-    private RecyclerView actionMoviesRV;
-    private MoviesAdapter moviesAdapter;
-    
+    private RecyclerView azioneRV;
+    private RecyclerView avventuraRV;
+    private RecyclerView crimineRV;
+    private MoviesAdapter azioneAdapter;
+    private MoviesAdapter avventuraAdapter;
+    private MoviesAdapter crimineAdapter;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        categorieViewModel =
-                new ViewModelProvider(this).get(CategorieViewModel.class);
 
         View root = inflater.inflate(R.layout.fragment_categorie, container, false);
 
-        actionMoviesRV = root.findViewById(R.id.recycler_view_categorie);
+        azioneRV = root.findViewById(R.id.recycler_azione);
+        avventuraRV = root.findViewById(R.id.recycler_avventura);
+        crimineRV = root.findViewById(R.id.recycler_crimine);
+        
 
-        categorieViewModel.getPopolari().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+        categorieViewModel =
+                new ViewModelProvider(this).get(CategorieViewModel.class);
+
+        categorieViewModel.getAzione().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
-            public void onChanged(@Nullable List<Movie> movies) {
-                if(movies == null)
-                    Log.d(TAG, "caricamento fallito");
-                initMovieRV(movies);
-                moviesAdapter.notifyDataSetChanged();
+            public void onChanged(@Nullable List<Movie> moviesSet) {
+                if(moviesSet == null)
+                    Log.d(TAG, "moviesSet nullo");
+                else
+                    Log.d(TAG, ""+moviesSet.size());
+                initPopularRV(moviesSet);
+                azioneAdapter.notifyDataSetChanged();
             }
         });
 
+        categorieViewModel.getAvventura().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> moviesSet) {
+                if(moviesSet == null)
+                    Log.d(TAG, "moviesSet nullo");
+                else
+                    Log.d(TAG, ""+moviesSet.size());
+                initTopRatedRV(moviesSet);
+                avventuraAdapter.notifyDataSetChanged();
+            }
+        });
 
+        categorieViewModel.getCrime().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> moviesSet) {
+                if(moviesSet == null)
+                    Log.d(TAG, "moviesSet nullo");
+                else
+                    Log.d(TAG, ""+moviesSet.size());
+                initProssimeUscite(moviesSet);
+                crimineAdapter.notifyDataSetChanged();
+            }
+        });
+        
         return root;
     }
 
-    public void initMovieRV(List<Movie> movies){
-        moviesAdapter = new MoviesAdapter(getActivity(), movies);
-        if(moviesAdapter == null)
-            Log.d(TAG, "adapter null");
-        else {
-            if (moviesAdapter.getMovieList() == null)
-                Log.d(TAG, "lista null");
-            if (moviesAdapter.getContext() == null)
-                Log.d(TAG, "contesto null");
-        }
-        RecyclerView.LayoutManager layoutManager;
-        if(getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
-            layoutManager = new GridLayoutManager(getActivity(), 3);
-        else
-            layoutManager = new GridLayoutManager(getActivity(), 4);
-        actionMoviesRV.setLayoutManager(layoutManager);
-        actionMoviesRV.setAdapter(moviesAdapter);
-        actionMoviesRV.setItemAnimator(new DefaultItemAnimator());
+    public void initPopularRV (List<Movie>set){
+        if(set == null)
+            Log.d(TAG, "SET POPOLARI NULL");
+        else if(set.isEmpty())
+            Log.d(TAG, "SET POPOLARI vuoto");
+        azioneAdapter = new MoviesAdapter(getContext(), set);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        azioneRV.setLayoutManager(layoutManager);
+        azioneRV.setAdapter(azioneAdapter);
+        azioneRV.setItemAnimator(new DefaultItemAnimator());
+    }
 
+    public void initTopRatedRV (List<Movie>set){
+        if(set == null)
+            Log.d(TAG, "SET top NULL");
+        else if(set.isEmpty())
+            Log.d(TAG, "SET top vuoto");
+        avventuraAdapter = new MoviesAdapter(getContext(), set);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        avventuraRV.setLayoutManager(layoutManager);
+        avventuraRV.setAdapter(avventuraAdapter);
+        avventuraRV.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    public void initProssimeUscite (List<Movie>set){
+        if(set == null)
+            Log.d(TAG, "SET Prossime NULL");
+        else if(set.isEmpty())
+            Log.d(TAG, "SET Prossime vuoto");
+        crimineAdapter = new MoviesAdapter(getContext(), set);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        crimineRV.setLayoutManager(layoutManager);
+        crimineRV.setAdapter(crimineAdapter);
+        crimineRV.setItemAnimator(new DefaultItemAnimator());
     }
 }
 

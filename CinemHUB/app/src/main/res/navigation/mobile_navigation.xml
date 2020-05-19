@@ -47,4 +47,5 @@
         android:name="com.example.cinemhub.ui.piu_visti.PiuVistiFragment"
         android:label="@string/menu_piu_visti"
         tools:layout="@layout/fragment_piu_visti" />
+
 </navigation>

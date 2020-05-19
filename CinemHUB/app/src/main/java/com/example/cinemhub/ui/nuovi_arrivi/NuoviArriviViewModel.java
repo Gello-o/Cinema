@@ -23,18 +23,15 @@ import java.util.TimerTask;
 public class NuoviArriviViewModel extends ViewModel {
     private static final String TAG = "NuoviArriviViewModel";
     private MutableLiveData<List<Movie>> pagina;
-    boolean cinquePagine = false;
     int index = 1;
     MoviesRepository repo;
 
-    public MutableLiveData<List<Movie>> getProssimeUscite(Context context) {
-
+    public MutableLiveData<List<Movie>> getProssimeUscite() {
         if(pagina == null) {
             pagina = new MutableLiveData<>();
             repo = MoviesRepository.getInstance();
         }
         return pagina;
-
     }
 
 
@@ -43,13 +40,13 @@ public class NuoviArriviViewModel extends ViewModel {
         @Override
         protected LiveData<List<Movie>> doInBackground(Void... voids) {
             Log.d(TAG, "indice " + index);
-            if(index == 15) {
+            repo.getMovies("upcoming", index, pagina);
+            if(index == 10) {
                 stopRepeatingTask();
-                nullifyTask();
                 resetIndex();
             }
-            repo.getMovies("upcoming", index, pagina);
-            index++;
+            else
+                index++;
             return pagina;
         }
     }
@@ -58,6 +55,7 @@ public class NuoviArriviViewModel extends ViewModel {
     private TimerTask timerTask;
 
     public void setRepeatingAsyncTask(){
+
         final Handler handler = new Handler();
         timer = new Timer();
         pagina.setValue(new ArrayList<>());
@@ -79,17 +77,14 @@ public class NuoviArriviViewModel extends ViewModel {
                 });
             }
         };
-        timer.schedule(timerTask, 0, 10*1000);
+
+        timer.schedule(timerTask, 0, 3000);
+
     }
 
     public void stopRepeatingTask(){
         timer.cancel();
         timer.purge();
-    }
-
-    public void nullifyTask(){
-        timer = null;
-        timerTask = null;
     }
 
     public void resetIndex(){
