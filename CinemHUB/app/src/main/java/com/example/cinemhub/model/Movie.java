@@ -54,12 +54,17 @@ public class Movie {
 
     private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
 
-    public String getOverview() {
-        return overview;
+    public Movie(String posterPath, String overview, String release_date, Integer id, String title, Double vote_average) {
+        this.posterPath = posterPath;
+        this.overview = overview;
+        this.release_date = release_date;
+        this.id = id;
+        this.title = title;
+        this.vote_average = vote_average;
     }
 
-    public boolean isAdult() {
-        return adult;
+    public String getOverview() {
+        return overview;
     }
 
     public List<Integer> getGenreIds() {
@@ -68,10 +73,6 @@ public class Movie {
 
     public String getReleaseDate() {
         return release_date;
-    }
-
-    public void setReleaseDate(String release_date) {
-        this.release_date = release_date;
     }
 
     public Integer getId() {
@@ -86,48 +87,12 @@ public class Movie {
         return original_title;
     }
 
-    public String getOriginalLanguage() {
-        return original_language;
-    }
-
     public String getTitle() {
         return title;
     }
 
-    public String getBackdropPath() {
-        return backdrop_path;
-    }
-
-    public Double getPopularity() {
-        return popularity;
-    }
-
-    public void setPopularity(Double popularity) {
-        this.popularity = popularity;
-    }
-
-    public Integer getVoteCount() {
-        return vote_count;
-    }
-
-    public void setVoteCount(Integer vote_count) {
-        this.vote_count = vote_count;
-    }
-
     public Double getVoteAverage() {
         return vote_average;
-    }
-
-    public void setVoteAverage(Double vote_average) {
-        this.vote_average = vote_average;
-    }
-
-    public boolean isVideo() {
-        return video;
-    }
-
-    public void setVideo(boolean video) {
-        this.video = video;
     }
 
     public String getPosterPath() {

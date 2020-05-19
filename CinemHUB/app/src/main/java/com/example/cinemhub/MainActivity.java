@@ -10,6 +10,8 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.Menu;
 
+import com.example.cinemhub.model.Favorite;
+import com.example.cinemhub.model.FavoriteDB;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
@@ -22,12 +24,14 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.room.Room;
 
 public class MainActivity extends AppCompatActivity{
 
     private AppBarConfiguration mAppBarConfiguration;
     private static final String TAG = "MainActivity";
     ProgressDialog pd;
+    public static FavoriteDB favoriteDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,9 @@ public class MainActivity extends AppCompatActivity{
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        favoriteDB = Room.databaseBuilder(getApplicationContext(), FavoriteDB.class,"Favorite").allowMainThreadQueries().build();
+        Log.d(TAG,"creato il Db");
     }
 
     @Override
