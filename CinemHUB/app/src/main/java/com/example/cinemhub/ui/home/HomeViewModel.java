@@ -1,5 +1,6 @@
 package com.example.cinemhub.ui.home;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -17,7 +18,6 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<List<Movie>> alCinema;
     private MutableLiveData<List<Movie>> topRated;
     private MutableLiveData<List<Movie>> prossimeUscite;
-
     MoviesRepository db;
 
     public MutableLiveData<List<Movie>> getPopolari() {
@@ -81,4 +81,5 @@ public class HomeViewModel extends ViewModel {
 
         return topRated;
     }
+
 }

@@ -3,6 +3,7 @@ package com.example.cinemhub;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -21,6 +22,7 @@ import com.example.cinemhub.api.Client;
 import com.example.cinemhub.api.Service;
 import com.example.cinemhub.model.Trailer;
 import com.example.cinemhub.model.TrailerResponse;
+import com.example.cinemhub.ui.home.HomeFragment;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 
@@ -64,19 +66,24 @@ public class ActivityDetail extends AppCompatActivity {
         if(intent.hasExtra("original_title")){
 
             String thumbnail = intent.getExtras().getString("poster_path");
-            if(thumbnail == null){
-                Log.d(TAG, "immagine nulla");
-            }
             String movieName = intent.getExtras().getString("original_title");
             String synopsis = intent.getExtras().getString("overview");
             String rating = intent.getExtras().getString("vote_average");
             String release = intent.getExtras().getString("release_date");
             String id = intent.getExtras().getString("id");
 
-            Glide.with(this)
-                    .load(thumbnail)
-                    .placeholder(R.drawable.ic_launcher_background)
-                    .into(imageView);
+            if(thumbnail == null){
+                Log.d(TAG, "immagine nulla");
+                Glide.with(this)
+                        .load(R.drawable.placeholder)
+                        .into(imageView);
+            }
+            else{
+                Glide.with(this)
+                        .load(thumbnail)
+                        .dontAnimate()
+                        .into(imageView);
+            }
 
             nameOfMovie.setText(movieName);
             plotSynopsis.setText(synopsis);
@@ -192,5 +199,23 @@ public class ActivityDetail extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() == 0) {
+            this.finish();
+        } else {
+            super.onBackPressed(); //replaced
+        }
     }
 }

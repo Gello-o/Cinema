@@ -1,10 +1,13 @@
-package com.example.cinemhub;
+package com.example.cinemhub.ricerca;
 
 import android.app.Activity;
 import android.os.Bundle;
 
+import com.example.cinemhub.R;
 
-public class ActivitySearch extends Activity {
+
+public class SearchFragment extends Activity {
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -12,5 +15,4 @@ public class ActivitySearch extends Activity {
         setContentView(R.layout.search);
 
     }
-
 }

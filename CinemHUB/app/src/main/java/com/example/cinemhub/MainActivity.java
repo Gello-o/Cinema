@@ -74,12 +74,12 @@ public class MainActivity extends AppCompatActivity{
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
-
+/*
             case R.id.button:
-                Intent intent = new Intent(this, ActivitySearch.class);
+                Intent intent = new Intent(this, com.example.cinemhub.ricerca.SearchFragment.class);
                 startActivity(intent);
                 return true;
-
+*/
             case R.id.menu_settings:
                 Intent intent2 = new Intent(this, SettingsActivity.class);
                 startActivity(intent2);

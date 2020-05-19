@@ -1,7 +1,9 @@
 package com.example.cinemhub.ui.nuovi_arrivi;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,12 +27,14 @@ import com.example.cinemhub.MainActivity;
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Movie;
+import com.example.cinemhub.ui.home.HomeFragment;
 import com.example.cinemhub.ui.home.HomeViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimerTask;
 
 public class NuoviArriviFragment extends Fragment {
     private static final String TAG = "NuoviArriviFragment";
@@ -47,22 +51,52 @@ public class NuoviArriviFragment extends Fragment {
         nuoviArriviViewModel =
                 new ViewModelProvider(this).get(NuoviArriviViewModel.class);
 
-        nuoviArriviViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+        nuoviArriviViewModel.getProssimeUscite(getContext()).observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> set) {
                 initMoviesRV(set);
-                if(set != null)
-                    Log.d(TAG, "" + set.size());
                 moviesAdapter.notifyDataSetChanged();
+
+                //moviesAdapter.notifyItemRangeChanged(1, 9);
+
+                //moviesAdapter.notifyItemRangeRemoved(9, 1);
+                //DiffUtil invece di notifyDataSetChanged
+
+                //metodo che notifica che il range è cambiato => lo user ha scrollato in basso
+
+                //metodo che notifica che il range è cambiato => lo user ha scrollato in alto
+
+                //background thread che si occupa di loaddare ad esempio i secondi venti film
             }
         });
-        /*
-        prossimeUsciteRV = root.findViewById(R.id.recycler_view_nuovi_arrivi);
-        initFirst();
-         */
+
         return root;
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        nuoviArriviViewModel.stopRepeatingTask();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        nuoviArriviViewModel.setRepeatingAsyncTask();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        nuoviArriviViewModel.stopRepeatingTask();
+        nuoviArriviViewModel.nullifyTask();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        nuoviArriviViewModel.stopRepeatingTask();
+    }
 
     public void initMoviesRV (List<Movie> lista){
         moviesAdapter = new MoviesAdapter(getActivity(), lista);
