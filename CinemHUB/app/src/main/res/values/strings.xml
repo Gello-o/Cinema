@@ -27,4 +27,6 @@
     <string name="pref_highest_rated">Highest Rated</string>
     <string name="a_description">a description</string>
     <string name="slide_title">Slide title</string>
+    <string name="search" />
+    <string name="search_hint" />
 </resources>

@@ -3,11 +3,11 @@
 xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
-android:layout_height="match_parent" android:id="@+id/categorie_fragment"
-tools:context=".ui.categorie.CategorieFragment">
+android:layout_height="match_parent" android:id="@+id/search_fragment"
+tools:context="com.example.cinemhub.ricerca.SearchFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_categorie"
+        android:id="@+id/recycler_view_ricerca"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:orientation="vertical" />

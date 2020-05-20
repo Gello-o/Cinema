@@ -1,12 +1,12 @@
-package com.example.cinemhub.ui.categorie;
+package com.example.cinemhub.ricerca;
 
+import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,29 +20,27 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.model.Trailer;
+import com.example.cinemhub.ui.categorie.CategorieViewModel;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 
-public class CategorieFragment extends Fragment {
-    private static final String TAG = "CategorieFragment";
-    private CategorieViewModel categorieViewModel;
-    private RecyclerView actionMoviesRV;
+public class SearchFragment extends Fragment {
+    private static final String TAG = "SearchFragment";
+    private SearchViewModel searchViewModel;
+    private RecyclerView searchMoviesRV;
     private MoviesAdapter moviesAdapter;
-    
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        categorieViewModel =
-                new ViewModelProvider(this).get(CategorieViewModel.class);
+        searchViewModel =
+                new ViewModelProvider(this).get(SearchViewModel.class);
 
-        View root = inflater.inflate(R.layout.fragment_categorie, container, false);
+        View root = inflater.inflate(R.layout.search, container, false);
 
-        actionMoviesRV = root.findViewById(R.id.recycler_view_categorie);
+        searchMoviesRV = root.findViewById(R.id.recycler_view_ricerca);
 
-        categorieViewModel.getPopolari().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+        searchViewModel.doSearch("iron+man").observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> movies) {
                 if(movies == null)
@@ -71,10 +69,9 @@ public class CategorieFragment extends Fragment {
             layoutManager = new GridLayoutManager(getActivity(), 3);
         else
             layoutManager = new GridLayoutManager(getActivity(), 4);
-        actionMoviesRV.setLayoutManager(layoutManager);
-        actionMoviesRV.setAdapter(moviesAdapter);
-        actionMoviesRV.setItemAnimator(new DefaultItemAnimator());
+        searchMoviesRV.setLayoutManager(layoutManager);
+        searchMoviesRV.setAdapter(moviesAdapter);
+        searchMoviesRV.setItemAnimator(new DefaultItemAnimator());
 
     }
 }
-
