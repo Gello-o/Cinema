@@ -4,22 +4,29 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Menu;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.SearchView;
 
 import com.example.cinemhub.adapter.MoviesAdapter;
+import com.example.cinemhub.model.Movie;
+import com.example.cinemhub.model.MoviesRepository;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.view.GravityCompat;
+import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -32,12 +39,16 @@ import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity{
 
     private AppBarConfiguration mAppBarConfiguration;
     private static final String TAG = "MainActivity";
     ProgressDialog pd;
+
+    private MutableLiveData<List<Movie>> mText;
+    MoviesRepository repo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,70 +91,81 @@ public class MainActivity extends AppCompatActivity{
         NavigationUI.setupWithNavController(navigationView, navController);
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
 
-        // Associa la configurazione ricercabile a SearchView
-
         MenuItem searchItem = menu.findItem(R.id.action_search);
 
-        //Per creare finestra di digitazione
-
-        SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
-
-        SearchView searchView = null;
-        if (searchItem != null) {
-            searchView = (SearchView) searchItem.getActionView();
-        }
-        if (searchView != null) {
-            assert searchManager != null;
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(MainActivity.this.getComponentName()));
-        }
-
-        return super.onCreateOptionsMenu(menu);}
-        //parte per lanciare SearchResultActivity
-/*
-        AdapterView<Adapter> listResults = null;
-        listResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Serializable selectedResult = (Serializable) parent.getItemAtPosition(position);
-                Intent intent = new Intent();
-                intent.putExtra("result", selectedResult);
-                intent.setClass(Context, SearchResultsActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-
+        implementSearch(menu);
+        return true;
     }
-       /*
-        final MenuItem searchItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) searchItem.getActionView();
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+    private void implementSearch(final Menu menu) {
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        final MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) searchMenuItem.getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false);
 
+        searchMenuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                MoviesAdapter.filter(query);
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                // the search view is now open. add your logic if you want
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        searchView.requestFocus();
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        if (imm != null) { // it's never null. I've added this line just to make the compiler happy
+                            imm.showSoftInput(searchView.findFocus(), 0);
+                        }
+
+
+                    }
+                });
                 return true;
             }
+
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // the search view is closing. add your logic if you want
+                return true;
+            }
+
+        });
+        /*
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setQueryHint("Search View Hint");
+*/
+        searchView.setOnQueryTextListener(new OnQueryTextListener() {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                MoviesAdapter.filter(newText);
-                return true;
+                //newText = newText.replace(' ', '+');
+                return false;
             }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                query = query.replace(' ', '+');
+
+                System.out.println("Query: " + query);
+
+                // Do your task here
+
+                return false;
+            }
+
         });
 
-
-    return true;
+      //  return true;
     }
 
-  */
+
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
