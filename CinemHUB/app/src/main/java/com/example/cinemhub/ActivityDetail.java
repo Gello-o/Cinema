@@ -49,6 +49,7 @@ public class ActivityDetail extends AppCompatActivity {
     public Favorite favorite;
     List<Favorite> line;
     private static final String API_KEY = "740ef79d64b588653371072cdee99a0f";
+    private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,12 +92,21 @@ public class ActivityDetail extends AppCompatActivity {
             }
             else{
                 Glide.with(this)
-                        .load(thumbnail)
+                        .load(base_image_Url+thumbnail)
                         .dontAnimate()
                         .into(imageView);
             }
 
-            nameOfMovie.setText(movieName);
+            if(movieName == null && originalMovieName == null){
+                nameOfMovie.setText("NON HA TITOLO");
+            }
+            else{
+                if(movieName == null)
+                    nameOfMovie.setText(originalMovieName);
+                else
+                    nameOfMovie.setText(movieName);
+            }
+
             plotSynopsis.setText(synopsis);
             userRating.setText(rating);
             releaseDate.setText(release);
@@ -112,7 +122,9 @@ public class ActivityDetail extends AppCompatActivity {
                 @Override
                 public void liked(LikeButton likeButtonFavorite) {
                     Log.d(TAG, "cliccato favorite");
-
+                    if(MainActivity.favoriteDB.dbInterface().getFavorite().size() > 5){
+                        cancellaDb();
+                    }
                     saveFavorite();
                     Snackbar.make(likeButtonFavorite, "Added to Favorite",
                             Snackbar.LENGTH_SHORT).show();

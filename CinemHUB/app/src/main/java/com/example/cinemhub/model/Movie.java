@@ -51,8 +51,7 @@ public class Movie {
     private boolean video;
 
     // brutto cane qua devi memorizzare i trailer in qualche modo
-
-    private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
+    public Movie(){}
 
     public Movie(String posterPath, String overview, String release_date, Integer id, String title, Double vote_average) {
         this.posterPath = posterPath;
@@ -63,16 +62,37 @@ public class Movie {
         this.vote_average = vote_average;
     }
 
+    public String getPosterPath() {
+        return posterPath;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
+
     public String getOverview() {
         return overview;
     }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
 
     public List<Integer> getGenreIds() {
         return genre_ids;
     }
 
+    public void setGenreIds(List<Integer> genre_ids) {
+        this.genre_ids = genre_ids;
+    }
+
     public String getReleaseDate() {
         return release_date;
+    }
+
+    public void setReleaseDate(String release_date) {
+        this.release_date = release_date;
     }
 
     public Integer getId() {
@@ -87,16 +107,33 @@ public class Movie {
         return original_title;
     }
 
+    public void setOriginaltitle(String original_title) {
+        this.original_title = original_title;
+    }
+
+
     public String getTitle() {
         return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Integer getVoteCount() {
+        return vote_count;
+    }
+
+    public void setVoteCount(Integer vote_count) {
+        this.vote_count = vote_count;
     }
 
     public Double getVoteAverage() {
         return vote_average;
     }
 
-    public String getPosterPath() {
-        return base_image_Url + this.posterPath;
+    public void setVoteAverage(Double vote_average) {
+        this.vote_average = vote_average;
     }
 
 }

@@ -35,6 +35,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
     private List<Movie> movieList;
     LayoutInflater layoutInflater;
     private static final String TAG = "MoviesAdapter";
+    private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
 
     public MoviesAdapter(Context context, List<Movie> movieList) {
         if(movieList != null)
@@ -71,7 +72,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
         }
         else{
             Glide.with(context)
-                    .load(movieList.get(i).getPosterPath())
+                    .load(base_image_Url+movieList.get(i).getPosterPath())
                     .dontAnimate()
                     .into(viewHolder.thumbnail);
         }
@@ -112,7 +113,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
                          intent.putExtra("title", movieList.get(pos).getTitle());
                          intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                          context.startActivity(intent);
-                         Toast.makeText(v.getContext(), "you clicked " + clickedDataItem.getOriginalTitle(), Toast.LENGTH_SHORT).show();
+                         Toast.makeText(v.getContext(), "you clicked " + clickedDataItem.getTitle(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });

@@ -178,6 +178,15 @@ public class HomeFragment extends Fragment {
             HomeFragment.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+
+                    if(slides == null) {
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
                     if (sliderpager.getCurrentItem()<slides.size()-1) {
                         sliderpager.setCurrentItem(sliderpager.getCurrentItem()+1);
                     }

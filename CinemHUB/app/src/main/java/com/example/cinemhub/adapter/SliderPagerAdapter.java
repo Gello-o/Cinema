@@ -37,6 +37,7 @@ public class SliderPagerAdapter extends PagerAdapter {
     private static final String TAG = "SliderPagerAdapter";
     private Context mContext ;
     private List<Movie> mList ;
+    private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
 
 
     public SliderPagerAdapter(Context mContext, List<Movie> mList) {
@@ -58,14 +59,13 @@ public class SliderPagerAdapter extends PagerAdapter {
 
         if(mList.get(position) != null){
             Glide.with(mContext)
-                    .load(mList.get(position).getPosterPath())
+                    .load(base_image_Url+mList.get(position).getPosterPath())
                     .placeholder(R.drawable.ic_launcher_background)
                     .into(slideImg);
             slideText.setText(mList.get(position).getTitle());
         }
         else {
             slideImg.setImageResource(R.drawable.ic_launcher_background);
-            slideText.setText("volano madonne");
         }
 
         slideImg.setOnClickListener(new View.OnClickListener() {
