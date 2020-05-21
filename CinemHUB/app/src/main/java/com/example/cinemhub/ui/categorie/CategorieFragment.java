@@ -4,6 +4,10 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +45,9 @@ public class CategorieFragment extends Fragment {
     private MoviesAdapter azioneAdapter;
     private MoviesAdapter avventuraAdapter;
     private MoviesAdapter crimineAdapter;
+    private TextView azioneTxt;
+    private TextView avventuraTxt;
+    private TextView crimineTxt;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -50,7 +57,9 @@ public class CategorieFragment extends Fragment {
         azioneRV = root.findViewById(R.id.recycler_azione);
         avventuraRV = root.findViewById(R.id.recycler_avventura);
         crimineRV = root.findViewById(R.id.recycler_crimine);
-        
+        azioneTxt = root.findViewById(R.id.azione_txt);
+        avventuraTxt = root.findViewById(R.id.avventura_txt);
+        crimineTxt = root.findViewById(R.id.crimine_txt);
 
         categorieViewModel =
                 new ViewModelProvider(this).get(CategorieViewModel.class);
@@ -90,7 +99,9 @@ public class CategorieFragment extends Fragment {
                 crimineAdapter.notifyDataSetChanged();
             }
         });
-        
+
+        initTexts();
+
         return root;
     }
 
@@ -128,6 +139,49 @@ public class CategorieFragment extends Fragment {
         crimineRV.setLayoutManager(layoutManager);
         crimineRV.setAdapter(crimineAdapter);
         crimineRV.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    public void initTexts(){
+        SpannableString azioneSS = new SpannableString(azioneTxt.getText());
+        SpannableString avventuraSS = new SpannableString(avventuraTxt.getText());
+        SpannableString crimineSS = new SpannableString(crimineTxt.getText());
+
+        ClickableSpan azioneClickableSpan;
+        ClickableSpan avventuraClickableSpan;
+        ClickableSpan crimineClickableSpan;
+
+        azioneClickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_container, new MostraCategoriaFragment(28)).commit();
+            }
+        };
+
+        avventuraClickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_container, new MostraCategoriaFragment(12)).commit();
+            }
+        };
+
+        crimineClickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_container, new MostraCategoriaFragment(80)).commit();
+            }
+        };
+
+        azioneSS.setSpan(azioneClickableSpan, 0, 6, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        avventuraSS.setSpan(avventuraClickableSpan, 0, 9, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        crimineSS.setSpan(crimineClickableSpan, 0, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        azioneTxt.setText(azioneSS);
+        avventuraTxt.setText(avventuraSS);
+        crimineTxt.setText(crimineSS);
+
+        azioneTxt.setMovementMethod(LinkMovementMethod.getInstance());
+        avventuraTxt.setMovementMethod(LinkMovementMethod.getInstance());
+        crimineTxt.setMovementMethod(LinkMovementMethod.getInstance());
     }
 }
 
