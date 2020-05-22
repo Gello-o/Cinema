@@ -11,6 +11,6 @@
         android:id="@+id/recycler_view_nuovi_arrivi"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:orientation="vertical"/>
+        android:orientation="vertical" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

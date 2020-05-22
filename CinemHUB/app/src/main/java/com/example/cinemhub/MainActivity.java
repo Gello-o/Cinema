@@ -1,19 +1,21 @@
 package com.example.cinemhub;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.Menu;
 
-import com.example.cinemhub.adapter.MoviesAdapter;
-import com.example.cinemhub.room.DbStructure;
-import com.example.cinemhub.room.Favorite;
+import com.example.cinemhub.model.Favorite;
+import com.example.cinemhub.model.FavoriteDB;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -25,11 +27,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.room.Room;
 
 public class MainActivity extends AppCompatActivity{
-    private static final String TAG = "MainActivity";
 
     private AppBarConfiguration mAppBarConfiguration;
-
-    public static DbStructure dbStructure;
+    private static final String TAG = "MainActivity";
+    ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +59,7 @@ public class MainActivity extends AppCompatActivity{
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        //creazione del Db
-        dbStructure = Room.databaseBuilder(getApplicationContext(), DbStructure.class,"Favorite").allowMainThreadQueries().build();
+        FavoriteDB.getInstance(getApplicationContext());
         Log.d(TAG,"creato il Db");
     }
 
@@ -103,4 +103,5 @@ public class MainActivity extends AppCompatActivity{
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
     }
+
 }

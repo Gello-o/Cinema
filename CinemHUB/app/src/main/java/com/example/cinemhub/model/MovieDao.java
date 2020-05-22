@@ -1,4 +1,4 @@
-package com.example.cinemhub.room;
+package com.example.cinemhub.model;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -6,12 +6,12 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.example.cinemhub.model.Movie;
+import com.example.cinemhub.model.Favorite;
 
 import java.util.List;
 
 @Dao
-public interface DbInterface {
+public interface MovieDao {
     public final String TAG = "DbInterface";
 
     @Insert
