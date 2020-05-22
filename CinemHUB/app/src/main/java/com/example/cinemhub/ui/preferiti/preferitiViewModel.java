@@ -15,52 +15,61 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+// tutto da fixare
+
 public class PreferitiViewModel extends ViewModel {
     private static final String TAG = "PreferitiViewModel";
 
     private MutableLiveData<List<Movie>> mText;
-
     List<Favorite> line;
     Movie movie;
-    List<Movie> movieList;
+    List<Movie> movieList, checkList;
     int id;
     String title, userRating, posterPath, plotSynopsis;
 
+
     public MutableLiveData<List<Movie>> queryRoom() {
         line = MainActivity.dbStructure.dbInterface().getFavorite();
-        movieList= new ArrayList<>();
-
-
-        if(line == null)
-            Log.d(TAG, "line uguale null");
+        movie = new Movie();
+        movieList = new ArrayList<>();
+        //checkliste è solo per il debug poi si puo cancellare
+        checkList = new ArrayList<>();
 
         if (mText == null) {
             mText = new MutableLiveData<>();
         }
 
-        if(!line.isEmpty()) {
-             for (Favorite fav : line) {
-                id = fav.getMovie_id();
-                title = fav.getTitle();
-                userRating = fav.getUserRating();
-                posterPath = fav.getPosterPath();
-                plotSynopsis = fav.getPlotSynopsys();
+        if (line == null) {
+            Log.d(TAG, "line uguale null");
+            return (mText);
+        }
+        else if (!line.isEmpty()) {
+                for (Favorite favorite : line) {
+                    id = favorite.getMovie_id();
+                    title = favorite.getTitle();
+                    userRating = favorite.getUserRating();
+                    posterPath = favorite.getPosterPath();
+                    plotSynopsis = favorite.getPlotSynopsys();
 
-                //creare in Movie un costruttore
-                movie.setId(id);
-                movie.setTitle(title);
-                movie.setVoteAverage(Double.parseDouble(userRating));
-                movie.setPosterPath(posterPath);
-                movie.setOverview(plotSynopsis);
+                    //creare in Movie un costruttore
+                    movie.setId(id);
+                    movie.setTitle(title);
+                    movie.setVoteAverage(Double.parseDouble(userRating));
+                    movie.setPosterPath(posterPath);
+                    movie.setOverview(plotSynopsis);
 
-                movieList.add(movie);
+                    movieList.add(movie);
 
-                Log.d(TAG, "Database: " +
-                        "ID: " + id +
-                        "id movie: " + movie.getTitle());
+                    Log.d(TAG, "ID da lista: " + id +
+                            " Title da movie: " + movie.getTitle());
+                }
+            }
+            mText.setValue(movieList);
+            checkList = mText.getValue();
+            Log.d(TAG, "dimensione mText: " + checkList.size());
+            return (mText);
+        }
     }
-}
-        mText.setValue(movieList);
-        return (mText);
-    }
-}
+
+
+

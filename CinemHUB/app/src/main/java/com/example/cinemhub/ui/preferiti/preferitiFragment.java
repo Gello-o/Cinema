@@ -17,12 +17,15 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cinemhub.MainActivity;
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.ui.piu_visti.PiuVistiViewModel;
 
 import java.util.List;
+
+import static com.example.cinemhub.MainActivity.dbStructure;
 
 public class PreferitiFragment extends Fragment {
 
@@ -33,6 +36,7 @@ public class PreferitiFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        preferitiRV = new RecyclerView(getContext()); //da fixare
 
         preferitiViewModel =
                 new ViewModelProvider(this).get(PreferitiViewModel.class);
@@ -58,6 +62,7 @@ public class PreferitiFragment extends Fragment {
             layoutManager = new GridLayoutManager(getActivity(), 3);
         else
             layoutManager = new GridLayoutManager(getActivity(), 4);
+
         preferitiRV.setLayoutManager(layoutManager);
         preferitiRV.setAdapter(adapter);
         preferitiRV.setItemAnimator(new DefaultItemAnimator());

@@ -28,8 +28,6 @@ public class MainActivity extends AppCompatActivity{
     private static final String TAG = "MainActivity";
 
     private AppBarConfiguration mAppBarConfiguration;
-    private static final String LOG_TAG = MoviesAdapter.class.getName();
-    ProgressDialog pd;
 
     public static DbStructure dbStructure;
 

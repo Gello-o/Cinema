@@ -26,6 +26,7 @@ public class Favorite {
         @ColumnInfo(name = "Plot")
         String plotSynopsys;
 
+
         //metodi get
 
         public int getMovie_id() {
@@ -48,7 +49,8 @@ public class Favorite {
             return plotSynopsys;
         }
 
-        // metodi Set
+
+    // metodi Set
 
 
         public void setMovie_id(int movie_id) {
@@ -69,5 +71,8 @@ public class Favorite {
 
         public void setPlotSynopsys(String plotSynopsys) {
             this.plotSynopsys = plotSynopsys;
-        }}
+        }
+
+
+}
 

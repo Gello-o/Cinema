@@ -50,6 +50,26 @@ public class Movie {
     private boolean video;
 
     // brutto cane qua devi memorizzare i trailer in qualche modo
+    public Movie movie;
+
+    public Movie Movie(int id, String title, Double vote_average, String posterPath, String overview,
+                       List<Integer> genreIds, String release_date,Double popularity, int vote_count, boolean video, String original_title ){
+        movie = new Movie();
+
+        movie.setId(id);
+        movie.setTitle(title);
+        movie.setOriginalTitle(original_title);
+        movie.setVoteAverage(vote_average);
+        movie.setPosterPath(posterPath);
+        movie.setOverview(overview);
+        movie.setGenreids(genreIds);
+        movie.setReleaseDate(release_date);
+        movie.setPopularity(popularity);
+        movie.setVoteCount(vote_count);
+        movie.setVideo(video);
+
+        return movie;
+    }
 
     private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
 
@@ -63,6 +83,9 @@ public class Movie {
 
     public List<Integer> getGenreIds() {
         return genre_ids;
+    }
+    public void setGenreids(List<Integer> genre_ids){
+        this.genre_ids = genre_ids;
     }
 
     public String getReleaseDate() {

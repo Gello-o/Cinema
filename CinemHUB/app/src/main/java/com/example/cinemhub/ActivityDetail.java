@@ -1,9 +1,7 @@
 package com.example.cinemhub;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -17,7 +15,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.RoomDatabase;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.bumptech.glide.Glide;
 import com.example.cinemhub.api.Client;
@@ -74,16 +73,15 @@ public class ActivityDetail extends AppCompatActivity {
         Log.d(TAG, "Receiving intent");
         Intent intent = getIntent();
 
-        if(intent.hasExtra("original_title")){
+        if (intent.hasExtra("original_title")) {
 
-            String thumbnail = intent.getExtras().getString("poster_path");
-            if(thumbnail == null){
+            thumbnail = intent.getExtras().getString("poster_path");
+            if (thumbnail == null) {
                 Log.d(TAG, "immagine nulla");
             }
             movie_id = intent.getExtras().getString("id");
             movieName = intent.getExtras().getString("title");
             movieOriginalName = intent.getExtras().getString("original_title");
-            Log.d(TAG,"titolo: " + movieName);
             rating = intent.getExtras().getString("vote_average");
             synopsis = intent.getExtras().getString("overview");
             release = intent.getExtras().getString("release_date");
@@ -97,10 +95,6 @@ public class ActivityDetail extends AppCompatActivity {
             plotSynopsis.setText(synopsis);
             userRating.setText(rating);
             releaseDate.setText(release);
-
-
-
-
 
 
             //Qua bisogna passare il trailer. Penso che è d'obbligo farlo qui perché non ci sono altri punti nel codice
@@ -127,11 +121,9 @@ public class ActivityDetail extends AppCompatActivity {
                     String key = "";
 
                     //Temporaneo
-                    if(trailers== null || trailers.size() == 0) {
+                    if (trailers == null || trailers.size() == 0) {
                         key = "BdJKm16Co6M";
-                    }
-
-                    else key = trailers.get(0).getKey();
+                    } else key = trailers.get(0).getKey();
 
 
                     //La stringa che si andrà a formare da mettere nella webview di content detail
@@ -167,46 +159,57 @@ public class ActivityDetail extends AppCompatActivity {
                         Log.d("Error", "qualcosa è andato storto");
                 }
             });
-            Log.d(TAG,"db eliminato");
-
-
-
-        }
-        else
+        } else
             Toast.makeText(this, "no api data", Toast.LENGTH_SHORT).show();
 
         //favorite button
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
         LikeButton likeButtonFavorite =
                 (LikeButton) findViewById(R.id.favorite_button);
 
-        likeButtonFavorite.setOnLikeListener(new OnLikeListener() {
-            @Override
-            public void liked(LikeButton likeButtonFavorite) {
-                Log.d(TAG, "cliccato favorite");
-                SharedPreferences.Editor editor = getSharedPreferences("com.example.cinemhub.ActivityDetail", MODE_PRIVATE).edit();
-                editor.putBoolean("Favorite Added", true);
-                editor.apply();
-                saveFavorite();
-                Snackbar.make(likeButtonFavorite, "Added to Favorite",
-                        Snackbar.LENGTH_SHORT).show();
-                mostraDb();
-            }
+        if (!checkFilm()) {
+            likeButtonFavorite.setOnLikeListener(new OnLikeListener() {
+                @Override
+                public void liked(LikeButton likeButtonFavorite) {
+                    Log.d(TAG, "cliccato favorite");
 
-            @Override
-            public void unLiked(LikeButton likeButtonFavorite) {
-                Log.d(TAG, "cliccato unfavorite");
-                cancellaDb();
-            }
-        });
+                    saveFavorite();
+                    Snackbar.make(likeButtonFavorite, "Added to Favorite",
+                            Snackbar.LENGTH_SHORT).show();
+                    mostraDb();
+
+                }
+
+                @Override
+                public void unLiked(LikeButton likeButtonFavorite) {
+                    Log.d(TAG, "cliccato unfavorite");
+                    cancellaDb();
+                }
+            });
+        } else {
+            likeButtonFavorite.setLiked(true);
+            likeButtonFavorite.setOnLikeListener(new OnLikeListener() {
+                @Override
+                public void liked(LikeButton likeButtonFavorite) {
+                    Log.d(TAG, "cliccato favorite 2");
+                    saveFavorite();
+                    Snackbar.make(likeButtonFavorite, "Added to Favorite",
+                            Snackbar.LENGTH_SHORT).show();
+                    mostraDb();
+                }
+
+                @Override
+                public void unLiked(LikeButton likeButtonFavorite) {
+                    Log.d(TAG, "cliccato unfavorite 2");
+                    cancellaDb();
+                }
+            });
+        }
 
         Log.d(TAG, "end of the intent");
     }
 
 
-
-    public void initCollapsingToolbar(){
+    public void initCollapsingToolbar() {
         Log.d(TAG, "initializing CollapsingToolbar");
         final CollapsingToolbarLayout collapsingToolbarLayout;
         collapsingToolbarLayout = findViewById(R.id.ctoolbar_activity_detail);
@@ -221,13 +224,13 @@ public class ActivityDetail extends AppCompatActivity {
 
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if(scrollRange==-1){
+                if (scrollRange == -1) {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
-                if(scrollRange + verticalOffset == 0){
+                if (scrollRange + verticalOffset == 0) {
                     collapsingToolbarLayout.setTitle(getString(R.string.movie_details));
                     isShown = true;
-                }else if(isShown){
+                } else if (isShown) {
                     collapsingToolbarLayout.setTitle(" ");
                     isShown = false;
                 }
@@ -242,42 +245,43 @@ public class ActivityDetail extends AppCompatActivity {
 
     private void saveFavorite() {
         favorite = new Favorite();
-        movie = new Movie();
 
-        movie.setId(Integer.parseInt(movie_id));
-        movie.setTitle(movieName);
-        movie.setOriginalTitle(movieOriginalName);
-        movie.setPosterPath(thumbnail);
-        movie.setVoteAverage(Double.parseDouble(rating));
-        movie.setOverview(synopsis);
-        Log.d(TAG,"entrato nel save");
-        Log.d(TAG,"contenuto movie_id:" + movie_id);
-
-        int i=Integer.parseInt(movie_id);
-        favorite.setMovie_id(i);
+        favorite.setMovie_id(Integer.parseInt(movie_id));
         favorite.setTitle(movieOriginalName);
         favorite.setPosterPath(thumbnail);
         favorite.setUserRating(rating);
         favorite.setPlotSynopsys(synopsis);
 
-
         MainActivity.dbStructure.dbInterface().addFavorite(favorite);
-        Log.d(TAG,"entarto nel Db");
+        Log.d(TAG, "entarto nel Db");
     }
 
+    //sEMPLICE LOG PER MOSTRARE IL TITOLE E GLI ID DEL DB.
     private void mostraDb() {
         line = MainActivity.dbStructure.dbInterface().getFavorite();
-        for(Favorite favorite : line){
-            Log.d(TAG,"Database: " +
-                 "ID: " + favorite.getMovie_id() +
-                    "Title: " + favorite.getTitle());
+        for (Favorite favorite : line) {
+            Log.d(TAG, "ID: " + favorite.getMovie_id() +
+                    ",  Title: " + favorite.getTitle() +
+                    ", PosterPath: " + favorite.getPosterPath());
         }
     }
-    //DA CANCELLARE UNA VOLTA FIXATO
-    private void cancellaDb(){
+
+    // CONTROLLA SE IL FILM è PRESENTE NEL DB ////////////////////////////////////////////
+    private boolean checkFilm() {
+        Log.d(TAG, "entrato nel check");
         line = MainActivity.dbStructure.dbInterface().getFavorite();
+        for (Favorite favorite : line) {
+            if (favorite.getMovie_id() == Integer.parseInt(movie_id))
+                return (true);
+        }
+        return (false);
+    }
+
+    //DA CANCELLARE UNA VOLTA FIXATO
+    private void cancellaDb() {
         MainActivity.dbStructure.clearAllTables();
-       // MainActivity.dbStructure.dbInterface().deleteFavorite(favorite);
-        Log.d(TAG,"db size: " + line.size());
+        line = MainActivity.dbStructure.dbInterface().getFavorite();
+        Log.d(TAG, "db size: " + line.size());
+        mostraDb();
     }
 }
