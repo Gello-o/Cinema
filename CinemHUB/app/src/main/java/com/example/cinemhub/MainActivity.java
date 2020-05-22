@@ -1,13 +1,17 @@
 package com.example.cinemhub;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.Menu;
 
-import com.example.cinemhub.adapter.MoviesAdapter;
+import com.example.cinemhub.model.Favorite;
+import com.example.cinemhub.model.FavoriteDB;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
@@ -20,11 +24,12 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.room.Room;
 
 public class MainActivity extends AppCompatActivity{
 
     private AppBarConfiguration mAppBarConfiguration;
-    private static final String LOG_TAG = MoviesAdapter.class.getName();
+    private static final String TAG = "MainActivity";
     ProgressDialog pd;
 
     @Override
@@ -54,6 +59,8 @@ public class MainActivity extends AppCompatActivity{
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+        FavoriteDB.getInstance(getApplicationContext());
+        Log.d(TAG,"creato il Db");
     }
 
     @Override
@@ -96,4 +103,5 @@ public class MainActivity extends AppCompatActivity{
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
     }
+
 }

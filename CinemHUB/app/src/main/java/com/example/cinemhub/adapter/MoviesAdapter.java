@@ -23,22 +23,37 @@ import java.util.List;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHolder>{
 
+    public Context getContext() {
+        return context;
+    }
+
+    public List<Movie> getMovieList() {
+        return movieList;
+    }
+
     private Context context;
     private List<Movie> movieList;
+    LayoutInflater layoutInflater;
     private static final String TAG = "MoviesAdapter";
+    private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
 
     public MoviesAdapter(Context context, List<Movie> movieList) {
+        if(movieList != null)
+            Log.d(TAG, "costruito lista correttamente");
+
+        if(context != null)
+            Log.d(TAG, "costruito context correttamente");
         this.context = context;
         this.movieList = movieList;
-        if(movieList != null)
-            Log.d(TAG, "costruito moviesAdapter correttamente");
+        layoutInflater  = layoutInflater.from(context);
+
     }
 
     @Override
     @NonNull
     public MoviesAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i){
         Log.d(TAG, "onCreateViewHolder called");
-        View view = LayoutInflater.from(context).inflate(R.layout.movie_card, viewGroup, false);
+        View view = layoutInflater.inflate(R.layout.movie_card, viewGroup, false);
         return new MyViewHolder(view);
     }
 
@@ -49,17 +64,24 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
         if(movieList.isEmpty())
             Log.d(TAG, "movieList nulla");
 
-        Glide.with(context)
-                .load(movieList.get(i).getPosterPath())
-                .placeholder(R.drawable.ic_launcher_background)
-                .dontAnimate()
-                .into(viewHolder.thumbnail);
+        if(movieList.get(i).getPosterPath() == null){
+            Glide.with(context)
+                    .load(R.drawable.ic_launcher_background)
+                    .dontAnimate()
+                    .into(viewHolder.thumbnail);
+        }
+        else{
+            Glide.with(context)
+                    .load(base_image_Url+movieList.get(i).getPosterPath())
+                    .dontAnimate()
+                    .into(viewHolder.thumbnail);
+        }
 
     }
 
     @Override
     public int getItemCount() {
-            return movieList.size();
+        return movieList.size();
     }
 
 
@@ -80,21 +102,23 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
                     Log.d(TAG, "Clicked");
                     int pos = getAdapterPosition();
                     if(pos != RecyclerView.NO_POSITION){
-                         clickedDataItem = movieList.get(pos);
-                         Intent intent = new Intent(context, ActivityDetail.class);
-                         intent.putExtra("original_title", movieList.get(pos).getOriginalTitle());
-                         intent.putExtra("poster_path", movieList.get(pos).getPosterPath());
-                         intent.putExtra("overview", movieList.get(pos).getOverview());
-                         intent.putExtra("release_date", movieList.get(pos).getReleaseDate());
+                        clickedDataItem = movieList.get(pos);
+                        Intent intent = new Intent(context, ActivityDetail.class);
+                        intent.putExtra("original_title", movieList.get(pos).getOriginalTitle());
+                        intent.putExtra("poster_path", movieList.get(pos).getPosterPath());
+                        intent.putExtra("overview", movieList.get(pos).getOverview());
+                        intent.putExtra("release_date", movieList.get(pos).getReleaseDate());
                         intent.putExtra("id", Integer.toString(movieList.get(pos).getId()));
-                         intent.putExtra("vote_average", Double.toString(movieList.get(pos).getVoteAverage()));
-                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                         context.startActivity(intent);
-                         Toast.makeText(v.getContext(), "you clicked " + clickedDataItem.getOriginalTitle(), Toast.LENGTH_SHORT).show();
+                        intent.putExtra("vote_average", Double.toString(movieList.get(pos).getVoteAverage()));
+                        intent.putExtra("title", movieList.get(pos).getTitle());
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
+                        Toast.makeText(v.getContext(), "you clicked " + clickedDataItem.getTitle(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
         }
 
     }
+
 }
