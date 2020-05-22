@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.example.cinemhub.api.Client;
 import com.example.cinemhub.api.Service;
+import com.example.cinemhub.model.MoviesRepository;
 import com.example.cinemhub.model.Trailer;
 import com.example.cinemhub.model.TrailerResponse;
 import com.example.cinemhub.ui.home.HomeFragment;
@@ -90,75 +91,10 @@ public class ActivityDetail extends AppCompatActivity {
             userRating.setText(rating);
             releaseDate.setText(release);
 
-
-
-
-
             //Qua bisogna passare il trailer. Penso che è d'obbligo farlo qui perché non ci sono altri punti nel codice
             //Dove possiamo passare al metodo getMovieTrailer l'id del film che serve per fare la chiamata all'api.
 
-
-
-
-            /*String key;
-            MutableLiveData<HashSet<Trailer>> trailer = MoviesPersistentData.getInstance().getTrailer(Integer.parseInt(id));
-            if(trailer ==null) System.out.println("NULLPTR");
-            else key = trailer.getClass().getKey();*/
-
-
-            Service apiService = Client.getClient().create(Service.class);
-            Call<TrailerResponse> call;
-            call = apiService.getMovieTrailer(Integer.parseInt(id), API_KEY);
-
-            call.enqueue(new Callback<TrailerResponse>() {
-                @Override
-                public void onResponse(@NonNull Call<TrailerResponse> call, @NonNull Response<TrailerResponse> response) {
-                    List<Trailer> trailers = response.body().getTrailers();
-                    //Gli diamo il primo trailer.
-                    String key = "";
-
-                    //Temporaneo
-                    if(trailers== null || trailers.size() == 0) {
-                        key = "BdJKm16Co6M";
-                    }
-
-                    else key = trailers.get(0).getKey();
-
-
-                    //La stringa che si andrà a formare da mettere nella webview di content detail
-                    String frameVideo = "<html><body><iframe src=\"https://www.youtube.com/embed/";
-                    String link2 = key + "\" frameborder=\"0\" allowfullscreen></iframe></body></html>";
-                    String link3 = frameVideo + link2;
-
-                    webView.setWebViewClient(new WebViewClient() {
-                        @Override
-                        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                            return false;
-                        }
-                    });
-                    //Mettiamo tutto nella webview
-                    WebSettings webSettings = webView.getSettings();
-                    webSettings.setJavaScriptEnabled(true);
-                    webView.loadData(link3, "text/html", "utf-8");
-
-
-                    //Molte cose son da cancellare, ma le lascio così confonde di più le idee.
-                    HashSet<Trailer> trailersSet = new HashSet<>();
-                    trailersSet.addAll(trailers);
-
-                    if (trailersSet.isEmpty())
-                        Log.d(TAG, "trailerSet NULL");
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<TrailerResponse> call, @NonNull Throwable t) {
-                    if (t.getMessage() != null)
-                        Log.d("Error", t.getMessage());
-                    else
-                        Log.d("Error", "qualcosa è andato storto");
-                }
-            });
-
+            MoviesRepository.getInstance().getTrailer(id, webView);
 
 
         }
