@@ -132,7 +132,7 @@
             <WebView
                 android:id="@+id/videoWebView"
                 android:layout_width="match_parent"
-                android:layout_height="455dp"
+                android:layout_height="1200dp"
                 android:layout_gravity="center"
                 android:layout_marginHorizontal="25dp"
                 android:layout_marginVertical="5dp">

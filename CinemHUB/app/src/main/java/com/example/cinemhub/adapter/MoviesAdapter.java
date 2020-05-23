@@ -66,7 +66,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
 
         if(movieList.get(i).getPosterPath() == null){
             Glide.with(context)
-                    .load(R.drawable.placeholder)
+                    .load(R.drawable.ic_launcher_background)
                     .dontAnimate()
                     .into(viewHolder.thumbnail);
         }
@@ -81,7 +81,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
 
     @Override
     public int getItemCount() {
-            return movieList.size();
+        return movieList.size();
     }
 
 
@@ -102,18 +102,18 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
                     Log.d(TAG, "Clicked");
                     int pos = getAdapterPosition();
                     if(pos != RecyclerView.NO_POSITION){
-                         clickedDataItem = movieList.get(pos);
-                         Intent intent = new Intent(context, ActivityDetail.class);
-                         intent.putExtra("original_title", movieList.get(pos).getOriginalTitle());
-                         intent.putExtra("poster_path", movieList.get(pos).getPosterPath());
-                         intent.putExtra("overview", movieList.get(pos).getOverview());
-                         intent.putExtra("release_date", movieList.get(pos).getReleaseDate());
-                         intent.putExtra("id", Integer.toString(movieList.get(pos).getId()));
-                         intent.putExtra("vote_average", Double.toString(movieList.get(pos).getVoteAverage()));
-                         intent.putExtra("title", movieList.get(pos).getTitle());
-                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                         context.startActivity(intent);
-                         Toast.makeText(v.getContext(), "you clicked " + clickedDataItem.getTitle(), Toast.LENGTH_SHORT).show();
+                        clickedDataItem = movieList.get(pos);
+                        Intent intent = new Intent(context, ActivityDetail.class);
+                        intent.putExtra("original_title", movieList.get(pos).getOriginalTitle());
+                        intent.putExtra("poster_path", movieList.get(pos).getPosterPath());
+                        intent.putExtra("overview", movieList.get(pos).getOverview());
+                        intent.putExtra("release_date", movieList.get(pos).getReleaseDate());
+                        intent.putExtra("id", Integer.toString(movieList.get(pos).getId()));
+                        intent.putExtra("vote_average", Double.toString(movieList.get(pos).getVoteAverage()));
+                        intent.putExtra("title", movieList.get(pos).getTitle());
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
+                        Toast.makeText(v.getContext(), "you clicked " + clickedDataItem.getTitle(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });

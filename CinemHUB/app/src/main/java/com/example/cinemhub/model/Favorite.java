@@ -17,6 +17,9 @@ public class Favorite {
     @ColumnInfo(name = "Title")
     String title;
 
+    @ColumnInfo(name = "OriginalTitle")
+    String originalTitle;
+
     @ColumnInfo(name = "Rating")
     String userRating;
 
@@ -26,7 +29,46 @@ public class Favorite {
     @ColumnInfo(name = "Plot")
     String plotSynopsys;
 
-    //metodi get
+    @ColumnInfo(name = "ReleaseDate")
+    String releaseDate;
+
+    @ColumnInfo(name = "VoteCount")
+    String voteCount;
+
+    @ColumnInfo(name = "GenreId")
+    String genreId;
+
+    public String getOriginalTitle() {
+        return originalTitle;
+    }
+
+    public void setOriginalTitle(String originalTitle) {
+        this.originalTitle = originalTitle;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public String getVoteCount() {
+        return voteCount;
+    }
+
+    public void setVoteCount(String voteCount) {
+        this.voteCount = voteCount;
+    }
+
+    public String getGenreId() {
+        return genreId;
+    }
+
+    public void setGenreId(String genreId) {
+        this.genreId = genreId;
+    }
 
     public int getMovieId() {
         return movie_id;

@@ -100,8 +100,6 @@ public class CategorieFragment extends Fragment {
             }
         });
 
-        initTexts();
-
         return root;
     }
 
@@ -140,48 +138,4 @@ public class CategorieFragment extends Fragment {
         crimineRV.setAdapter(crimineAdapter);
         crimineRV.setItemAnimator(new DefaultItemAnimator());
     }
-
-    public void initTexts(){
-        SpannableString azioneSS = new SpannableString(azioneTxt.getText());
-        SpannableString avventuraSS = new SpannableString(avventuraTxt.getText());
-        SpannableString crimineSS = new SpannableString(crimineTxt.getText());
-
-        ClickableSpan azioneClickableSpan;
-        ClickableSpan avventuraClickableSpan;
-        ClickableSpan crimineClickableSpan;
-
-        azioneClickableSpan = new ClickableSpan() {
-            @Override
-            public void onClick(@NonNull View widget) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_container, new MostraCategoriaFragment(28)).commit();
-            }
-        };
-
-        avventuraClickableSpan = new ClickableSpan() {
-            @Override
-            public void onClick(@NonNull View widget) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_container, new MostraCategoriaFragment(12)).commit();
-            }
-        };
-
-        crimineClickableSpan = new ClickableSpan() {
-            @Override
-            public void onClick(@NonNull View widget) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_container, new MostraCategoriaFragment(80)).commit();
-            }
-        };
-
-        azioneSS.setSpan(azioneClickableSpan, 0, 6, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        avventuraSS.setSpan(avventuraClickableSpan, 0, 9, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        crimineSS.setSpan(crimineClickableSpan, 0, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        azioneTxt.setText(azioneSS);
-        avventuraTxt.setText(avventuraSS);
-        crimineTxt.setText(crimineSS);
-
-        azioneTxt.setMovementMethod(LinkMovementMethod.getInstance());
-        avventuraTxt.setMovementMethod(LinkMovementMethod.getInstance());
-        crimineTxt.setMovementMethod(LinkMovementMethod.getInstance());
-    }
 }
-

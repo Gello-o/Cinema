@@ -21,6 +21,7 @@ import com.example.cinemhub.MainActivity;
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Favorite;
+import com.example.cinemhub.model.FavoriteDB;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.ui.piu_visti.PiuVistiViewModel;
 
@@ -40,13 +41,13 @@ public class PreferitiFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_preferiti, container, false);
         preferitiRV = root.findViewById(R.id.recycler_view_preferiti);
 
-        favoriteList = MainActivity.favoriteDB.dbInterface().getFavorite();
+        favoriteList = FavoriteDB.getInstance().dbInterface().getFavorite();
 
         if(favoriteList == null)
             Log.d(TAG, "fav uguale null");
 
         initMoviesRV(queryFavoriteDB());
-        
+
         return root;
     }
 
@@ -70,27 +71,43 @@ public class PreferitiFragment extends Fragment {
         preferitiRV.setItemAnimator(new DefaultItemAnimator());
         moviesAdapter.notifyDataSetChanged();
     }
-    
+
     public List <Movie> queryFavoriteDB(){
-        String title, userRating, posterPath, plotSynopsis;
-        int id;
+        String title, posterPath, plotSynopsis, originalTitle, releaseDate;
+        int id, genre, voteCount;
+        Double userRating;
         Movie movie;
         List<Movie> lista = new ArrayList<>();
         Log.d(TAG, ""+favoriteList.size());
         if(!favoriteList.isEmpty()) {
+
             for (Favorite fav : favoriteList) {
                 id = fav.getMovieId();
                 Log.d(TAG, ""+id);
                 title = fav.getTitle();
                 Log.d(TAG, ""+title);
-                userRating = fav.getUserRating();
+                userRating = Double.parseDouble(fav.getUserRating());
                 Log.d(TAG, ""+userRating);
                 posterPath = fav.getPosterPath();
                 Log.d(TAG, ""+posterPath);
                 plotSynopsis = fav.getPlotSynopsys();
                 Log.d(TAG, ""+plotSynopsis.substring(0, 8));
+                releaseDate = fav.getReleaseDate();
+                originalTitle = fav.getOriginalTitle();
+                try {
+                    voteCount = Integer.parseInt(fav.getVoteCount());
 
-                movie = new Movie(posterPath, plotSynopsis, "30/12/1997", id, title, Double.parseDouble(userRating));
+                }catch (NumberFormatException e){
+                    voteCount = 0;
+                }
+                try {
+                    genre = Integer.parseInt(fav.getGenreId());
+                }catch (NumberFormatException e){
+                    genre = 0;
+                }
+
+
+                movie = new Movie(posterPath, plotSynopsis, releaseDate, id, originalTitle, title, voteCount, userRating, genre);
                 lista.add(movie);
 
                 Log.d(TAG, "Database: " +
@@ -105,4 +122,3 @@ public class PreferitiFragment extends Fragment {
     }
 
 }
-

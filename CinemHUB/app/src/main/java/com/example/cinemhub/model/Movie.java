@@ -4,6 +4,7 @@ package com.example.cinemhub.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Movie {
@@ -53,13 +54,17 @@ public class Movie {
     // brutto cane qua devi memorizzare i trailer in qualche modo
     public Movie(){}
 
-    public Movie(String posterPath, String overview, String release_date, Integer id, String title, Double vote_average) {
+    public Movie(String posterPath, String overview, String release_date, Integer id, String original_title, String title, Integer vote_count, Double vote_average, Integer genre) {
         this.posterPath = posterPath;
         this.overview = overview;
         this.release_date = release_date;
         this.id = id;
+        this.original_title = original_title;
         this.title = title;
+        this.vote_count = vote_count;
         this.vote_average = vote_average;
+        this.genre_ids = new ArrayList<>();
+        genre_ids.add(genre);
     }
 
     public String getPosterPath() {

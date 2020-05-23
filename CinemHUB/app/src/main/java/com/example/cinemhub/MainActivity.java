@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity{
     private AppBarConfiguration mAppBarConfiguration;
     private static final String TAG = "MainActivity";
     ProgressDialog pd;
-    public static FavoriteDB favoriteDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +59,7 @@ public class MainActivity extends AppCompatActivity{
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        favoriteDB = Room.databaseBuilder(getApplicationContext(), FavoriteDB.class,"Favorite").allowMainThreadQueries().build();
+        FavoriteDB.getInstance(getApplicationContext());
         Log.d(TAG,"creato il Db");
     }
 

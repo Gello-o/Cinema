@@ -28,7 +28,6 @@ import com.bumptech.glide.Glide;
 import com.example.cinemhub.ActivityDetail;
 import com.example.cinemhub.R;
 import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.model.Slide;
 
 import java.util.List;
 
@@ -79,6 +78,7 @@ public class SliderPagerAdapter extends PagerAdapter {
                     clickedDataItem = mList.get(position);
                     Intent intent = new Intent(mContext, ActivityDetail.class);
                     intent.putExtra("original_title", mList.get(position).getOriginalTitle());
+                    intent.putExtra("title", mList.get(position).getTitle());
                     intent.putExtra("poster_path", mList.get(position).getPosterPath());
                     intent.putExtra("overview", mList.get(position).getOverview());
                     intent.putExtra("release_date", mList.get(position).getReleaseDate());

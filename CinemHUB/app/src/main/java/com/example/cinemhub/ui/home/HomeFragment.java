@@ -23,12 +23,9 @@ import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.adapter.SliderPagerAdapter;
 import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.model.Slide;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.List;
 import java.util.List;
 import java.util.Timer;
 import android.os.Handler;
@@ -203,9 +200,4 @@ public class HomeFragment extends Fragment {
     protected void runOnUiThread(Runnable action) {
         messageHandler.post(action);
     }
-
-
-
-
 }
-
