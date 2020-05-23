@@ -28,7 +28,6 @@ import com.bumptech.glide.Glide;
 import com.example.cinemhub.ActivityDetail;
 import com.example.cinemhub.R;
 import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.model.Slide;
 
 import java.util.List;
 
@@ -37,6 +36,7 @@ public class SliderPagerAdapter extends PagerAdapter {
     private static final String TAG = "SliderPagerAdapter";
     private Context mContext ;
     private List<Movie> mList ;
+    private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
 
 
     public SliderPagerAdapter(Context mContext, List<Movie> mList) {
@@ -58,14 +58,13 @@ public class SliderPagerAdapter extends PagerAdapter {
 
         if(mList.get(position) != null){
             Glide.with(mContext)
-                    .load(mList.get(position).getPosterPath())
+                    .load(base_image_Url+mList.get(position).getPosterPath())
                     .placeholder(R.drawable.ic_launcher_background)
                     .into(slideImg);
             slideText.setText(mList.get(position).getTitle());
         }
         else {
             slideImg.setImageResource(R.drawable.ic_launcher_background);
-            slideText.setText("volano madonne");
         }
 
         slideImg.setOnClickListener(new View.OnClickListener() {
@@ -79,6 +78,7 @@ public class SliderPagerAdapter extends PagerAdapter {
                     clickedDataItem = mList.get(position);
                     Intent intent = new Intent(mContext, ActivityDetail.class);
                     intent.putExtra("original_title", mList.get(position).getOriginalTitle());
+                    intent.putExtra("title", mList.get(position).getTitle());
                     intent.putExtra("poster_path", mList.get(position).getPosterPath());
                     intent.putExtra("overview", mList.get(position).getOverview());
                     intent.putExtra("release_date", mList.get(position).getReleaseDate());

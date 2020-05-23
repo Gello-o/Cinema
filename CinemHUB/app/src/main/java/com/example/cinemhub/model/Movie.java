@@ -4,6 +4,7 @@ package com.example.cinemhub.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Movie {
@@ -51,19 +52,44 @@ public class Movie {
     private boolean video;
 
     // brutto cane qua devi memorizzare i trailer in qualche modo
+    public Movie(){}
 
-    private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
+    public Movie(String posterPath, String overview, String release_date, Integer id, String original_title, String title, Integer vote_count, Double vote_average, Integer genre) {
+        this.posterPath = posterPath;
+        this.overview = overview;
+        this.release_date = release_date;
+        this.id = id;
+        this.original_title = original_title;
+        this.title = title;
+        this.vote_count = vote_count;
+        this.vote_average = vote_average;
+        this.genre_ids = new ArrayList<>();
+        genre_ids.add(genre);
+    }
+
+    public String getPosterPath() {
+        return posterPath;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
 
     public String getOverview() {
         return overview;
     }
 
-    public boolean isAdult() {
-        return adult;
+    public void setOverview(String overview) {
+        this.overview = overview;
     }
+
 
     public List<Integer> getGenreIds() {
         return genre_ids;
+    }
+
+    public void setGenreIds(List<Integer> genre_ids) {
+        this.genre_ids = genre_ids;
     }
 
     public String getReleaseDate() {
@@ -86,24 +112,17 @@ public class Movie {
         return original_title;
     }
 
-    public String getOriginalLanguage() {
-        return original_language;
+    public void setOriginaltitle(String original_title) {
+        this.original_title = original_title;
     }
+
 
     public String getTitle() {
         return title;
     }
 
-    public String getBackdropPath() {
-        return backdrop_path;
-    }
-
-    public Double getPopularity() {
-        return popularity;
-    }
-
-    public void setPopularity(Double popularity) {
-        this.popularity = popularity;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Integer getVoteCount() {
@@ -120,18 +139,6 @@ public class Movie {
 
     public void setVoteAverage(Double vote_average) {
         this.vote_average = vote_average;
-    }
-
-    public boolean isVideo() {
-        return video;
-    }
-
-    public void setVideo(boolean video) {
-        this.video = video;
-    }
-
-    public String getPosterPath() {
-        return base_image_Url + this.posterPath;
     }
 
 }

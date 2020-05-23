@@ -8,11 +8,11 @@ import android.webkit.WebViewClient;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.cinemhub.R;
 import com.example.cinemhub.api.Client;
 import com.example.cinemhub.api.Service;
 
 
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -183,8 +183,7 @@ public class MoviesRepository {
         });
     }
 
-
-    public void getTrailer(String id, WebView webView) {
+    public void getTrailers(String id, WebView webView) {
         Service apiService = Client.getClient().create(Service.class);
         Call<TrailerResponse> call;
         call = apiService.getMovieTrailer(Integer.parseInt(id), API_KEY);
@@ -197,11 +196,9 @@ public class MoviesRepository {
                 String key = "";
 
                 //Temporaneo
-                if(trailers== null || trailers.size() == 0) {
+                if (trailers == null || trailers.size() == 0) {
                     key = "BdJKm16Co6M";
-                }
-
-                else key = trailers.get(0).getKey();
+                } else key = trailers.get(0).getKey();
 
 
                 //La stringa che si andrà a formare da mettere nella webview di content detail
@@ -219,14 +216,15 @@ public class MoviesRepository {
                 WebSettings webSettings = webView.getSettings();
                 webSettings.setJavaScriptEnabled(true);
                 webView.loadData(link3, "text/html", "utf-8");
+                //webView.loadUrl("https://www.youtube.com/embed/" + key);
 
 
                 //Molte cose son da cancellare, ma le lascio così confonde di più le idee.
-                //HashSet<Trailer> trailersSet = new HashSet<>();
-                //trailersSet.addAll(trailers);
+                HashSet<Trailer> trailersSet = new HashSet<>();
+                trailersSet.addAll(trailers);
 
-                //if (trailersSet.isEmpty())
-                //Log.d(TAG, "trailerSet NULL");
+                if (trailersSet.isEmpty())
+                    Log.d(TAG, "trailerSet NULL");
             }
 
             @Override
@@ -237,6 +235,6 @@ public class MoviesRepository {
                     Log.d("Error", "qualcosa è andato storto");
             }
         });
-    }
 
+    }
 }

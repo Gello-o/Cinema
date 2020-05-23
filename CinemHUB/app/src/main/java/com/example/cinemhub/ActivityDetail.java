@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,12 +21,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.example.cinemhub.api.Client;
 import com.example.cinemhub.api.Service;
+import com.example.cinemhub.model.Favorite;
+import com.example.cinemhub.model.FavoriteDB;
+import com.example.cinemhub.model.Favorite;
 import com.example.cinemhub.model.MoviesRepository;
 import com.example.cinemhub.model.Trailer;
 import com.example.cinemhub.model.TrailerResponse;
-import com.example.cinemhub.ui.home.HomeFragment;
+
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.youtube.player.YouTubeBaseActivity;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 
 import java.util.HashSet;
 import java.util.List;
@@ -35,12 +43,16 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ActivityDetail extends AppCompatActivity {
+public class ActivityDetail extends YouTubeBaseActivity {
     private static final String TAG = "ActivityDetail";
     private TextView nameOfMovie, plotSynopsis, userRating, releaseDate;
     private ImageView imageView;
     private WebView webView;
+    String thumbnail, movieName, synopsis, rating, release, id, originalMovieName, voteCount, genre;
+    public Favorite favorite;
+    List<Favorite> line;
     private static final String API_KEY = "740ef79d64b588653371072cdee99a0f";
+    private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,9 +60,8 @@ public class ActivityDetail extends AppCompatActivity {
         Log.d(TAG, "creating ActivityDetail");
         setContentView(R.layout.activity_detail);
         Toolbar toolbar = findViewById(R.id.toolbar_activity_detail);
-        setSupportActionBar(toolbar);
-
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        //setSupportActionBar(toolbar);
+        //Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         initCollapsingToolbar();
 
@@ -66,36 +77,75 @@ public class ActivityDetail extends AppCompatActivity {
 
         if(intent.hasExtra("original_title")){
 
-            String thumbnail = intent.getExtras().getString("poster_path");
-            String movieName = intent.getExtras().getString("original_title");
-            String synopsis = intent.getExtras().getString("overview");
-            String rating = intent.getExtras().getString("vote_average");
-            String release = intent.getExtras().getString("release_date");
-            String id = intent.getExtras().getString("id");
+            thumbnail = intent.getExtras().getString("poster_path");
+            originalMovieName = intent.getExtras().getString("original_title");
+            synopsis = intent.getExtras().getString("overview");
+            rating = intent.getExtras().getString("vote_average");
+            release = intent.getExtras().getString("release_date");
+            id = intent.getExtras().getString("id");
+            movieName = intent.getExtras().getString("title");
+            genre = intent.getExtras().getString("genre_id");
+            voteCount = intent.getExtras().getString("vote_count");
 
             if(thumbnail == null){
                 Log.d(TAG, "immagine nulla");
                 Glide.with(this)
-                        .load(R.drawable.placeholder)
+                        .load(R.drawable.ic_launcher_background)
                         .into(imageView);
             }
             else{
                 Glide.with(this)
-                        .load(thumbnail)
+                        .load(base_image_Url+thumbnail)
                         .dontAnimate()
                         .into(imageView);
             }
 
-            nameOfMovie.setText(movieName);
+            if(movieName == null && originalMovieName == null){
+                nameOfMovie.setText("NON HA TITOLO");
+            }
+            else{
+                if(movieName != null)
+                    nameOfMovie.setText(movieName);
+                else
+                    nameOfMovie.setText(originalMovieName);
+            }
+
             plotSynopsis.setText(synopsis);
             userRating.setText(rating);
             releaseDate.setText(release);
+            //vedere se mostrare anche vote count
 
-            //Qua bisogna passare il trailer. Penso che è d'obbligo farlo qui perché non ci sono altri punti nel codice
-            //Dove possiamo passare al metodo getMovieTrailer l'id del film che serve per fare la chiamata all'api.
+            LikeButton likeButtonFavorite =
+                    (LikeButton) findViewById(R.id.favorite_button);
 
-            MoviesRepository.getInstance().getTrailer(id, webView);
+            if(checkFilm())
+                likeButtonFavorite.setLiked(true);
 
+            likeButtonFavorite.setOnLikeListener(new OnLikeListener() {
+                @Override
+                public void liked(LikeButton likeButtonFavorite) {
+                    Log.d(TAG, "cliccato favorite");
+                    if(FavoriteDB.getInstance().dbInterface().getFavorite().size() > 5){
+                        cancellaDb();
+                    }
+                    saveFavorite();
+                    Snackbar.make(likeButtonFavorite, "Added to Favorite",
+                            Snackbar.LENGTH_SHORT).show();
+                    mostraDb();
+
+                }
+
+                @Override
+                public void unLiked(LikeButton likeButtonFavorite) {
+                    favorite = new Favorite();
+                    Log.d(TAG, "cliccato unfavorite");
+                    favorite.setMovieId(Integer.parseInt(id));
+                    FavoriteDB.getInstance().dbInterface().deleteFavorite(favorite);
+                    mostraDb();
+                }
+            });
+
+            MoviesRepository.getInstance().getTrailers(id, webView);
 
         }
         else
@@ -138,20 +188,62 @@ public class ActivityDetail extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.home) {
-            finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     @Override
-    public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() == 0) {
-            this.finish();
-        } else {
-            super.onBackPressed(); //replaced
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return true;
+    }
+
+
+    private void saveFavorite() {
+        favorite = new Favorite();
+
+        Log.d(TAG,"entrato nel save");
+        Log.d(TAG,"contenuto id:" + id);
+
+        favorite.setMovieId(Integer.parseInt(id));
+        favorite.setTitle(movieName);
+        favorite.setPosterPath(thumbnail);
+        favorite.setUserRating(rating);
+        favorite.setPlotSynopsys(synopsis);
+        favorite.setReleaseDate(release);
+        favorite.setGenreId(genre);
+        favorite.setOriginalTitle(originalMovieName);
+        favorite.setVoteCount(voteCount);
+
+
+        FavoriteDB.getInstance().dbInterface().addFavorite(favorite);
+        Log.d(TAG,"entarto nel Db");
+    }
+
+    private void mostraDb() {
+        line = FavoriteDB.getInstance().dbInterface().getFavorite();
+        for(Favorite favorite : line){
+            Log.d(TAG,"Database: " +
+                    "ID: " + favorite.getMovieId() +
+                    "Title: " + favorite.getTitle());
         }
     }
+    //DA CANCELLARE UNA VOLTA FIXATO
+    private void cancellaDb() {
+        line = FavoriteDB.getInstance().dbInterface().getFavorite();
+        FavoriteDB.getInstance().clearAllTables();
+        Log.d(TAG, "db size: " + line.size());
+        mostraDb();
+    }
+
+    private boolean checkFilm(){
+        Log.d(TAG,"entrato nel check");
+        line = FavoriteDB.getInstance().dbInterface().getFavorite();
+        for(Favorite favorite : line){
+            if(favorite.getMovieId() == Integer. parseInt(id))
+                return true;
+        }
+        return false;
+    }
+
 }
