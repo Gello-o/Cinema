@@ -170,7 +170,11 @@ public class MainActivity extends AppCompatActivity{
 
             @Override
             public boolean onQueryTextSubmit(String query) {
+                query = query.trim();
+
                 query = query.replace(' ', '+');
+
+
 
                 System.out.println("Query: " + query);
 

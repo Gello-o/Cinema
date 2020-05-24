@@ -55,4 +55,9 @@
         android:name="com.example.cinemhub.ricerca.SearchFragment"
         android:label="search"
         tools:layout="@layout/search" />
+    <fragment
+        android:id="@+id/trailer"
+        android:name="com.example.cinemhub.trailer"
+        android:label="fragment_trailer"
+        tools:layout="@layout/fragment_trailer" />
 </navigation>

@@ -1,16 +1,26 @@
 package com.example.cinemhub;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -43,17 +53,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ActivityDetail extends YouTubeBaseActivity {
+public class ActivityDetail extends AppCompatActivity {
     private static final String TAG = "ActivityDetail";
     private TextView nameOfMovie, plotSynopsis, userRating, releaseDate;
     private ImageView imageView;
     private WebView webView;
+    private VideoView videoView;
     String thumbnail, movieName, synopsis, rating, release, id, originalMovieName, voteCount, genre;
     public Favorite favorite;
     List<Favorite> line;
     private static final String API_KEY = "740ef79d64b588653371072cdee99a0f";
     private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
+    private Context mContext;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +77,7 @@ public class ActivityDetail extends YouTubeBaseActivity {
         //Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         initCollapsingToolbar();
+        mContext = getBaseContext();
 
         imageView = findViewById(R.id.image_activity_detail);
         nameOfMovie = findViewById(R.id.title);
@@ -71,6 +85,14 @@ public class ActivityDetail extends YouTubeBaseActivity {
         userRating = findViewById(R.id.usersRating);
         releaseDate = findViewById(R.id.releaseDate);
         webView = findViewById(R.id.videoWebView);
+
+
+
+        /*WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webView.setWebViewClient(new WebViewClient());*/
+        webView.setWebChromeClient(new myChrome());
+
 
         Log.d(TAG, "Receiving intent");
         Intent intent = getIntent();
@@ -86,6 +108,20 @@ public class ActivityDetail extends YouTubeBaseActivity {
             movieName = intent.getExtras().getString("title");
             genre = intent.getExtras().getString("genre_id");
             voteCount = intent.getExtras().getString("vote_count");
+
+            Intent intent2 = new Intent(mContext, WebViewActivity.class);
+            webView.setOnTouchListener(new View.OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    System.out.println("Touched: " + webView.getUrl());
+                    intent2.putExtra("key", webView.getUrl());
+                    System.out.println(intent2.putExtra("key", webView.getUrl()));
+                    intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent2);
+                    return false;
+                }
+            });
 
             if(thumbnail == null){
                 Log.d(TAG, "immagine nulla");
@@ -245,5 +281,89 @@ public class ActivityDetail extends YouTubeBaseActivity {
         }
         return false;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public class myChrome extends WebChromeClient {
+        private View mCustomView;
+        private WebChromeClient.CustomViewCallback mCustomViewCallback;
+        //protected FrameLayout mFullscreenContainer;
+        //private int mOriginalOrientation;
+        private int mOriginalSystemUiVisibility;
+
+        myChrome() {
+        }
+
+        public Bitmap getDefaultVideoPoster() {
+            if (mCustomView == null) {
+                return null;
+            }
+            return BitmapFactory.decodeResource(getApplicationContext().getResources(), 2130837573);
+        }
+
+        public void onHideCustomView() {
+            ((FrameLayout) getWindow().getDecorView()).removeView(this.mCustomView);
+            this.mCustomView = null;
+            getWindow().getDecorView().setSystemUiVisibility(this.mOriginalSystemUiVisibility);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+            this.mCustomViewCallback.onCustomViewHidden();
+            this.mCustomViewCallback = null;
+        }
+
+        public void onShowCustomView(View paramView, WebChromeClient.CustomViewCallback paramCustomViewCallback) {
+            if (this.mCustomView != null) {
+                onHideCustomView();
+                return;
+            }
+            this.mCustomView = paramView;
+            this.mOriginalSystemUiVisibility = getWindow().getDecorView().getSystemUiVisibility();
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+            //this.mOriginalOrientation = getRequestedOrientation();
+            this.mCustomViewCallback = paramCustomViewCallback;
+            ((FrameLayout) getWindow().getDecorView()).addView(this.mCustomView, new FrameLayout.LayoutParams(-1, -1));
+            getWindow().getDecorView().setSystemUiVisibility(3846);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
