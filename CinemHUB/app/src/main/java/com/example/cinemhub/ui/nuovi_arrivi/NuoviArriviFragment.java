@@ -96,7 +96,7 @@ public class NuoviArriviFragment extends Fragment {
                 Log.d(TAG, "contesto null");
         }
         RecyclerView.LayoutManager layoutManager;
-        if(getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
             layoutManager = new GridLayoutManager(getActivity(), 3);
         else
             layoutManager = new GridLayoutManager(getActivity(), 4);

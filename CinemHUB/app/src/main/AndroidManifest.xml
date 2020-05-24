@@ -32,6 +32,13 @@
             <meta-data android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+        <activity android:name=".VideoPlayer"
+            android:label="Trailer"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".ActivityDetail">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ActivityDetail" />
+        </activity>
     </application>
 
 </manifest>

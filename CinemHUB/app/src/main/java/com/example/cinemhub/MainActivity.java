@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity{
 
     private AppBarConfiguration mAppBarConfiguration;
     private static final String TAG = "MainActivity";
-    ProgressDialog pd;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

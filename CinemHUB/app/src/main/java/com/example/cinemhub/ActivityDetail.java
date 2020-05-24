@@ -1,9 +1,13 @@
 package com.example.cinemhub;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -17,6 +21,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 
 import com.bumptech.glide.Glide;
 import com.example.cinemhub.api.Client;
@@ -31,6 +36,8 @@ import com.example.cinemhub.model.TrailerResponse;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerView;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
@@ -46,10 +53,13 @@ public class ActivityDetail extends AppCompatActivity {
     private static final String TAG = "ActivityDetail";
     private TextView nameOfMovie, plotSynopsis, userRating, releaseDate;
     private ImageView imageView;
+    private YouTubePlayerView playerView;
+    private YouTubePlayer.OnInitializedListener onInitializedListener;
     private WebView webView;
     String thumbnail, movieName, synopsis, rating, release, id, originalMovieName, voteCount, genre;
     public Favorite favorite;
     List<Favorite> line;
+    Context context = this;
     private static final String API_KEY = "740ef79d64b588653371072cdee99a0f";
     private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
 
@@ -69,7 +79,7 @@ public class ActivityDetail extends AppCompatActivity {
         plotSynopsis = findViewById(R.id.plotsynopsis);
         userRating = findViewById(R.id.usersRating);
         releaseDate = findViewById(R.id.releaseDate);
-        webView = findViewById(R.id.videoWebView);
+
 
         Log.d(TAG, "Receiving intent");
         Intent intent = getIntent();
@@ -143,9 +153,22 @@ public class ActivityDetail extends AppCompatActivity {
                     mostraDb();
                 }
             });
+            MutableLiveData<String> keyDatum = new MutableLiveData<>();
+            MoviesRepository.getInstance().getTrailers(id, keyDatum);
 
-            MoviesRepository.getInstance().getTrailers(id, webView);
-
+            Button button = findViewById(R.id.button1);
+            button.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent1 = new Intent(context, VideoPlayer.class);
+                            Log.d(TAG, "intent fatto");
+                            intent1.putExtra("key", keyDatum.getValue());
+                            intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent1);
+                        }
+                    }
+            );
         }
         else
             Toast.makeText(this, "no api data", Toast.LENGTH_SHORT).show();

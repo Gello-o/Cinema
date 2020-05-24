@@ -62,4 +62,5 @@ dependencies {
     implementation 'androidx.paging:paging-runtime:2.1.2'
     implementation 'androidx.room:room-runtime:2.2.5'
     annotationProcessor 'androidx.room:room-compiler:2.2.5'
+    compile files('libs/YouTubeAndroidPlayerApi.jar')
 }
