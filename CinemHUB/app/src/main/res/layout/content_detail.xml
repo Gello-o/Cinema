@@ -129,15 +129,14 @@
                 app:icon_type="star"
                 android:layout_marginLeft="10dp"/>
 
-            <WebView
-                android:id="@+id/videoWebView"
-                android:layout_width="match_parent"
-                android:layout_height="1200dp"
-                android:layout_gravity="center"
-                android:layout_marginHorizontal="25dp"
-                android:layout_marginVertical="5dp">
 
-            </WebView>
+
+            <com.google.android.youtube.player.YouTubePlayerView
+                android:id="@+id/player"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
 
         </LinearLayout>
 

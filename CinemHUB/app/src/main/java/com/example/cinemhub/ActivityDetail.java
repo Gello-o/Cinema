@@ -27,6 +27,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 
 import com.bumptech.glide.Glide;
 import com.example.cinemhub.api.Client;
@@ -41,19 +42,18 @@ import com.example.cinemhub.model.TrailerResponse;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class ActivityDetail extends AppCompatActivity {
+import com.google.android.youtube.player.YouTubeBaseActivity;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerView;
+
+public class ActivityDetail extends YouTubeBaseActivity {
     private static final String TAG = "ActivityDetail";
     private TextView nameOfMovie, plotSynopsis, userRating, releaseDate;
     private ImageView imageView;
@@ -62,7 +62,10 @@ public class ActivityDetail extends AppCompatActivity {
     String thumbnail, movieName, synopsis, rating, release, id, originalMovieName, voteCount, genre;
     public Favorite favorite;
     List<Favorite> line;
+    private YouTubePlayerView playerView;
+    private YouTubePlayer.OnInitializedListener initializedListener;
     private static final String API_KEY = "740ef79d64b588653371072cdee99a0f";
+    private final String YT_API_KEY = "AIzaSyC95r_3BNU_BxvSUE7ZyXKrar3dc127rVk";
     private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
     private Context mContext;
 
@@ -84,14 +87,15 @@ public class ActivityDetail extends AppCompatActivity {
         plotSynopsis = findViewById(R.id.plotsynopsis);
         userRating = findViewById(R.id.usersRating);
         releaseDate = findViewById(R.id.releaseDate);
-        webView = findViewById(R.id.videoWebView);
+        //webView = findViewById(R.id.videoWebView);
+        playerView = findViewById(R.id.player);
 
 
 
         /*WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient());*/
-        webView.setWebChromeClient(new myChrome());
+        //webView.setWebChromeClient(new myChrome());
 
 
         Log.d(TAG, "Receiving intent");
@@ -109,6 +113,7 @@ public class ActivityDetail extends AppCompatActivity {
             genre = intent.getExtras().getString("genre_id");
             voteCount = intent.getExtras().getString("vote_count");
 
+            /*
             Intent intent2 = new Intent(mContext, WebViewActivity.class);
             webView.setOnTouchListener(new View.OnTouchListener() {
 
@@ -122,6 +127,30 @@ public class ActivityDetail extends AppCompatActivity {
                     return false;
                 }
             });
+
+            */
+
+
+
+            MutableLiveData<String> keyDatum = new MutableLiveData<>();
+            MoviesRepository.getInstance().getTrailer(id, keyDatum);
+
+            initializedListener = new YouTubePlayer.OnInitializedListener() {
+                @Override
+                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+                    youTubePlayer.loadVideo(keyDatum.getValue());
+                    Log.d(TAG,"success");
+                }
+
+                @Override
+                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+                    Log.d(TAG,"fail");
+                }
+            };
+
+            playerView.initialize(YT_API_KEY, initializedListener);
+
+
 
             if(thumbnail == null){
                 Log.d(TAG, "immagine nulla");
@@ -181,7 +210,7 @@ public class ActivityDetail extends AppCompatActivity {
                 }
             });
 
-            MoviesRepository.getInstance().getTrailers(id, webView);
+            //MoviesRepository.getInstance().getTrailers(id, webView);
 
         }
         else
