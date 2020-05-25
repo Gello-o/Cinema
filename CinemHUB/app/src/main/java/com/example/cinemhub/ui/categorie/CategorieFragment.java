@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cinemhub.MainActivity;
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Movie;
@@ -100,6 +101,8 @@ public class CategorieFragment extends Fragment {
             }
         });
 
+        initTexts();
+
         return root;
     }
 
@@ -137,5 +140,51 @@ public class CategorieFragment extends Fragment {
         crimineRV.setLayoutManager(layoutManager);
         crimineRV.setAdapter(crimineAdapter);
         crimineRV.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    public void initTexts(){
+        SpannableString ss1 = new SpannableString(azioneTxt.getText());
+        SpannableString ss2 = new SpannableString(avventuraTxt.getText());
+        SpannableString ss3 = new SpannableString(crimineTxt.getText());
+
+        ClickableSpan azioneClickableSpan = new ClickableSpan(){
+
+            @Override
+            public void onClick(@NonNull View widget) {
+                Log.d(TAG, "cliccato");
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.categorie_fragment, new MostraCategoriaFragment(80)).commit();
+            }
+        };
+
+        ClickableSpan avventuraClickableSpan = new ClickableSpan(){
+
+            @Override
+            public void onClick(@NonNull View widget) {
+                Log.d(TAG, "cliccato");
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.categorie_fragment, new MostraCategoriaFragment(12)).commit();
+            }
+        };
+
+        ClickableSpan crimineClickableSpan = new ClickableSpan(){
+
+            @Override
+            public void onClick(@NonNull View widget) {
+                Log.d(TAG, "cliccato");
+
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.categorie_fragment, new MostraCategoriaFragment(80)).commit();
+            }
+        };
+
+        ss1.setSpan(azioneClickableSpan, 0, 6, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss2.setSpan(azioneClickableSpan, 0, 8, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss3.setSpan(azioneClickableSpan, 0, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        azioneTxt.setText(ss1);
+        avventuraTxt.setText(ss2);
+        crimineTxt.setText(ss3);
+
+        azioneTxt.setMovementMethod(LinkMovementMethod.getInstance());
+        avventuraTxt.setMovementMethod(LinkMovementMethod.getInstance());
+        crimineTxt.setMovementMethod(LinkMovementMethod.getInstance());
     }
 }

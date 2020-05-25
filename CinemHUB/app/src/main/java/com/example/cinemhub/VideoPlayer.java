@@ -32,7 +32,7 @@ public class VideoPlayer extends YouTubeBaseActivity {
                 @Override
                 public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                     Log.d(TAG,"success");
-                    youTubePlayer.loadVideo("https://www.youtube.com/embed/" + key);
+                    youTubePlayer.loadVideo(key);
                 }
 
                 @Override
@@ -46,7 +46,7 @@ public class VideoPlayer extends YouTubeBaseActivity {
                 @Override
                 public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                     Log.d(TAG,"success no key");
-                    youTubePlayer.loadVideo("https://www.youtube.com/embed/W4hTJybfU7s");
+                    youTubePlayer.loadVideo("W4hTJybfU7s");
                 }
 
                 @Override

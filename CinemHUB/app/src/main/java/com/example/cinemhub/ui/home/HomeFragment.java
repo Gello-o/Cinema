@@ -176,6 +176,8 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void run() {
 
+                    //vedere come prevenire schianti all'avvio
+
                     if(slides == null) {
                         try {
                             Thread.sleep(500);
