@@ -23,12 +23,9 @@ import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.adapter.SliderPagerAdapter;
 import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.model.Slide;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.List;
 import java.util.List;
 import java.util.Timer;
 import android.os.Handler;
@@ -178,6 +175,15 @@ public class HomeFragment extends Fragment {
             HomeFragment.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+
+                    if(slides == null) {
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
                     if (sliderpager.getCurrentItem()<slides.size()-1) {
                         sliderpager.setCurrentItem(sliderpager.getCurrentItem()+1);
                     }
@@ -194,9 +200,4 @@ public class HomeFragment extends Fragment {
     protected void runOnUiThread(Runnable action) {
         messageHandler.post(action);
     }
-
-
-
-
 }
-
