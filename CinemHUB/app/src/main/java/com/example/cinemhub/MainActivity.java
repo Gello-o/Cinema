@@ -83,8 +83,8 @@ public class MainActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
             case R.id.menu_settings:
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
+                //Intent intent = new Intent(this, SettingsActivity.class);
+                //startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -161,32 +161,25 @@ public class MainActivity extends AppCompatActivity{
         searchView.setQueryHint("Search View Hint");
 */
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            int numeroDiSpazi = 0;
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //newText = newText.replace(' ', '+');
+                Log.d(TAG, "" + newText);
+                //qua potremmo mostrare suggerimenti volendo: da capire
                 return false;
             }
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                query = query.trim();
-
-                query = query.replace(' ', '+');
-
-
-
-                System.out.println("Query: " + query);
-
+                String query1 = query.trim().replaceAll("\\s+", "+").replaceAll("[^a-zA-Z0-9+]", "");
+                System.out.println("Query: " + query1);
                 // Do your task here
-
                 return false;
             }
 
         });
-
-        //  return true;
     }
 
-
+//"[^A-Za-z0-9]"
 }
