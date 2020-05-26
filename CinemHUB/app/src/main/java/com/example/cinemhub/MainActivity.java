@@ -86,6 +86,8 @@ public class MainActivity extends AppCompatActivity{
                 //Intent intent = new Intent(this, SettingsActivity.class);
                 //startActivity(intent);
                 return true;
+            //case R.id.action_search:
+            //    return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -172,8 +174,10 @@ public class MainActivity extends AppCompatActivity{
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                String query1 = query.trim().replaceAll("\\s+", "+").replaceAll("[^a-zA-Z0-9+]", "");
-                System.out.println("Query: " + query1);
+                String queryFinal = query.trim().replaceAll("\\s+", "+").replaceAll("[^a-zA-Z0-9+]", "");
+                System.out.println("Query: " + queryFinal);
+
+                getSupportFragmentManager().beginTransaction().replace(R.id.home_fragment, new SearchFragment(queryFinal)).commit();
                 // Do your task here
                 return false;
             }

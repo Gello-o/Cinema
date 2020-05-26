@@ -30,6 +30,12 @@ public class SearchFragment extends Fragment {
     private SearchViewModel searchViewModel;
     private RecyclerView searchMoviesRV;
     private MoviesAdapter moviesAdapter;
+    private String query;
+
+
+    public SearchFragment(String query) {
+        this.query = query;
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -40,7 +46,7 @@ public class SearchFragment extends Fragment {
 
         searchMoviesRV = root.findViewById(R.id.recycler_view_ricerca);
 
-        searchViewModel.doSearch("iron+man").observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+        searchViewModel.doSearch(query).observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> movies) {
                 if(movies == null)
@@ -74,4 +80,5 @@ public class SearchFragment extends Fragment {
         searchMoviesRV.setItemAnimator(new DefaultItemAnimator());
 
     }
+
 }

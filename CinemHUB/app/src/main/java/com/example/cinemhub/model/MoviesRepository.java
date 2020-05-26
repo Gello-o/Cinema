@@ -14,6 +14,7 @@ import com.example.cinemhub.api.Client;
 import com.example.cinemhub.api.Service;
 
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -252,7 +253,9 @@ public class MoviesRepository {
         call.enqueue(new Callback<TrailerResponse>() {
             @Override
             public void onResponse(@NonNull Call<TrailerResponse> call, @NonNull Response<TrailerResponse> response) {
-                List<Trailer> trailers = response.body().getTrailers();
+                List<Trailer> trailers = null;
+                if(response.body() != null)
+                    trailers = response.body().getTrailers();
                 //Gli diamo il primo trailer.
                 String key = "";
 

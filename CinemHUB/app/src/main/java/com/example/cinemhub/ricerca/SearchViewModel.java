@@ -24,7 +24,7 @@ public class SearchViewModel extends ViewModel {
         if(mText == null){
             mText = new MutableLiveData<>();
             repo = MoviesRepository.getInstance();
-            repo.searchMovie(28, query, mText);
+            repo.searchMovie(1, query, mText);
         }
         return mText;
     }
