@@ -93,9 +93,19 @@ public class PreferitiFragment extends Fragment {
                 plotSynopsis = fav.getPlotSynopsys();
                 Log.d(TAG, ""+plotSynopsis.substring(0, 8));
                 releaseDate = fav.getReleaseDate();
-                voteCount = Integer.parseInt(fav.getVoteCount());
-                genre = Integer.parseInt(fav.getGenreId());
                 originalTitle = fav.getOriginalTitle();
+                try {
+                    voteCount = Integer.parseInt(fav.getVoteCount());
+
+                }catch (NumberFormatException e){
+                    voteCount = 0;
+                }
+                try {
+                    genre = Integer.parseInt(fav.getGenreId());
+                }catch (NumberFormatException e){
+                    genre = 0;
+                }
+
 
                 movie = new Movie(posterPath, plotSynopsis, releaseDate, id, originalTitle, title, voteCount, userRating, genre);
                 lista.add(movie);

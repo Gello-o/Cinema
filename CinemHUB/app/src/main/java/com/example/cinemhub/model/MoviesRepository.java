@@ -4,10 +4,12 @@ import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.cinemhub.ActivityDetail;
 import com.example.cinemhub.api.Client;
 import com.example.cinemhub.api.Service;
 
@@ -216,6 +218,7 @@ public class MoviesRepository {
                 WebSettings webSettings = webView.getSettings();
                 webSettings.setJavaScriptEnabled(true);
                 webView.loadData(link3, "text/html", "utf-8");
+                //webView.loadUrl("https://www.youtube.com/embed/" + key);
 
 
                 //Molte cose son da cancellare, ma le lascio così confonde di più le idee.
@@ -236,4 +239,63 @@ public class MoviesRepository {
         });
 
     }
+
+
+
+
+
+    public void getTrailer(String id, MutableLiveData<String> keyDatum) {
+        Service apiService = Client.getClient().create(Service.class);
+        Call<TrailerResponse> call;
+        call = apiService.getMovieTrailer(Integer.parseInt(id), API_KEY);
+
+        call.enqueue(new Callback<TrailerResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<TrailerResponse> call, @NonNull Response<TrailerResponse> response) {
+                List<Trailer> trailers = response.body().getTrailers();
+                //Gli diamo il primo trailer.
+                String key = "";
+
+                //Temporaneo
+                if (trailers == null || trailers.size() == 0) {
+                    key = "BdJKm16Co6M";
+                } else
+                    key = trailers.get(0).getKey();
+
+                keyDatum.postValue(key);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<TrailerResponse> call, @NonNull Throwable t) {
+                if (t.getMessage() != null)
+                    Log.d("Error", t.getMessage());
+                else
+                    Log.d("Error", "qualcosa è andato storto");
+            }
+        });
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

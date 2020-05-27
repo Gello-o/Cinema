@@ -26,4 +26,16 @@ public interface MovieDao {
 
     @Update
     public void changeDb(Favorite nextDb);
+
+    @Insert
+    public void addUserRating(UserRatingDB userRatingDB);
+
+    @Query("select * from UserRatingDB")
+    public List<UserRatingDB> getUserOverview();
+
+    @Query("select * from UserRatingDB where movie_id = :id")
+    public UserRatingDB getUserInfo(int id);
+
+    @Update
+    public void updateUserRating(UserRatingDB nextDb);
 }

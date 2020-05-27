@@ -32,6 +32,16 @@
             <meta-data android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+
+
+        <activity android:name=".WebViewActivity"
+            android:label="WebView"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation|screenSize"
+            android:parentActivityName=".ActivityDetail">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ActivityDetail" />
+        </activity>
     </application>
 
 </manifest>

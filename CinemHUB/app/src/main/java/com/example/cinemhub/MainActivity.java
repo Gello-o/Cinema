@@ -1,9 +1,12 @@
 package com.example.cinemhub;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.Gravity;
@@ -12,10 +15,15 @@ import android.view.Menu;
 
 import com.example.cinemhub.model.Favorite;
 import com.example.cinemhub.model.FavoriteDB;
+import com.example.cinemhub.model.UserRatingDB;
+import com.example.cinemhub.ricerca.SearchFragment;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+
+import android.view.inputmethod.InputMethodManager;
+import android.widget.SearchView;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -31,6 +39,8 @@ public class MainActivity extends AppCompatActivity{
     private AppBarConfiguration mAppBarConfiguration;
     private static final String TAG = "MainActivity";
     ProgressDialog pd;
+    private Context mContext;
+    public UserRatingDB userRatingDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +52,7 @@ public class MainActivity extends AppCompatActivity{
 
         DrawerLayout drawer;
         drawer = findViewById(R.id.drawer_layout);
+        mContext = this;
         /*
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -60,14 +71,8 @@ public class MainActivity extends AppCompatActivity{
         NavigationUI.setupWithNavController(navigationView, navController);
 
         FavoriteDB.getInstance(getApplicationContext());
+        FavoriteDB.getInstanceUser();
         Log.d(TAG,"creato il Db");
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
     }
 
     @Override
@@ -81,8 +86,8 @@ public class MainActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
             case R.id.menu_settings:
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
+                //Intent intent = new Intent(this, SettingsActivity.class);
+                //startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -104,4 +109,80 @@ public class MainActivity extends AppCompatActivity{
         super.onSaveInstanceState(outState);
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+
+        implementSearch(menu);
+        return true;
+    }
+
+
+
+
+    private void implementSearch(final Menu menu) {
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        final MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) searchMenuItem.getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false);
+
+        searchMenuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                // the search view is now open. add your logic if you want
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        searchView.requestFocus();
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        if (imm != null) { // it's never null. I've added this line just to make the compiler happy
+                            imm.showSoftInput(searchView.findFocus(), 0);
+                        }
+
+
+                    }
+                });
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // the search view is closing. add your logic if you want
+                return true;
+            }
+
+        });
+
+
+        /*
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setQueryHint("Search View Hint");
+*/
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            int numeroDiSpazi = 0;
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.d(TAG, "" + newText);
+                //qua potremmo mostrare suggerimenti volendo: da capire
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                String query1 = query.trim().replaceAll("\\s+", "+").replaceAll("[^a-zA-Z0-9+]", "");
+                System.out.println("Query: " + query1);
+                // Do your task here
+                return false;
+            }
+
+        });
+    }
+
+//"[^A-Za-z0-9]"
 }
