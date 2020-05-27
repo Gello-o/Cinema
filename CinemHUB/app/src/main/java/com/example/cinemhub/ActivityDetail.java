@@ -138,7 +138,7 @@ public class ActivityDetail extends YouTubeBaseActivity {
             initializedListener = new YouTubePlayer.OnInitializedListener() {
                 @Override
                 public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-                    youTubePlayer.loadVideo(keyDatum.getValue());
+                    youTubePlayer.cueVideo(keyDatum.getValue());
                     Log.d(TAG,"success");
                 }
 

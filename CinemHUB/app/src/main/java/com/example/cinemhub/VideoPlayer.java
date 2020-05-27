@@ -31,7 +31,7 @@ public class VideoPlayer extends YouTubeBaseActivity {
             initializedListener = new YouTubePlayer.OnInitializedListener() {
                 @Override
                 public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-                    youTubePlayer.loadVideo(key);
+                    youTubePlayer.cueVideo(key);
                     Log.d(TAG,"success");
                 }
 
@@ -46,7 +46,7 @@ public class VideoPlayer extends YouTubeBaseActivity {
                 @Override
                 public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                     Log.d(TAG,"success no key");
-                    youTubePlayer.loadVideo("https://www.youtube.com/embed/W4hTJybfU7s");
+                    youTubePlayer.cueVideo("W4hTJybfU7s");
                 }
 
                 @Override
