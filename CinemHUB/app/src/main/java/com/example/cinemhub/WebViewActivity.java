@@ -13,25 +13,15 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.VideoView;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.widget.FrameLayout;
 
-import com.example.cinemhub.model.Favorite;
-
-import java.util.List;
-import java.util.Objects;
 
 public class WebViewActivity extends AppCompatActivity {
     private static final String TAG = "WebView";
     private WebView webView;
     private String key;
-    private static final String API_KEY = "740ef79d64b588653371072cdee99a0f";
     private Context mContext;
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,23 +57,6 @@ public class WebViewActivity extends AppCompatActivity {
 
         webView.setWebChromeClient(new myChrome());
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public class myChrome extends WebChromeClient {
         private View mCustomView;

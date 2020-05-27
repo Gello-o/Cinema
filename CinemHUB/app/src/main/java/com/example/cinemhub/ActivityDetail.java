@@ -9,45 +9,29 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
-
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
-
 import com.bumptech.glide.Glide;
-import com.example.cinemhub.api.Client;
-import com.example.cinemhub.api.Service;
 import com.example.cinemhub.model.Favorite;
 import com.example.cinemhub.model.FavoriteDB;
-import com.example.cinemhub.model.Favorite;
 import com.example.cinemhub.model.MoviesRepository;
-import com.example.cinemhub.model.Trailer;
-import com.example.cinemhub.model.TrailerResponse;
-
+import com.example.cinemhub.utils.Constants;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
-
 import java.util.List;
-
-
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -64,9 +48,6 @@ public class ActivityDetail extends YouTubeBaseActivity {
     List<Favorite> line;
     private YouTubePlayerView playerView;
     private YouTubePlayer.OnInitializedListener initializedListener;
-    private static final String API_KEY = "740ef79d64b588653371072cdee99a0f";
-    private final String YT_API_KEY = "AIzaSyC95r_3BNU_BxvSUE7ZyXKrar3dc127rVk";
-    private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
     private Context mContext;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -113,25 +94,6 @@ public class ActivityDetail extends YouTubeBaseActivity {
             genre = intent.getExtras().getString("genre_id");
             voteCount = intent.getExtras().getString("vote_count");
 
-            /*
-            Intent intent2 = new Intent(mContext, WebViewActivity.class);
-            webView.setOnTouchListener(new View.OnTouchListener() {
-
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    System.out.println("Touched: " + webView.getUrl());
-                    intent2.putExtra("key", webView.getUrl());
-                    System.out.println(intent2.putExtra("key", webView.getUrl()));
-                    intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    mContext.startActivity(intent2);
-                    return false;
-                }
-            });
-
-            */
-
-
-
             MutableLiveData<String> keyDatum = new MutableLiveData<>();
             MoviesRepository.getInstance().getTrailer(id, keyDatum);
 
@@ -148,7 +110,7 @@ public class ActivityDetail extends YouTubeBaseActivity {
                 }
             };
 
-            playerView.initialize(YT_API_KEY, initializedListener);
+            playerView.initialize(Constants.YT_API_KEY, initializedListener);
 
 
 
@@ -160,7 +122,7 @@ public class ActivityDetail extends YouTubeBaseActivity {
             }
             else{
                 Glide.with(this)
-                        .load(base_image_Url+thumbnail)
+                        .load(Constants.BASE_IMAGE_URL+thumbnail)
                         .dontAnimate()
                         .into(imageView);
             }
@@ -310,32 +272,6 @@ public class ActivityDetail extends YouTubeBaseActivity {
         }
         return false;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     public class myChrome extends WebChromeClient {

@@ -1,14 +1,11 @@
 package com.example.cinemhub.ui.home;
 
-import android.os.AsyncTask;
-import android.util.Log;
 
+import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesRepository;
-
 import java.util.List;
 
 public class HomeViewModel extends ViewModel {

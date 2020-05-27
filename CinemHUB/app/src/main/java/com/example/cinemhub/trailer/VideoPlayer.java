@@ -9,18 +9,12 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
-
+import com.example.cinemhub.utils.Constants;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
-
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static android.widget.ListPopupWindow.MATCH_PARENT;
-
 import com.example.cinemhub.R;
-
-/**
- * Created by delaroy on 11/23/17.
- */
 
 public class VideoPlayer extends YouTubeFailureRecoveryActivity implements
         YouTubePlayer.OnFullscreenListener {
@@ -29,14 +23,12 @@ public class VideoPlayer extends YouTubeFailureRecoveryActivity implements
     private LinearLayout baseLayout;
     private YouTubePlayerView playerView;
     private YouTubePlayer player;
-    private final String API_KEY = "740ef79d64b588653371072cdee99a0f";
+
 
     private View otherViews;
 
     private boolean fullscreen;
 
-    public static final String EXTRA_TITLE = "videotitle";
-    public static final String EXTRA_VIDEOID = "videoid";
     String title,videoId;
     TextView videoTitle;
 
@@ -49,13 +41,13 @@ public class VideoPlayer extends YouTubeFailureRecoveryActivity implements
         playerView = (YouTubePlayerView) findViewById(R.id.player);
         otherViews = findViewById(R.id.other_views);
 
-        title = getIntent().getExtras().getString(EXTRA_TITLE);
-        videoId = getIntent().getExtras().getString(EXTRA_VIDEOID);
+        title = getIntent().getExtras().getString(Constants.EXTRA_TITLE);
+        videoId = getIntent().getExtras().getString(Constants.EXTRA_VIDEOID);
 
         videoTitle = (TextView) findViewById(R.id.videoName);
         videoTitle.setText(title);
 
-        playerView.initialize(API_KEY, this);
+        playerView.initialize(Constants.API_KEY, this);
 
         doLayout();
     }
@@ -103,8 +95,7 @@ public class VideoPlayer extends YouTubeFailureRecoveryActivity implements
 
             otherViews.setVisibility(View.GONE);
         } else {
-            // This layout is up to you - this is just a simple example (vertically stacked boxes in
-            // portrait, horizontally stacked in landscape).
+
             otherViews.setVisibility(View.VISIBLE);
             ViewGroup.LayoutParams otherViewsParams = otherViews.getLayoutParams();
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {

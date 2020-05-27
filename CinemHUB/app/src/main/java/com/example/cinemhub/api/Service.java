@@ -1,7 +1,6 @@
 package com.example.cinemhub.api;
 
 import com.example.cinemhub.model.MoviesResponse;
-
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;

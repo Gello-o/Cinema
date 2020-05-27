@@ -1,11 +1,11 @@
 package com.example.cinemhub;
 
-import android.app.Activity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-
+import com.example.cinemhub.utils.Constants;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -16,7 +16,7 @@ public class VideoPlayer extends YouTubeBaseActivity {
     private YouTubePlayerView playerView;
     private YouTubePlayer.OnInitializedListener initializedListener;
     private Context context = this;
-    private final String YT_API_KEY = "AIzaSyC95r_3BNU_BxvSUE7ZyXKrar3dc127rVk";
+
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -55,7 +55,7 @@ public class VideoPlayer extends YouTubeBaseActivity {
                 }
             };
         }
-        playerView.initialize(YT_API_KEY, initializedListener);
+        playerView.initialize(Constants.YT_API_KEY, initializedListener);
 
     }
 
