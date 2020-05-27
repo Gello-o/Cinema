@@ -10,6 +10,19 @@
     tools:showIn="@layout/activity_main"
     android:background="@color/colorPrimary">
 
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/slider_pager"
+            android:layout_width="wrap_content"
+            android:layout_height="275dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginRight="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+        </androidx.viewpager.widget.ViewPager>
+
         <com.google.android.material.tabs.TabLayout
             app:tabGravity="center"
             android:id="@+id/indicator"
@@ -20,7 +33,20 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/slider_pager">
+
         </com.google.android.material.tabs.TabLayout>
+
+                <TextView
+                    android:id="@+id/text_prossime_uscite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:text="PROSSIME USCITE"
+                    android:textColor="#FBF9F9"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/slider_pager" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_prossime_uscite"
@@ -30,7 +56,20 @@
             android:orientation="horizontal"
             android:visibility="visible"
             tools:layout_editor_absoluteX="0dp"
-            app:layout_constraintTop_toTopOf="@+id/indicator"/>
+            app:layout_constraintTop_toBottomOf="@+id/text_prossime_uscite">
+        </androidx.recyclerview.widget.RecyclerView>
+
+                <TextView
+                    android:id="@+id/text_popular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:text="POPOLARI"
+                    android:textColor="#FBF9F9"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/recycler_prossime_uscite" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_popular"
@@ -39,8 +78,20 @@
             android:orientation="horizontal"
             android:layout_marginTop="25dp"
             android:visibility="visible"
-            app:layout_constraintTop_toBottomOf="@id/recycler_prossime_uscite"
+            app:layout_constraintTop_toBottomOf="@id/text_popular"
             tools:layout_editor_absoluteX="-16dp" />
+
+                <TextView
+                    android:id="@+id/text_topRated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:text="TOP RATED"
+                    android:textColor="#FBF9F9"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/recycler_view_popular" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_top_rated"
@@ -51,18 +102,8 @@
             android:visibility="visible"
             app:layout_constraintTop_toBottomOf="@id/recycler_view_popular" />
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/slider_pager"
-            android:layout_width="wrap_content"
-            android:layout_height="275dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginRight="2dp"
-            android:layout_marginLeft="2dp">
 
-        </androidx.viewpager.widget.ViewPager>
+
 
 
 
