@@ -220,7 +220,6 @@ public class ActivityDetail extends AppCompatActivity {
         return true;
     }
 
-
     private void saveFavorite() {
         favorite = new Favorite();
 

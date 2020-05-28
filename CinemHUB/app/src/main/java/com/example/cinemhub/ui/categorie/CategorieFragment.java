@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.text.style.CharacterStyle;
 import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -147,37 +149,48 @@ public class CategorieFragment extends Fragment {
         SpannableString ss2 = new SpannableString(avventuraTxt.getText());
         SpannableString ss3 = new SpannableString(crimineTxt.getText());
 
+        CategorieFragmentDirections.GoToGenereAction action =
+                CategorieFragmentDirections.goToGenereAction(0);
+
         ClickableSpan azioneClickableSpan = new ClickableSpan(){
 
             @Override
             public void onClick(@NonNull View widget) {
                 Log.d(TAG, "cliccato");
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.categorie_fragment, new MostraCategoriaFragment(80)).commit();
+                action.setGenere(28);
+                Navigation.findNavController(widget).navigate(action);
+
+
             }
         };
+
 
         ClickableSpan avventuraClickableSpan = new ClickableSpan(){
 
             @Override
             public void onClick(@NonNull View widget) {
                 Log.d(TAG, "cliccato");
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.categorie_fragment, new MostraCategoriaFragment(12)).commit();
+                action.setGenere(12);
+                Navigation.findNavController(widget).navigate(action);
             }
         };
 
         ClickableSpan crimineClickableSpan = new ClickableSpan(){
 
+
             @Override
             public void onClick(@NonNull View widget) {
                 Log.d(TAG, "cliccato");
+                action.setGenere(80);
+                Navigation.findNavController(widget).navigate(action);
 
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.categorie_fragment, new MostraCategoriaFragment(80)).commit();
+
             }
         };
 
         ss1.setSpan(azioneClickableSpan, 0, 6, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        ss2.setSpan(azioneClickableSpan, 0, 8, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        ss3.setSpan(azioneClickableSpan, 0, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss2.setSpan(avventuraClickableSpan, 0, 8, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss3.setSpan(crimineClickableSpan, 0, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         azioneTxt.setText(ss1);
         avventuraTxt.setText(ss2);
@@ -187,4 +200,5 @@ public class CategorieFragment extends Fragment {
         avventuraTxt.setMovementMethod(LinkMovementMethod.getInstance());
         crimineTxt.setMovementMethod(LinkMovementMethod.getInstance());
     }
+
 }

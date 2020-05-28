@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,18 +30,16 @@ public class MostraCategoriaFragment extends Fragment {
     private MoviesAdapter genereAdapter;
     private MostraCategoriaViewModel mostraCategoriaViewModel;
     private final static String TAG = "MostraCategoriaFragment";
-    
-    public MostraCategoriaFragment(int genere){
-        this.genere = genere;
-    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        
+
         View root = inflater.inflate(R.layout.fragment_genere, container, false);
         
         genereRV = root.findViewById(R.id.recycler_genere);
+
+        genere = CategorieFragmentArgs.fromBundle(getArguments()).getGenere();
 
         mostraCategoriaViewModel =
                 new ViewModelProvider(this).get(MostraCategoriaViewModel.class);

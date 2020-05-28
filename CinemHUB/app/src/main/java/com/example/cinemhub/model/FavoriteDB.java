@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {Favorite.class}, version = 2)
+@Database(entities = {Favorite.class, UserInfo.class}, version = 4)
 public abstract class FavoriteDB extends RoomDatabase {
     public final String TAG = "DbStructure";
     private static FavoriteDB favoriteDB;
@@ -18,9 +18,13 @@ public abstract class FavoriteDB extends RoomDatabase {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL("DROP TABLE Favorite");
+            database.execSQL("DROP TABLE UserInfo");
 
             database.execSQL("CREATE TABLE `Favorite1` (`id` INTEGER, "
                     + "`title` TEXT, `rating` DOUBLE, `posterPath` TEXT, `plot` TEXT, `originalTitle` TEXT, `releaseDate` TEXT, `voteCount` TEXT, `genreId` TEXT, PRIMARY KEY(`id`))");
+
+            database.execSQL("CREATE TABLE `UserInfo` (`id` INTEGER, "
+                    + "`comment` TEXT, `voto` DOUBLE, PRIMARY KEY(`id`))");
 
         }
     };
@@ -45,13 +49,15 @@ public abstract class FavoriteDB extends RoomDatabase {
             return null;
         if(favoriteDB == null){
             synchronized (FavoriteDB.class){
-                favoriteDB = Room.databaseBuilder(mContext, FavoriteDB.class,"Favorite").allowMainThreadQueries().build();
+                favoriteDB = Room.databaseBuilder(mContext, FavoriteDB.class,"Favorite")
+                        .allowMainThreadQueries()
+                        .build();
             }
         }
         return favoriteDB;
     }
 
-
-
     public abstract MovieDao dbInterface();
+
+    public abstract UserDao userDao();
 }

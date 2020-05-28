@@ -10,6 +10,14 @@
         android:name="com.example.cinemhub.ui.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/goToSearchAction"
+            app:destination="@id/nav_search">
+            <argument
+                android:name="query"
+                app:argType="string" />
+        </action>
+
     </fragment>
 
     <fragment
@@ -28,10 +36,18 @@
         android:id="@+id/nav_categorie"
         android:name="com.example.cinemhub.ui.categorie.CategorieFragment"
         android:label="@string/menu_categorie"
-        tools:layout="@layout/fragment_categorie" >
+        tools:layout="@layout/fragment_categorie">
         <action
-            android:id="@+id/action_nav_categorie_to_nav_genere"
-            app:destination="@id/nav_genere" />
+            android:id="@+id/goToGenereAction"
+            app:destination="@id/nav_genere"
+            app:popUpTo="@id/nav_categorie" >
+            <argument
+                android:name="genere"
+                app:argType="integer" />
+        </action>
+        <argument
+            android:name="genere"
+            app:argType="integer" />
     </fragment>
 
     <fragment
@@ -56,5 +72,28 @@
         android:id="@+id/nav_genere"
         android:name="com.example.cinemhub.ui.categorie.MostraCategoriaFragment"
         android:label="@string/menu_genere"
-        tools:layout="@layout/fragment_genere" />
+        tools:layout="@layout/fragment_genere" >
+        <action
+            android:id="@+id/goToCategorieAction"
+            app:destination="@id/nav_categorie"
+            app:popUpTo="@id/nav_categorie">
+        </action>
+        <argument android:name="genere"
+            app:argType="integer"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_search"
+        android:name="com.example.cinemhub.ui.categorie.MostraCategoriaFragment"
+        android:label="@string/menu_genere"
+        tools:layout="@layout/search" >
+        <action
+            android:id="@+id/goToHomeAction"
+            app:destination="@id/nav_home"
+            app:popUpTo="@id/nav_home" />
+        <argument
+            android:name="query"
+            app:argType="string" />
+    </fragment>
+
 </navigation>

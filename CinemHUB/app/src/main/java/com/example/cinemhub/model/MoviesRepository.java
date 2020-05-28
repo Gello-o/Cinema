@@ -12,6 +12,7 @@ import com.example.cinemhub.api.Client;
 import com.example.cinemhub.api.Service;
 
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -47,28 +48,24 @@ public class MoviesRepository {
 
             @Override
             public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
-                MoviesResponse moviesResponse = response.body();
-                List<Movie> movies = moviesResponse.getResults();
+                List<Movie> movies;
+                if(response.isSuccessful() && response.body() != null) {
+                    movies = response.body().getResults();
+                    moviesData.postValue(movies);
+                }
+                else
+                    movies = new ArrayList<>();
 
-                if(moviesResponse == null){
-                    Log.d(TAG, "response null");
-                    //gestione risposta nulla
-                }
-                else if(movies == null){
-                    Log.d(TAG, "movies null");
-                }
 
                 if(moviesData.getValue() == null) {
                     moviesData.setValue(movies);
                     Log.d(TAG, "null zio pera");
                     Log.d(TAG, "Pagina: " + pagina);
                 }
-
                 else {
                     List<Movie> a = moviesData.getValue();
                     a.addAll(movies);
                     moviesData.setValue(a); //setValue
-
                     Log.d(TAG, "not null zio pera");
                 }
             }

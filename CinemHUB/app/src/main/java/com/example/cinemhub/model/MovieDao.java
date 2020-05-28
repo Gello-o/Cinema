@@ -26,4 +26,5 @@ public interface MovieDao {
 
     @Update
     public void changeDb(Favorite nextDb);
+
 }
