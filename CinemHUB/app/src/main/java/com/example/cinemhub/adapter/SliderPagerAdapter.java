@@ -41,14 +41,14 @@ public class SliderPagerAdapter extends PagerAdapter {
         View slideLayout = inflater.inflate(R.layout.slide_item,null);
 
         ImageView slideImg = slideLayout.findViewById(R.id.slide_img);
-        TextView slideText = slideLayout.findViewById(R.id.slide_title);
+       // TextView slideText = slideLayout.findViewById(R.id.slide_title);
 
         if(mList.get(position) != null){
             Glide.with(mContext)
                     .load(Constants.BASE_IMAGE_URL+mList.get(position).getPosterPath())
                     .placeholder(R.drawable.ic_launcher_background)
                     .into(slideImg);
-            slideText.setText(mList.get(position).getTitle());
+       //     slideText.setText(mList.get(position).getTitle());
         }
         else {
             slideImg.setImageResource(R.drawable.ic_launcher_background);

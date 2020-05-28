@@ -32,5 +32,9 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="filter_search" />
+    <string name="filter2">filter2</string>
+    <string name="username">Username</string>
+    <string name="year" />
 
 </resources>

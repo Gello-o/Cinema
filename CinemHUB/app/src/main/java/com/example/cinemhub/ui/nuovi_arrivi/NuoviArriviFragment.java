@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -14,9 +15,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Movie;
+
 import java.util.List;
 
 
@@ -31,8 +34,9 @@ public class NuoviArriviFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_nuovi_arrivi, container, false);
 
         prossimeUsciteRV = root.findViewById(R.id.recycler_view_nuovi_arrivi);
+        //listView = (ListView) root.findViewById(R.id.nuovi_arrivi_fragment);
 
-        nuoviArriviViewModel =
+                nuoviArriviViewModel =
                 new ViewModelProvider(this).get(NuoviArriviViewModel.class);
 
         nuoviArriviViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
@@ -43,8 +47,16 @@ public class NuoviArriviFragment extends Fragment {
             }
         });
 
+
         return root;
     }
+
+    /*
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        implementSearch(menu);
+    }*/
 
     @Override
     public void onStop() {

@@ -103,7 +103,7 @@ public class ActivityDetail extends YouTubeBaseActivity {
             if(thumbnail == null){
                 Log.d(TAG, "immagine nulla");
                 Glide.with(this)
-                        .load(R.drawable.ic_launcher_background)
+                        .load(R.drawable.film_not_found)
                         .into(imageView);
             }
             else{

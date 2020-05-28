@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/nuovi_arrivi_fragment"
+    android:background="@color/colorPrimary"
     tools:context=".ui.nuovi_arrivi.NuoviArriviFragment">
 
     <androidx.recyclerview.widget.RecyclerView

@@ -10,14 +10,22 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.Menu;
 import com.example.cinemhub.model.FavoriteDB;
 import com.example.cinemhub.ricerca.SearchFragment;
 import com.google.android.material.navigation.NavigationView;
 import androidx.annotation.NonNull;
+
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.SearchView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
@@ -27,6 +35,9 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -52,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
             })
                     .show();
         } else {
-            Toast.makeText(MainActivity.this, "Welcome", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Welcome in CinemHUB", Toast.LENGTH_LONG).show();
 
 
             Toolbar toolbar = findViewById(R.id.toolbar_main);
@@ -76,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
             FavoriteDB.getInstance(getApplicationContext());
             Log.d(TAG, "creato il Db");
         }
+
+
     }
 
     @Override
@@ -88,13 +101,39 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_settings:
-                //Intent intent = new Intent(this, SettingsActivity.class);
-                //startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+            case R.id.filter:
+                implementFilter();
+                /*
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+                alertDialog.setTitle("Enter Name");
+                final EditText input = new EditText(mContext);
+                final Spinner spinner = new Spinner(mContext);
+                final Spinner spinner2 = new Spinner(mContext);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT);
+                spinner.setLayoutParams(lp);
+                alertDialog.setView(spinner);
+                spinner2.setLayoutParams(lp);
+                alertDialog.setView(spinner2);
+                alertDialog.setPositiveButton("Save",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                                Toast.makeText(getApplicationContext(),
+                                        "Name successfully changed", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                alertDialog.setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                alertDialog.show();
+                */
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -117,10 +156,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-
         implementSearch(menu);
         return true;
     }
+
+
 
 
     private void implementSearch(final Menu menu) {
@@ -188,4 +228,75 @@ public class MainActivity extends AppCompatActivity {
 
         return networkInfo != null && networkInfo.isConnected();
     }
+
+
+
+    private boolean implementFilter() {
+        LayoutInflater factory = LayoutInflater.from(this);
+        final View textEntryView = factory.inflate(R.layout.filter_dialog, null);
+
+        final Spinner spinnerCategroy = (Spinner) textEntryView.findViewById(R.id.spinner1);
+        final Spinner spinnerOrder = (Spinner) textEntryView.findViewById(R.id.spinner2);
+        final EditText editTextVote = (EditText) textEntryView.findViewById(R.id.vote);
+        final EditText editTextYear = (EditText) textEntryView.findViewById(R.id.year);
+
+        spinnerList(spinnerCategroy, "Action", "Romance", "Thriller", "Animation");
+        spinnerList(spinnerOrder, "Name", "Vote", "Popularity", "Year");
+
+        editTextVote.setText("8.0", TextView.BufferType.EDITABLE);
+        editTextYear.setText("2020", TextView.BufferType.EDITABLE);
+
+        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setIcon(R.drawable.heart_on).setTitle(" Filter:").setView(textEntryView).setPositiveButton("Save",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,
+                                        int whichButton) {
+
+                        Log.i("AlertDialog", "TextEntry 1 Entered " + editTextVote.getText().toString());
+                        Log.i("AlertDialog", "TextEntry 2 Entered " + editTextYear.getText().toString());
+                        /* User clicked OK so do some stuff */
+                    }
+                }).setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,
+                                        int whichButton) {
+                    }
+                });
+        alert.show();
+
+        return true;
+    }
+
+
+    void spinnerList(Spinner spinner, String s1, String s2, String s3, String s4) {
+        List<String> categroyList = new ArrayList<>();
+
+        categroyList.add(s1);
+        categroyList.add(s2);
+        categroyList.add(s3);
+        categroyList.add(s4);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, categroyList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                System.out.println("Entrato");
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+    }
+
+
 }
+
+
+
+
+
+
+
