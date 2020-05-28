@@ -1,28 +1,32 @@
 package com.example.cinemhub;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
+import android.content.DialogInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.StrictMode;
 import android.util.Log;
-import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.Menu;
-
-import com.example.cinemhub.model.Favorite;
 import com.example.cinemhub.model.FavoriteDB;
 import com.example.cinemhub.ricerca.SearchFragment;
 import com.google.android.material.navigation.NavigationView;
-
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.SearchView;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -31,9 +35,12 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.room.Room;
 
-public class MainActivity extends AppCompatActivity{
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private static final String TAG = "MainActivity";
@@ -45,31 +52,43 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.toolbar_main);
-        setSupportActionBar(toolbar);
+        // Test iniziale su connessione dispositivo (essenziale) per l'app
+        if (!isConnected()) {
+            new AlertDialog.Builder(this).setIcon(R.drawable.dialog_alert).setTitle("Internet Connection Alert")
+                    .setMessage("Please Check your internet connection").setPositiveButton("close", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            })
+                    .show();
+        } else {
+            Toast.makeText(MainActivity.this, "Welcome", Toast.LENGTH_LONG).show();
 
-        DrawerLayout drawer;
-        drawer = findViewById(R.id.drawer_layout);
-        mContext = this;
-        /*
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        */
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_preferiti, R.id.nav_add_list,R.id.nav_categorie,R.id.nav_nuovi_arrivi,R.id.nav_prossime_uscite,R.id.nav_piu_visti)
-                .setDrawerLayout(drawer)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
+            Toolbar toolbar = findViewById(R.id.toolbar_main);
+            setSupportActionBar(toolbar);
 
-        FavoriteDB.getInstance(getApplicationContext());
-        Log.d(TAG,"creato il Db");
+            DrawerLayout drawer;
+            drawer = findViewById(R.id.drawer_layout);
+            mContext = this;
+
+            NavigationView navigationView = findViewById(R.id.nav_view);
+
+            // menu should be considered as top level destinations.
+            mAppBarConfiguration = new AppBarConfiguration.Builder(
+                    R.id.nav_home, R.id.nav_preferiti, R.id.nav_add_list, R.id.nav_categorie, R.id.nav_nuovi_arrivi, R.id.nav_prossime_uscite, R.id.nav_piu_visti)
+                    .setDrawerLayout(drawer)
+                    .build();
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+            NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+            NavigationUI.setupWithNavController(navigationView, navController);
+
+            FavoriteDB.getInstance(getApplicationContext());
+            Log.d(TAG, "creato il Db");
+        }
+
+
     }
 
     @Override
@@ -80,24 +99,48 @@ public class MainActivity extends AppCompatActivity{
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch (item.getItemId()){
-            case R.id.menu_settings:
-                //Intent intent = new Intent(this, SettingsActivity.class);
-                //startActivity(intent);
-                return true;
-            //case R.id.action_search:
-            //    return true;
-            default:
-                return super.onOptionsItemSelected(item);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.filter:
+                implementFilter();
+                /*
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+                alertDialog.setTitle("Enter Name");
+                final EditText input = new EditText(mContext);
+                final Spinner spinner = new Spinner(mContext);
+                final Spinner spinner2 = new Spinner(mContext);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT);
+                spinner.setLayoutParams(lp);
+                alertDialog.setView(spinner);
+                spinner2.setLayoutParams(lp);
+                alertDialog.setView(spinner2);
+                alertDialog.setPositiveButton("Save",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                                Toast.makeText(getApplicationContext(),
+                                        "Name successfully changed", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                alertDialog.setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                alertDialog.show();
+                */
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
         DrawerLayout drawer;
         drawer = findViewById(R.id.drawer_layout);
-        if(drawer.isDrawerOpen(GravityCompat.START))
+        if (drawer.isDrawerOpen(GravityCompat.START))
             drawer.closeDrawer(GravityCompat.START);
         else
             super.onBackPressed();
@@ -113,9 +156,6 @@ public class MainActivity extends AppCompatActivity{
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-
         implementSearch(menu);
         return true;
     }
@@ -133,7 +173,7 @@ public class MainActivity extends AppCompatActivity{
         searchMenuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                // the search view is now open. add your logic if you want
+                // the search view is now open
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
@@ -151,17 +191,13 @@ public class MainActivity extends AppCompatActivity{
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                // the search view is closing. add your logic if you want
+                // the search view is closing.
                 return true;
             }
 
         });
 
 
-        /*
-        SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setQueryHint("Search View Hint");
-*/
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             int numeroDiSpazi = 0;
 
@@ -185,5 +221,82 @@ public class MainActivity extends AppCompatActivity{
         });
     }
 
-//"[^A-Za-z0-9]"
+    private boolean isConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService((Context.CONNECTIVITY_SERVICE));
+
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnected();
+    }
+
+
+
+    private boolean implementFilter() {
+        LayoutInflater factory = LayoutInflater.from(this);
+        final View textEntryView = factory.inflate(R.layout.filter_dialog, null);
+
+        final Spinner spinnerCategroy = (Spinner) textEntryView.findViewById(R.id.spinner1);
+        final Spinner spinnerOrder = (Spinner) textEntryView.findViewById(R.id.spinner2);
+        final EditText editTextVote = (EditText) textEntryView.findViewById(R.id.vote);
+        final EditText editTextYear = (EditText) textEntryView.findViewById(R.id.year);
+
+        spinnerList(spinnerCategroy, "Action", "Romance", "Thriller", "Animation");
+        spinnerList(spinnerOrder, "Nome", "Voto", "Popolarità", "Anno");
+
+        editTextVote.setText("8.0", TextView.BufferType.EDITABLE);
+        editTextYear.setText("2020", TextView.BufferType.EDITABLE);
+
+        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setIcon(R.drawable.heart_on).setTitle(" Filtra:").setView(textEntryView).setPositiveButton("Save",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,
+                                        int whichButton) {
+
+                        Log.i("AlertDialog", "TextEntry 1 Entered " + editTextVote.getText().toString());
+                        Log.i("AlertDialog", "TextEntry 2 Entered " + editTextYear.getText().toString());
+                        /* User clicked OK so do some stuff */
+                    }
+                }).setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,
+                                        int whichButton) {
+                    }
+                });
+        alert.show();
+
+        return true;
+    }
+
+
+    void spinnerList(Spinner spinner, String s1, String s2, String s3, String s4) {
+        List<String> categroyList = new ArrayList<>();
+
+        categroyList.add(s1);
+        categroyList.add(s2);
+        categroyList.add(s3);
+        categroyList.add(s4);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, categroyList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                System.out.println("Entrato");
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+    }
+
+
 }
+
+
+
+
+
+
+

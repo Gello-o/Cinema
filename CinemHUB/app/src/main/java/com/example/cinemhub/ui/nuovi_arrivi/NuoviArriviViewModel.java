@@ -1,20 +1,13 @@
 package com.example.cinemhub.ui.nuovi_arrivi;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesRepository;
-
-
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;

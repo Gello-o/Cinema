@@ -3,51 +3,29 @@ package com.example.cinemhub;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
-
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
-
 import com.bumptech.glide.Glide;
-import com.example.cinemhub.api.Client;
-import com.example.cinemhub.api.Service;
 import com.example.cinemhub.model.Favorite;
 import com.example.cinemhub.model.FavoriteDB;
-import com.example.cinemhub.model.Favorite;
 import com.example.cinemhub.model.MoviesRepository;
-import com.example.cinemhub.model.Trailer;
-import com.example.cinemhub.model.TrailerResponse;
-
+import com.example.cinemhub.utils.Constants;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
-
 import java.util.List;
-
-
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -64,9 +42,6 @@ public class ActivityDetail extends YouTubeBaseActivity {
     List<Favorite> line;
     private YouTubePlayerView playerView;
     private YouTubePlayer.OnInitializedListener initializedListener;
-    private static final String API_KEY = "740ef79d64b588653371072cdee99a0f";
-    private final String YT_API_KEY = "AIzaSyC95r_3BNU_BxvSUE7ZyXKrar3dc127rVk";
-    private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
     private Context mContext;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -87,15 +62,7 @@ public class ActivityDetail extends YouTubeBaseActivity {
         plotSynopsis = findViewById(R.id.plotsynopsis);
         userRating = findViewById(R.id.usersRating);
         releaseDate = findViewById(R.id.releaseDate);
-        //webView = findViewById(R.id.videoWebView);
         playerView = findViewById(R.id.player);
-
-
-
-        /*WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webView.setWebViewClient(new WebViewClient());*/
-        //webView.setWebChromeClient(new myChrome());
 
 
         Log.d(TAG, "Receiving intent");
@@ -113,25 +80,6 @@ public class ActivityDetail extends YouTubeBaseActivity {
             genre = intent.getExtras().getString("genre_id");
             voteCount = intent.getExtras().getString("vote_count");
 
-            /*
-            Intent intent2 = new Intent(mContext, WebViewActivity.class);
-            webView.setOnTouchListener(new View.OnTouchListener() {
-
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    System.out.println("Touched: " + webView.getUrl());
-                    intent2.putExtra("key", webView.getUrl());
-                    System.out.println(intent2.putExtra("key", webView.getUrl()));
-                    intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    mContext.startActivity(intent2);
-                    return false;
-                }
-            });
-
-            */
-
-
-
             MutableLiveData<String> keyDatum = new MutableLiveData<>();
             MoviesRepository.getInstance().getTrailer(id, keyDatum);
 
@@ -148,7 +96,7 @@ public class ActivityDetail extends YouTubeBaseActivity {
                 }
             };
 
-            playerView.initialize(YT_API_KEY, initializedListener);
+            playerView.initialize(Constants.YT_API_KEY, initializedListener);
 
 
 
@@ -160,7 +108,7 @@ public class ActivityDetail extends YouTubeBaseActivity {
             }
             else{
                 Glide.with(this)
-                        .load(base_image_Url+thumbnail)
+                        .load(Constants.BASE_IMAGE_URL+thumbnail)
                         .dontAnimate()
                         .into(imageView);
             }
@@ -309,74 +257,6 @@ public class ActivityDetail extends YouTubeBaseActivity {
                 return true;
         }
         return false;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public class myChrome extends WebChromeClient {
-        private View mCustomView;
-        private WebChromeClient.CustomViewCallback mCustomViewCallback;
-        //protected FrameLayout mFullscreenContainer;
-        //private int mOriginalOrientation;
-        private int mOriginalSystemUiVisibility;
-
-        myChrome() {
-        }
-
-        public Bitmap getDefaultVideoPoster() {
-            if (mCustomView == null) {
-                return null;
-            }
-            return BitmapFactory.decodeResource(getApplicationContext().getResources(), 2130837573);
-        }
-
-        public void onHideCustomView() {
-            ((FrameLayout) getWindow().getDecorView()).removeView(this.mCustomView);
-            this.mCustomView = null;
-            getWindow().getDecorView().setSystemUiVisibility(this.mOriginalSystemUiVisibility);
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-            this.mCustomViewCallback.onCustomViewHidden();
-            this.mCustomViewCallback = null;
-        }
-
-        public void onShowCustomView(View paramView, WebChromeClient.CustomViewCallback paramCustomViewCallback) {
-            if (this.mCustomView != null) {
-                onHideCustomView();
-                return;
-            }
-            this.mCustomView = paramView;
-            this.mOriginalSystemUiVisibility = getWindow().getDecorView().getSystemUiVisibility();
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-            //this.mOriginalOrientation = getRequestedOrientation();
-            this.mCustomViewCallback = paramCustomViewCallback;
-            ((FrameLayout) getWindow().getDecorView()).addView(this.mCustomView, new FrameLayout.LayoutParams(-1, -1));
-            getWindow().getDecorView().setSystemUiVisibility(3846);
-        }
     }
 
 

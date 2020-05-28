@@ -5,9 +5,6 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
-
-import com.example.cinemhub.model.Favorite;
-
 import java.util.List;
 
 @Dao

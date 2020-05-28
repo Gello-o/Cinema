@@ -3,7 +3,6 @@ package com.example.cinemhub.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +50,7 @@ public class Movie {
     @Expose
     private boolean video;
 
-    // brutto cane qua devi memorizzare i trailer in qualche modo
+
     public Movie(){}
 
     public Movie(String posterPath, String overview, String release_date, Integer id, String original_title, String title, Integer vote_count, Double vote_average, Integer genre) {
