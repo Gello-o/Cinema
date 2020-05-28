@@ -137,53 +137,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_margin_top"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/your_vote"
-                android:text="@string/your_rating"
-                android:layout_marginLeft="@dimen/layout_margin_left"
-                android:padding="@dimen/padding_layout"
-                android:layout_marginTop="@dimen/layout_margin_top"
-                android:textStyle="bold"
-                android:textSize="25sp"
-                android:gravity="center_horizontal"
-                android:layout_marginStart="@dimen/layout_margin_left" />
-
-            <RatingBar
-                android:id="@+id/ratingBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:numStars="10"
-                android:stepSize="1.0"
-                android:max="10"
-                style="@style/MyRatingBar"
-                android:layout_marginTop="10dp"
-                android:isIndicator="false"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/show_vote"
-                android:text="@string/show_vote"
-                android:layout_marginTop="10dp"
-                android:textSize="10dp"
-                android:layout_marginLeft="10dp" />
-
-            <EditText
-                android:id="@+id/user_overview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/layout_margin_top2">
-
-            </EditText>
-            <Button
-                    android:id="@+id/submit_rating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Submit"
-                    style="?android:attr/borderlessButtonStyle"/>
-
+            <include layout="@layout/content_detail2" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </RelativeLayout>

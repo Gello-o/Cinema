@@ -60,7 +60,7 @@ import com.google.android.youtube.player.YouTubePlayerView;
 
 public class ActivityDetail extends YouTubeBaseActivity {
     private static final String TAG = "ActivityDetail";
-    private TextView nameOfMovie, plotSynopsis, userRating, releaseDate, showVote;
+    private TextView nameOfMovie, plotSynopsis, userRating, releaseDate, showVote, warning, comment;
     private EditText editText;
     private ImageView imageView;
     private WebView webView;
@@ -77,7 +77,7 @@ public class ActivityDetail extends YouTubeBaseActivity {
     private final String YT_API_KEY = "AIzaSyC95r_3BNU_BxvSUE7ZyXKrar3dc127rVk";
     private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
     private Context mContext;
-    RatingBar ratingBar;
+    RatingBar ratingBar, ratingBarUser;
     Button button;
     boolean recensito;
     String commento;
@@ -232,9 +232,15 @@ public class ActivityDetail extends YouTubeBaseActivity {
         // uteenteeeeeeee
         button = findViewById(R.id.submit_rating);
         ratingBar = findViewById(R.id.ratingBar);
+        ratingBarUser = findViewById(R.id.ratingBar_user);
         editText = findViewById(R.id.user_overview);
         showVote = findViewById(R.id.show_vote);
+        warning = findViewById(R.id.warning);
+        comment = findViewById(R.id.comment);
+        editText = findViewById(R.id.user_overview);
+        recensito = checkUser();
 
+        checkComment();
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
@@ -244,41 +250,37 @@ public class ActivityDetail extends YouTubeBaseActivity {
             }
         });
 
-
-        recensito = checkUser();
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 userRatingDB = new UserRatingDB();
                 String name = editText.getText().toString();
-                Log.d(TAG, "ottenuta la string " + name);
-                if(name.equals("")){
-                    if(commento != null && !commento.equals("")){
-                        name = commento;
-                        //textView = commento
-                    }
-                }else{
-                    //textView = name
-                }
 
                 userRatingDB.setMovie_id(Integer.parseInt(id));
                 userRatingDB.setRating(submittedRating);
                 userRatingDB.setOverview(name);
-                if(submittedRating!=0) {
-                    if (recensito) {
-                        FavoriteDB.getInstance().dbInterface().updateUserRating(userRatingDB);
-                        Log.d(TAG, "update dbuser ok " + movieName);
-                        mostraDbUser();
-                    } else {
-                        FavoriteDB.getInstance().dbInterface().addUserRating(userRatingDB);
-                        Log.d(TAG, "memorizzato in dbUser 1 volta" + movieName);
-                        mostraDbUser();
-                    }
+
+                if (recensito) {
+                    FavoriteDB.getInstance().dbInterface().updateUserRating(userRatingDB);
+                    Log.d(TAG, "update dbuser ok ");
+                    mostraDbUser();
+                    Toast.makeText(getApplicationContext(), "Commento aggiornato correttamente", Toast.LENGTH_SHORT).show();
+                    checkComment();
                 } else {
-                    Toast.makeText(getApplicationContext(), "inserire un punteggio che non sia 0", Toast.LENGTH_SHORT).show();
+                    FavoriteDB.getInstance().dbInterface().addUserRating(userRatingDB);
+                    Log.d(TAG, "memorizzato in dbUser 1 volta");
+                    mostraDbUser();
+                    checkComment();
+                    Toast.makeText(getApplicationContext(), "Commento aggiunto correttamente", Toast.LENGTH_SHORT).show();
                 }
+                //azzero tutto
+                warning.setText("");
+                editText.setText("");
+                ratingBar.setRating(0);
             }
         });
+
+
 
 ////////////////
         Log.d(TAG, "end of the intent");
@@ -397,10 +399,23 @@ public class ActivityDetail extends YouTubeBaseActivity {
         if(user != null){
             commento= user.getOverview();
             submittedRating = user.getRating();
-            ratingBar.setRating(submittedRating);
             return true;
         }else {
             return false;
+        }
+    }
+
+    private void checkComment(){
+        if(checkUser()){//==true)
+            editText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG,"entrato nel onclick edit");
+                    warning.setText("WARNING! you'll override your comment");
+                }
+            });
+            ratingBarUser.setRating(submittedRating);
+            comment.setText(commento);
         }
     }
 
