@@ -92,7 +92,6 @@ public class Favorite {
 
     // metodi Set
 
-
     public void setMovieId(int movie_id) {
         this.movie_id = movie_id;
     }

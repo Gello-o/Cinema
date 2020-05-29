@@ -3,10 +3,8 @@ package com.example.cinemhub.ui.add_list;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesRepository;
-
 import java.util.List;
 
 public class AddListViewModel extends ViewModel {

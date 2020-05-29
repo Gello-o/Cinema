@@ -20,6 +20,15 @@
             android:orientation="vertical"
             android:layout_gravity="center_horizontal">
 
+            <com.like.LikeButton
+                android:id="@+id/favorite_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:icon_size="10dp"
+                app:icon_type="heart"
+                android:gravity="center_horizontal"
+                />
+
             <TextView
                 android:id="@+id/movieTitle"
                 android:layout_width="match_parent"
@@ -121,26 +130,14 @@
                 android:gravity="center_horizontal"
                 android:layout_marginStart="@dimen/layout_margin_left" />
 
-            <com.like.LikeButton
-                android:id="@+id/favorite_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:icon_size="10dp"
-                app:icon_type="star"
-                android:layout_marginLeft="10dp"/>
 
-            <WebView
-                android:id="@+id/videoWebView"
+            <com.google.android.youtube.player.YouTubePlayerView
+                android:id="@+id/player"
                 android:layout_width="match_parent"
-                android:layout_height="1200dp"
-                android:layout_gravity="center"
-                android:layout_marginHorizontal="25dp"
-                android:layout_marginVertical="5dp">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_margin_top"/>
 
-            </WebView>
-
+            <include layout="@layout/content_detail2" />
         </LinearLayout>
-
     </androidx.core.widget.NestedScrollView>
-
 </RelativeLayout>

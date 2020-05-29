@@ -48,4 +48,5 @@ public class CategorieViewModel extends ViewModel {
         }
         return mText2;
     }
+
 }

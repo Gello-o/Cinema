@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:id="@+id/add_list_fragment"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     tools:context=".ui.add_list.AddListFragment">
 
     <androidx.recyclerview.widget.RecyclerView

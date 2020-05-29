@@ -6,25 +6,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.cinemhub.MainActivity;
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Favorite;
 import com.example.cinemhub.model.FavoriteDB;
 import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.ui.piu_visti.PiuVistiViewModel;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,7 +82,7 @@ public class PreferitiFragment extends Fragment {
                 posterPath = fav.getPosterPath();
                 Log.d(TAG, ""+posterPath);
                 plotSynopsis = fav.getPlotSynopsys();
-                Log.d(TAG, ""+plotSynopsis.substring(0, 8));
+                Log.d(TAG, ""+plotSynopsis);
                 releaseDate = fav.getReleaseDate();
                 originalTitle = fav.getOriginalTitle();
                 try {
@@ -116,7 +107,7 @@ public class PreferitiFragment extends Fragment {
             }
         }
         else{
-            Log.d(TAG, "CIAO BELO");
+            Log.d(TAG, "log else");
         }
         return lista;
     }

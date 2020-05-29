@@ -7,17 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
-
 import com.example.cinemhub.ActivityDetail;
 import com.example.cinemhub.R;
 import com.example.cinemhub.model.Movie;
+import com.example.cinemhub.utils.Constants;
 
 import java.util.List;
 
@@ -35,7 +32,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
     private List<Movie> movieList;
     LayoutInflater layoutInflater;
     private static final String TAG = "MoviesAdapter";
-    private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
+
 
     public MoviesAdapter(Context context, List<Movie> movieList) {
         if(movieList != null)
@@ -72,7 +69,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
         }
         else{
             Glide.with(context)
-                    .load(base_image_Url+movieList.get(i).getPosterPath())
+                    .load(Constants.BASE_IMAGE_URL+movieList.get(i).getPosterPath())
                     .dontAnimate()
                     .into(viewHolder.thumbnail);
         }
@@ -112,6 +109,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
                         intent.putExtra("vote_average", Double.toString(movieList.get(pos).getVoteAverage()));
                         intent.putExtra("title", movieList.get(pos).getTitle());
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        System.out.println("Lintento" + intent);
                         context.startActivity(intent);
                         Toast.makeText(v.getContext(), "you clicked " + clickedDataItem.getTitle(), Toast.LENGTH_SHORT).show();
                     }
