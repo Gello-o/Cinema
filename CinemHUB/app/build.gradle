@@ -65,5 +65,7 @@ dependencies {
 
     compile files('libs/YouTubeAndroidPlayerApi.jar')
     implementation 'androidx.mediarouter:mediarouter:1.1.0'
+
+    apply plugin: 'androidx.navigation.safeargs'
 }
 

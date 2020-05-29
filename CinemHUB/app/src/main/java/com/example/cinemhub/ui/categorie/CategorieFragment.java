@@ -148,7 +148,7 @@ public class CategorieFragment extends Fragment {
         SpannableString ss1 = new SpannableString(azioneTxt.getText());
         SpannableString ss2 = new SpannableString(avventuraTxt.getText());
         SpannableString ss3 = new SpannableString(crimineTxt.getText());
-/*
+
        CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
 
         ClickableSpan azioneClickableSpan = new ClickableSpan(){
@@ -196,7 +196,7 @@ public class CategorieFragment extends Fragment {
         azioneTxt.setMovementMethod(LinkMovementMethod.getInstance());
         avventuraTxt.setMovementMethod(LinkMovementMethod.getInstance());
         crimineTxt.setMovementMethod(LinkMovementMethod.getInstance());
-*/
+
 
     }
 }
