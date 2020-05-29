@@ -42,7 +42,10 @@
         android:id="@+id/user_overview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_margin_top2">
+        android:layout_marginTop="@dimen/layout_margin_top2"
+        android:text="@string/edit_text"
+        android:textColor="#E0E0E0"
+        android:focusable="false">
     </EditText>
 
     <TextView

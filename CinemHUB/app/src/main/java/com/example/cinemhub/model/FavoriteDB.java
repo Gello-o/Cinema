@@ -75,7 +75,8 @@ public abstract class FavoriteDB extends RoomDatabase {
         if(userRatingDB == null){
             synchronized (FavoriteDB.class){
                 favoriteDB = Room.databaseBuilder(mContext, FavoriteDB.class,"UserRatingDB")
-                        .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                        .addMigrations(MIGRATION_1_2)
+                        .addMigrations(MIGRATION_2_3)
                         .allowMainThreadQueries()
                         .build();
             }

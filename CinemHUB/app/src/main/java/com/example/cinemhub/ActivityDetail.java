@@ -6,51 +6,28 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 
 import com.bumptech.glide.Glide;
-import com.example.cinemhub.api.Client;
-import com.example.cinemhub.api.Service;
-import com.example.cinemhub.model.Favorite;
-import com.example.cinemhub.model.FavoriteDB;
-import com.example.cinemhub.model.Favorite;
 import com.example.cinemhub.model.MoviesRepository;
-import com.example.cinemhub.model.Trailer;
-import com.example.cinemhub.model.TrailerResponse;
 
-import com.example.cinemhub.model.UserRatingDB;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.snackbar.Snackbar;
-import com.like.LikeButton;
-import com.like.OnLikeListener;
-
-import java.util.List;
 
 
 import com.google.android.youtube.player.YouTubeBaseActivity;
@@ -60,27 +37,21 @@ import com.google.android.youtube.player.YouTubePlayerView;
 
 public class ActivityDetail extends YouTubeBaseActivity {
     private static final String TAG = "ActivityDetail";
-    private TextView nameOfMovie, plotSynopsis, userRating, releaseDate, showVote, warning, comment;
-    private EditText editText;
-    private ImageView imageView;
-    private WebView webView;
-    private VideoView videoView;
-    String thumbnail, movieName, synopsis, rating, release, id, originalMovieName, voteCount, genre;
-    float submittedRating;
-    public Favorite favorite;
-    public UserRatingDB userRatingDB;
-    List<Favorite> line;
-    List<UserRatingDB> lineUser;
-    private YouTubePlayerView playerView;
-    private YouTubePlayer.OnInitializedListener initializedListener;
+
     private static final String API_KEY = "740ef79d64b588653371072cdee99a0f";
     private final String YT_API_KEY = "AIzaSyC95r_3BNU_BxvSUE7ZyXKrar3dc127rVk";
     private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
+
+    private TextView nameOfMovie, plotSynopsis, userRating, releaseDate;
+    private ImageView imageView;
+    private YouTubePlayerView playerView;
+    private YouTubePlayer.OnInitializedListener initializedListener;
     private Context mContext;
-    RatingBar ratingBar, ratingBarUser;
-    Button button;
-    boolean recensito;
-    String commento;
+    private UserOperation userOperation ;
+    private FavoriteOperation favoriteOperation;
+
+    String thumbnail, movieName, synopsis, rating, release, id, originalMovieName, voteCount, genre;
+
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -89,8 +60,8 @@ public class ActivityDetail extends YouTubeBaseActivity {
         Log.d(TAG, "creating ActivityDetail");
         setContentView(R.layout.activity_detail);
         Toolbar toolbar = findViewById(R.id.toolbar_activity_detail);
-        //setSupportActionBar(toolbar);
-        //Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        userOperation = new UserOperation(this,this);
+        favoriteOperation = new FavoriteOperation(this,this);
 
         initCollapsingToolbar();
         mContext = getBaseContext();
@@ -100,21 +71,12 @@ public class ActivityDetail extends YouTubeBaseActivity {
         plotSynopsis = findViewById(R.id.plotsynopsis);
         userRating = findViewById(R.id.usersRating);
         releaseDate = findViewById(R.id.releaseDate);
-        //webView = findViewById(R.id.videoWebView);
         playerView = findViewById(R.id.player);
 
-
-
-        /*WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webView.setWebViewClient(new WebViewClient());*/
-        //webView.setWebChromeClient(new myChrome());
-
-
-        Log.d(TAG, "Receiving intent");
         Intent intent = getIntent();
+        Log.d(TAG, "Receiving intent");
 
-        if(intent.hasExtra("original_title")){
+        if (intent.hasExtra("original_title")) {
 
             thumbnail = intent.getExtras().getString("poster_path");
             originalMovieName = intent.getExtras().getString("original_title");
@@ -126,25 +88,6 @@ public class ActivityDetail extends YouTubeBaseActivity {
             genre = intent.getExtras().getString("genre_id");
             voteCount = intent.getExtras().getString("vote_count");
 
-            /*
-            Intent intent2 = new Intent(mContext, WebViewActivity.class);
-            webView.setOnTouchListener(new View.OnTouchListener() {
-
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    System.out.println("Touched: " + webView.getUrl());
-                    intent2.putExtra("key", webView.getUrl());
-                    System.out.println(intent2.putExtra("key", webView.getUrl()));
-                    intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    mContext.startActivity(intent2);
-                    return false;
-                }
-            });
-
-            */
-
-
-
             MutableLiveData<String> keyDatum = new MutableLiveData<>();
             MoviesRepository.getInstance().getTrailer(id, keyDatum);
 
@@ -152,37 +95,33 @@ public class ActivityDetail extends YouTubeBaseActivity {
                 @Override
                 public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                     youTubePlayer.loadVideo(keyDatum.getValue());
-                    Log.d(TAG,"success");
+                    Log.d(TAG, "success");
                 }
 
                 @Override
                 public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-                    Log.d(TAG,"fail");
+                    Log.d(TAG, "fail");
                 }
             };
 
             playerView.initialize(YT_API_KEY, initializedListener);
 
-
-
-            if(thumbnail == null){
+            if (thumbnail == null) {
                 Log.d(TAG, "immagine nulla");
                 Glide.with(this)
                         .load(R.drawable.ic_launcher_background)
                         .into(imageView);
-            }
-            else{
+            } else {
                 Glide.with(this)
-                        .load(base_image_Url+thumbnail)
+                        .load(base_image_Url + thumbnail)
                         .dontAnimate()
                         .into(imageView);
             }
 
-            if(movieName == null && originalMovieName == null){
+            if (movieName == null && originalMovieName == null) {
                 nameOfMovie.setText("NON HA TITOLO");
-            }
-            else{
-                if(movieName != null)
+            } else {
+                if (movieName != null)
                     nameOfMovie.setText(movieName);
                 else
                     nameOfMovie.setText(originalMovieName);
@@ -191,101 +130,17 @@ public class ActivityDetail extends YouTubeBaseActivity {
             plotSynopsis.setText(synopsis);
             userRating.setText(rating);
             releaseDate.setText(release);
-            //vedere se mostrare anche vote count
 
-            LikeButton likeButtonFavorite =
-                    (LikeButton) findViewById(R.id.favorite_button);
+            //chiamat User
+            userOperation.eseguiUser(id);
+            Log.d(TAG, "superato i userOperation");
 
-            if(checkFilm())
-                likeButtonFavorite.setLiked(true);
+            //chiamata favorite
+            favoriteOperation.eseguiPreferiti(id,movieName,thumbnail,rating,synopsis,release,genre,originalMovieName,voteCount);
 
-            likeButtonFavorite.setOnLikeListener(new OnLikeListener() {
-                @Override
-                public void liked(LikeButton likeButtonFavorite) {
-                    Log.d(TAG, "cliccato favorite");
-                    if(FavoriteDB.getInstance().dbInterface().getFavorite().size() > 5){
-                        cancellaDb();
-                    }
-                    saveFavorite();
-                    Snackbar.make(likeButtonFavorite, "Added to Favorite",
-                            Snackbar.LENGTH_SHORT).show();
-                    mostraDb();
-
-                }
-
-                @Override
-                public void unLiked(LikeButton likeButtonFavorite) {
-                    favorite = new Favorite();
-                    Log.d(TAG, "cliccato unfavorite");
-                    favorite.setMovieId(Integer.parseInt(id));
-                    FavoriteDB.getInstance().dbInterface().deleteFavorite(favorite);
-                    mostraDb();
-                }
-            });
-
-            //MoviesRepository.getInstance().getTrailers(id, webView);
-
+            Log.d(TAG, "end of the intent");
         }
-        else
-            Toast.makeText(this, "no api data", Toast.LENGTH_SHORT).show();
-
-        // uteenteeeeeeee
-        button = findViewById(R.id.submit_rating);
-        ratingBar = findViewById(R.id.ratingBar);
-        ratingBarUser = findViewById(R.id.ratingBar_user);
-        editText = findViewById(R.id.user_overview);
-        showVote = findViewById(R.id.show_vote);
-        warning = findViewById(R.id.warning);
-        comment = findViewById(R.id.comment);
-        editText = findViewById(R.id.user_overview);
-        recensito = checkUser();
-
-        checkComment();
-        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                submittedRating = ratingBar.getRating();
-                showVote.setText("your Rating: " + submittedRating);
-                Log.d(TAG,"ottenuto il voto: " + ratingBar.getRating());
-            }
-        });
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                userRatingDB = new UserRatingDB();
-                String name = editText.getText().toString();
-
-                userRatingDB.setMovie_id(Integer.parseInt(id));
-                userRatingDB.setRating(submittedRating);
-                userRatingDB.setOverview(name);
-
-                if (recensito) {
-                    FavoriteDB.getInstance().dbInterface().updateUserRating(userRatingDB);
-                    Log.d(TAG, "update dbuser ok ");
-                    mostraDbUser();
-                    Toast.makeText(getApplicationContext(), "Commento aggiornato correttamente", Toast.LENGTH_SHORT).show();
-                    checkComment();
-                } else {
-                    FavoriteDB.getInstance().dbInterface().addUserRating(userRatingDB);
-                    Log.d(TAG, "memorizzato in dbUser 1 volta");
-                    mostraDbUser();
-                    checkComment();
-                    Toast.makeText(getApplicationContext(), "Commento aggiunto correttamente", Toast.LENGTH_SHORT).show();
-                }
-                //azzero tutto
-                warning.setText("");
-                editText.setText("");
-                ratingBar.setRating(0);
-            }
-        });
-
-
-
-////////////////
-        Log.d(TAG, "end of the intent");
     }
-
     public void initCollapsingToolbar(){
         Log.d(TAG, "initializing CollapsingToolbar");
         final CollapsingToolbarLayout collapsingToolbarLayout;
@@ -331,95 +186,6 @@ public class ActivityDetail extends YouTubeBaseActivity {
         return true;
     }
 
-
-    private void saveFavorite() {
-        favorite = new Favorite();
-
-        Log.d(TAG,"entrato nel save");
-        Log.d(TAG,"contenuto id:" + id);
-
-        favorite.setMovieId(Integer.parseInt(id));
-        favorite.setTitle(movieName);
-        favorite.setPosterPath(thumbnail);
-        favorite.setUserRating(rating);
-        favorite.setPlotSynopsys(synopsis);
-        favorite.setReleaseDate(release);
-        favorite.setGenreId(genre);
-        favorite.setOriginalTitle(originalMovieName);
-        favorite.setVoteCount(voteCount);
-
-
-        FavoriteDB.getInstance().dbInterface().addFavorite(favorite);
-        Log.d(TAG,"entarto nella tab Favorite");
-    }
-
-    private void mostraDb() {
-        line = FavoriteDB.getInstance().dbInterface().getFavorite();
-        for(Favorite favorite : line){
-            Log.d(TAG,"Database: " +
-                    "ID: " + favorite.getMovieId() +
-                    "Title: " + favorite.getTitle());
-        }
-    }
-    //DA CANCELLARE UNA VOLTA FIXATO
-    private void cancellaDb() {
-        line = FavoriteDB.getInstance().dbInterface().getFavorite();
-        FavoriteDB.getInstance().clearAllTables();
-        Log.d(TAG, "db size: " + line.size());
-        mostraDb();
-    }
-
-    private boolean checkFilm(){
-        Log.d(TAG,"entrato nel check");
-        line = FavoriteDB.getInstance().dbInterface().getFavorite();
-        for(Favorite favorite : line){
-            if(favorite.getMovieId() == Integer. parseInt(id))
-                return true;
-        }
-        return false;
-    }
-
-
-////////////////
-    private void mostraDbUser() {
-        lineUser = FavoriteDB.getInstance().dbInterface().getUserOverview();
-        for(UserRatingDB userRatingDB : lineUser){
-            Log.d(TAG,"Database: " +
-                    " ID: " + userRatingDB.getMovie_id() +
-                    " Rating: " + userRatingDB.getRating() +
-                    " Overview: " + userRatingDB.getOverview() +
-                    " titolo: " + movieName);
-        }
-    }
-
-    private boolean checkUser(){
-        UserRatingDB user;
-        Log.d(TAG,"entrato nel check");
-        user = FavoriteDB.getInstance().dbInterface().getUserInfo(Integer.parseInt(id));
-        if(user != null){
-            commento= user.getOverview();
-            submittedRating = user.getRating();
-            return true;
-        }else {
-            return false;
-        }
-    }
-
-    private void checkComment(){
-        if(checkUser()){//==true)
-            editText.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(TAG,"entrato nel onclick edit");
-                    warning.setText("WARNING! you'll override your comment");
-                }
-            });
-            ratingBarUser.setRating(submittedRating);
-            comment.setText(commento);
-        }
-    }
-
-////////////////////
 
     public class myChrome extends WebChromeClient {
         private View mCustomView;
