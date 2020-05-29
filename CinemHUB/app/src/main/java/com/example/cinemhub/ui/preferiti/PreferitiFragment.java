@@ -82,7 +82,7 @@ public class PreferitiFragment extends Fragment {
                 posterPath = fav.getPosterPath();
                 Log.d(TAG, ""+posterPath);
                 plotSynopsis = fav.getPlotSynopsys();
-                Log.d(TAG, ""+plotSynopsis.substring(0, 8));
+                Log.d(TAG, ""+plotSynopsis);
                 releaseDate = fav.getReleaseDate();
                 originalTitle = fav.getOriginalTitle();
                 try {

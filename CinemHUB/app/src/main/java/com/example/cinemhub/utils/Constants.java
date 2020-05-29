@@ -10,7 +10,6 @@ public class Constants {
     public static final String EXTRA_VIDEOID = "videoid";
     public static final int RECOVERY_DIALOG_REQUEST = 1;
     public static final String LINGUA = "en-US";
-    // public static final String AZIONE = "Azione";
 
     public static final Integer ACTION = 28;
     public static final Integer ADVENTURE = 12;

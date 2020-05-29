@@ -5,6 +5,9 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
+
+import com.example.cinemhub.model.Favorite;
+
 import java.util.List;
 
 @Dao
@@ -23,4 +26,16 @@ public interface MovieDao {
 
     @Update
     public void changeDb(Favorite nextDb);
+
+    @Insert
+    public void addUserRating(UserInfo userRatingDB);
+
+    @Query("select * from UserInfo")
+    public List<UserInfo> getUserOverview();
+
+    @Query("select * from UserInfo where movie_id = :id")
+    public UserInfo getUserInfo(int id);
+
+    @Update
+    public void updateUserRating(UserInfo nextDb);
 }

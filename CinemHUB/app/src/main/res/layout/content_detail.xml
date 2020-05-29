@@ -8,7 +8,6 @@
     tools:context=".ActivityDetail"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_detail"
-    android:background="@color/colorPrimary"
     android:layout_marginTop="@dimen/activity_vertical_margin">
 
     <androidx.core.widget.NestedScrollView
@@ -21,6 +20,15 @@
             android:orientation="vertical"
             android:layout_gravity="center_horizontal">
 
+            <com.like.LikeButton
+                android:id="@+id/favorite_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:icon_size="10dp"
+                app:icon_type="heart"
+                android:gravity="center_horizontal"
+                />
+
             <TextView
                 android:id="@+id/movieTitle"
                 android:layout_width="match_parent"
@@ -29,7 +37,6 @@
                 android:layout_marginTop="10dp"
                 android:gravity="center_horizontal"
                 android:text="@string/movie_name"
-                android:textColor="#FBF9F9"
                 android:textAlignment="center"
                 android:textSize="25sp"
                 android:textStyle="bold"
@@ -39,7 +46,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/title"
-                android:textColor="#FBF9F9"
                 android:layout_marginLeft="@dimen/layout_margin_left"
                 android:padding="@dimen/padding_layout"
                 android:layout_marginTop="@dimen/layout_margin_top"
@@ -56,7 +62,6 @@
                 android:layout_marginTop="@dimen/layout_margin_top2"
                 android:gravity="center_horizontal"
                 android:text="@string/plot"
-                android:textColor="#FBF9F9"
                 android:textAlignment="center"
                 android:textSize="25sp"
                 android:textStyle="bold"
@@ -67,7 +72,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/plotsynopsis"
-                android:textColor="#FBF9F9"
                 android:layout_marginLeft="@dimen/layout_margin_left"
                 android:padding="@dimen/padding_layout"
                 android:layout_marginTop="@dimen/layout_margin_top"
@@ -84,7 +88,6 @@
                 android:layout_marginTop="10dp"
                 android:gravity="center_horizontal"
                 android:text="@string/rating"
-                android:textColor="#FBF9F9"
                 android:textAlignment="center"
                 android:textSize="25sp"
                 android:textStyle="bold"
@@ -94,7 +97,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/usersRating"
-                android:textColor="#FBF9F9"
                 android:layout_marginLeft="@dimen/layout_margin_left"
                 android:padding="@dimen/padding_layout"
                 android:layout_marginTop="@dimen/layout_margin_top"
@@ -111,7 +113,6 @@
                 android:layout_marginTop="@dimen/layout_margin_top2"
                 android:gravity="center_horizontal"
                 android:text="@string/release"
-                android:textColor="#FBF9F9"
                 android:textAlignment="center"
                 android:textSize="25sp"
                 android:textStyle="bold"
@@ -121,7 +122,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/releaseDate"
-                android:textColor="#FBF9F9"
                 android:layout_marginLeft="@dimen/layout_margin_left"
                 android:padding="@dimen/padding_layout"
                 android:layout_marginTop="@dimen/layout_margin_top"
@@ -130,26 +130,14 @@
                 android:gravity="center_horizontal"
                 android:layout_marginStart="@dimen/layout_margin_left" />
 
-            <com.like.LikeButton
-                android:id="@+id/favorite_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:icon_size="10dp"
-                app:icon_type="star"
-                android:layout_marginLeft="10dp"/>
-
-
 
             <com.google.android.youtube.player.YouTubePlayerView
                 android:id="@+id/player"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_margin_top"/>
 
-
-
-
+            <include layout="@layout/content_detail2" />
         </LinearLayout>
-
     </androidx.core.widget.NestedScrollView>
-
 </RelativeLayout>

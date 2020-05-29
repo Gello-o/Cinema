@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
             NavigationUI.setupWithNavController(navigationView, navController);
 
             FavoriteDB.getInstance(getApplicationContext());
+            FavoriteDB.getInstanceUser();
             Log.d(TAG, "creato il Db");
         }
 
@@ -283,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println("Entrato");
+                System.out.println("Enter");
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
