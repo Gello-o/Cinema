@@ -17,7 +17,6 @@
                 android:name="query"
                 app:argType="string" />
         </action>
-
     </fragment>
 
     <fragment
@@ -45,9 +44,6 @@
                 android:name="genere"
                 app:argType="integer" />
         </action>
-        <argument
-            android:name="genere"
-            app:argType="integer" />
     </fragment>
 
     <fragment
@@ -78,13 +74,14 @@
             app:destination="@id/nav_categorie"
             app:popUpTo="@id/nav_categorie">
         </action>
-        <argument android:name="genere"
-            app:argType="integer"/>
+        <argument
+            android:name="genere"
+            app:argType="integer" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_search"
-        android:name="com.example.cinemhub.ui.categorie.MostraCategoriaFragment"
+        android:name="com.example.cinemhub.search.SearchFragment"
         android:label="@string/menu_genere"
         tools:layout="@layout/search" >
         <action

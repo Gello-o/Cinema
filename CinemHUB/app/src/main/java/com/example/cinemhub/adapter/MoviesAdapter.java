@@ -76,7 +76,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
                     .dontAnimate()
                     .into(viewHolder.thumbnail);
         }
-
     }
 
     @Override

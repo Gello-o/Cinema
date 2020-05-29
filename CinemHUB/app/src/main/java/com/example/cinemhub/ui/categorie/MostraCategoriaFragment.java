@@ -39,7 +39,7 @@ public class MostraCategoriaFragment extends Fragment {
         
         genereRV = root.findViewById(R.id.recycler_genere);
 
-        genere = CategorieFragmentArgs.fromBundle(getArguments()).getGenere();
+        genere = MostraCategoriaFragmentArgs.fromBundle(getArguments()).getGenere();
 
         mostraCategoriaViewModel =
                 new ViewModelProvider(this).get(MostraCategoriaViewModel.class);

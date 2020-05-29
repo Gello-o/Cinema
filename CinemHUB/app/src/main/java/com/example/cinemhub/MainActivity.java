@@ -1,5 +1,6 @@
 package com.example.cinemhub;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.ComponentName;
@@ -16,11 +17,13 @@ import android.view.Menu;
 import com.example.cinemhub.model.Favorite;
 import com.example.cinemhub.model.FavoriteDB;
 import com.example.cinemhub.search.SearchFragment;
+import com.example.cinemhub.ui.home.HomeFragmentDirections;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
 import androidx.core.view.GravityCompat;
@@ -41,8 +44,10 @@ public class MainActivity extends AppCompatActivity{
     private AppBarConfiguration mAppBarConfiguration;
     private static final String TAG = "MainActivity";
     ProgressDialog pd;
-    private Context mContext;
-    Fragment searchFragment;
+    private final Context mContext = this;
+    MenuItem searchItem;
+    NavigationView navigationView;
+    NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,22 +59,21 @@ public class MainActivity extends AppCompatActivity{
 
         DrawerLayout drawer;
         drawer = findViewById(R.id.drawer_layout);
-        mContext = this;
         /*
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         */
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_preferiti, R.id.nav_add_list,R.id.nav_categorie,R.id.nav_nuovi_arrivi,R.id.nav_prossime_uscite,R.id.nav_piu_visti)
+                R.id.nav_home, R.id.nav_preferiti, R.id.nav_add_list,R.id.nav_categorie,R.id.nav_nuovi_arrivi,R.id.nav_prossime_uscite,R.id.nav_piu_visti, R.id.search_fragment)
                 .setDrawerLayout(drawer)
                 .build();
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
@@ -126,7 +130,7 @@ public class MainActivity extends AppCompatActivity{
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
 
-        MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchItem = menu.findItem(R.id.action_search);
 
         implementSearch(menu);
         return true;
@@ -167,13 +171,15 @@ public class MainActivity extends AppCompatActivity{
 
         });
 
+        View view = findViewById(R.id.nav_host_fragment);
 
         /*
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setQueryHint("Search View Hint");
-*/
+*/      HomeFragmentDirections.GoToSearchAction action =
+                HomeFragmentDirections.goToSearchAction("");
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            int numeroDiSpazi = 0;
 
             @Override
             public boolean onQueryTextChange(String newText) {
@@ -185,10 +191,8 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public boolean onQueryTextSubmit(String query) {
                 String queryFinal = query.trim().replaceAll("\\s+", "+").replaceAll("[^a-zA-Z0-9+]", "");
-                System.out.println("Query: " + queryFinal);
-
-
-
+                action.setQuery(queryFinal);
+                Navigation.findNavController((Activity)mContext, R.id.nav_host_fragment).navigate(action);
                 return false;
             }
 

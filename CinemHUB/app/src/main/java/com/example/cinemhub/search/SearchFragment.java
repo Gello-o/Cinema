@@ -31,10 +31,6 @@ public class SearchFragment extends Fragment {
     private MoviesAdapter moviesAdapter;
     private String query;
 
-    public SearchFragment(String query) {
-        this.query = query;
-    }
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         searchViewModel =
@@ -43,6 +39,8 @@ public class SearchFragment extends Fragment {
         View root = inflater.inflate(R.layout.search, container, false);
 
         searchMoviesRV = root.findViewById(R.id.recycler_view_ricerca);
+
+        query = SearchFragmentArgs.fromBundle(getArguments()).getQuery();
 
         searchViewModel.doSearch(query).observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
