@@ -11,6 +11,8 @@ import android.text.style.CharacterStyle;
 import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -31,6 +33,7 @@ import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.Trailer;
+import com.example.cinemhub.ricerca.SearchHandler;
 import com.example.cinemhub.ui.home.HomeFragment;
 import com.example.cinemhub.ui.home.HomeViewModel;
 
@@ -104,6 +107,7 @@ public class CategorieFragment extends Fragment {
         });
 
         initTexts();
+        setHasOptionsMenu(true);
 
         return root;
     }
@@ -198,5 +202,13 @@ public class CategorieFragment extends Fragment {
         crimineTxt.setMovementMethod(LinkMovementMethod.getInstance());
 
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main, menu);
+        SearchHandler searchOperation = new SearchHandler(menu, this);
+        searchOperation.implementSearch();
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }

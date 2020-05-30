@@ -4,6 +4,8 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
@@ -43,19 +45,14 @@ public class AddListFragment extends Fragment {
                 initMovieRV(s);
             }
         });
+
+        setHasOptionsMenu(true);
         return root;
     }
 
     public void initMovieRV(List<Movie> movies){
         moviesAdapter = new MoviesAdapter(getActivity(), movies);
-        if(moviesAdapter == null)
-            Log.d(TAG, "adapter null");
-        else {
-            if (moviesAdapter.getMovieList() == null)
-                Log.d(TAG, "lista null");
-            if (moviesAdapter.getContext() == null)
-                Log.d(TAG, "contesto null");
-        }
+
         RecyclerView.LayoutManager layoutManager;
         if(getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
             layoutManager = new GridLayoutManager(getActivity(), 3);
@@ -65,5 +62,11 @@ public class AddListFragment extends Fragment {
         actionMoviesRV.setAdapter(moviesAdapter);
         actionMoviesRV.setItemAnimator(new DefaultItemAnimator());
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main3, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }

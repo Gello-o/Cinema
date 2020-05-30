@@ -23,13 +23,29 @@
         android:id="@+id/nav_preferiti"
         android:name="com.example.cinemhub.ui.preferiti.PreferitiFragment"
         android:label="@string/menu_preferiti"
-        tools:layout="@layout/fragment_preferiti" />
+        tools:layout="@layout/fragment_preferiti">
+        <action
+            android:id="@+id/goToSearchAction"
+            app:destination="@id/nav_search">
+            <argument
+                android:name="query"
+                app:argType="string" />
+        </action>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_add_list"
         android:name="com.example.cinemhub.ui.add_list.AddListFragment"
         android:label="@string/menu_add_list"
-        tools:layout="@layout/fragment_add_list" />
+        tools:layout="@layout/fragment_add_list">
+        <action
+            android:id="@+id/goToSearchAction"
+            app:destination="@id/nav_search">
+            <argument
+                android:name="query"
+                app:argType="string" />
+        </action>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_categorie"
@@ -50,19 +66,43 @@
         android:id="@+id/nav_nuovi_arrivi"
         android:name="com.example.cinemhub.ui.nuovi_arrivi.NuoviArriviFragment"
         android:label="@string/menu_nuovi_arrivi"
-        tools:layout="@layout/fragment_nuovi_arrivi" />
+        tools:layout="@layout/fragment_nuovi_arrivi" >
+        <action
+            android:id="@+id/goToSearchAction"
+            app:destination="@id/nav_search">
+            <argument
+                android:name="query"
+                app:argType="string" />
+        </action>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_prossime_uscite"
         android:name="com.example.cinemhub.ui.prossime_uscite.ProssimeUsciteFragment"
         android:label="@string/menu_prossime_uscite"
-        tools:layout="@layout/fragment_prossime_uscite" />
+        tools:layout="@layout/fragment_prossime_uscite" >
+        <action
+            android:id="@+id/goToSearchAction"
+            app:destination="@id/nav_search">
+            <argument
+                android:name="query"
+                app:argType="string" />
+        </action>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_piu_visti"
         android:name="com.example.cinemhub.ui.piu_visti.PiuVistiFragment"
         android:label="@string/menu_piu_visti"
-        tools:layout="@layout/fragment_piu_visti" />
+        tools:layout="@layout/fragment_piu_visti" >
+        <action
+            android:id="@+id/goToSearchAction"
+            app:destination="@id/nav_search">
+            <argument
+                android:name="query"
+                app:argType="string" />
+        </action>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_genere"
@@ -86,8 +126,7 @@
         tools:layout="@layout/search" >
         <action
             android:id="@+id/goToHomeAction"
-            app:destination="@id/nav_home"
-            app:popUpTo="@id/nav_home" />
+            app:destination="@id/nav_home" />
         <argument
             android:name="query"
             app:argType="string" />
