@@ -74,6 +74,7 @@ public class SearchFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main2, menu);
+        //qua ci sono solo i filtri
         super.onCreateOptionsMenu(menu, inflater);
     }
 

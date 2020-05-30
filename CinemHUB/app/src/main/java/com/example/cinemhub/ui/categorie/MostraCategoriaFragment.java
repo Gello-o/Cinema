@@ -101,6 +101,7 @@ public class MostraCategoriaFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main2, menu);
+        //qua ci sono solo filtri
         super.onCreateOptionsMenu(menu, inflater);
     }
 }

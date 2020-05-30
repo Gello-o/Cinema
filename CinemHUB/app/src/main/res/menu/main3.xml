@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <item
-        android:id="@+id/action_search"
+        android:id="@+id/action_search1"
         android:title="@string/search"
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="android.widget.SearchView"
@@ -12,7 +12,7 @@
         tools:ignore="AppCompatResource" />
 
     <item
-        android:id="@+id/filter"
+        android:id="@+id/filter1"
         android:title="@string/filter_search"
         android:orderInCategory="100"
         app:showAsAction="ifRoom|collapseActionView"

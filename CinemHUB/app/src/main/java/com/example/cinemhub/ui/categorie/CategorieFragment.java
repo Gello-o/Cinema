@@ -208,7 +208,7 @@ public class CategorieFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main, menu);
         SearchHandler searchOperation = new SearchHandler(menu, this);
-        searchOperation.implementSearch();
+        searchOperation.implementSearch(1);
         super.onCreateOptionsMenu(menu, inflater);
     }
 }

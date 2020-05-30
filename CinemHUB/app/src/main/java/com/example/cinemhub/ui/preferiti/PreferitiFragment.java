@@ -118,7 +118,7 @@ public class PreferitiFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main3, menu);
         SearchHandler searchOperation = new SearchHandler(menu, this);
-        searchOperation.implementSearch();
+        searchOperation.implementSearch(2);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
