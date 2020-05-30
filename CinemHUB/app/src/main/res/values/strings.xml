@@ -15,6 +15,7 @@
     <string name="menu_prossime_uscite">Prossime Uscite</string>
     <string name="menu_piu_visti">Film Più Visti</string>
     <string name="home_second">Home Second</string>
+    <string name="menu_genere">NomeCategoria</string>
 
     <string name="movie_name">Movie Title</string>
     <string name="movie_details">Movie Details</string>
@@ -36,5 +37,12 @@
     <string name="filter2">filter2</string>
     <string name="username">Username</string>
     <string name="year" />
+
+    <string name="your_rating">Leave your Rating</string>
+    <string name="edit_text">Write There:</string>
+    <string name="show_vote">Your Rating:</string>
+    <string name="your_comment">Your Comment:</string>
+    <string name="search2" />
+
 
 </resources>

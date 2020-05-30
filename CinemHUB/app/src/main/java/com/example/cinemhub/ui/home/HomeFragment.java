@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
@@ -45,6 +47,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
+        setHasOptionsMenu(false);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         popularRV = root.findViewById(R.id.recycler_view_popular);
@@ -112,6 +115,12 @@ public class HomeFragment extends Fragment {
         indicator.setupWithViewPager(sliderpager,true);
 
         return root;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main2, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     public void initPopularRV (List<Movie>set){

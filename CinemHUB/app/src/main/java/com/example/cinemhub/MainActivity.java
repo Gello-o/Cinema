@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Menu;
 import com.example.cinemhub.model.FavoriteDB;
@@ -28,6 +29,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.core.view.GravityCompat;
+import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -38,6 +40,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -46,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     ProgressDialog pd;
     private Context mContext;
+
+    private static final String DIGIT_PATTERN = "\\d+";
+    private static final Pattern DIGIT_PATTERN_COMPILED = Pattern.compile(DIGIT_PATTERN);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             })
                     .show();
         } else {
-            Toast.makeText(MainActivity.this, "Welcome", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Welcome in CinemHUB", Toast.LENGTH_LONG).show();
 
 
             Toolbar toolbar = findViewById(R.id.toolbar_main);
@@ -85,9 +92,9 @@ public class MainActivity extends AppCompatActivity {
             NavigationUI.setupWithNavController(navigationView, navController);
 
             FavoriteDB.getInstance(getApplicationContext());
+            FavoriteDB.getInstanceUser();
             Log.d(TAG, "creato il Db");
         }
-
 
     }
 
@@ -103,35 +110,6 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.filter:
                 implementFilter();
-                /*
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
-                alertDialog.setTitle("Enter Name");
-                final EditText input = new EditText(mContext);
-                final Spinner spinner = new Spinner(mContext);
-                final Spinner spinner2 = new Spinner(mContext);
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT);
-                spinner.setLayoutParams(lp);
-                alertDialog.setView(spinner);
-                spinner2.setLayoutParams(lp);
-                alertDialog.setView(spinner2);
-                alertDialog.setPositiveButton("Save",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                                Toast.makeText(getApplicationContext(),
-                                        "Name successfully changed", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                alertDialog.setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-                alertDialog.show();
-                */
         }
         return super.onOptionsItemSelected(item);
     }
@@ -159,8 +137,6 @@ public class MainActivity extends AppCompatActivity {
         implementSearch(menu);
         return true;
     }
-
-
 
 
     private void implementSearch(final Menu menu) {
@@ -241,29 +217,38 @@ public class MainActivity extends AppCompatActivity {
         final EditText editTextYear = (EditText) textEntryView.findViewById(R.id.year);
 
         spinnerList(spinnerCategroy, "Action", "Romance", "Thriller", "Animation");
-        spinnerList(spinnerOrder, "Nome", "Voto", "Popolarità", "Anno");
+        spinnerList(spinnerOrder, "Name", "Vote", "Popularity", "Year");
 
-        editTextVote.setText("8.0", TextView.BufferType.EDITABLE);
-        editTextYear.setText("2020", TextView.BufferType.EDITABLE);
+        editTextVote.setText("", TextView.BufferType.EDITABLE);
+        editTextYear.setText("", TextView.BufferType.EDITABLE);
 
         final AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setIcon(R.drawable.heart_on).setTitle(" Filtra:").setView(textEntryView).setPositiveButton("Save",
+        alert.setIcon(R.drawable.heart_on).setTitle(" Filter:").setView(textEntryView).setPositiveButton("Save",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,
                                         int whichButton) {
+                        Matcher matcher = DIGIT_PATTERN_COMPILED.matcher(editTextVote.getText().toString());
+                        if(matcher.matches()) {
+                            int a1 = Integer.parseInt(editTextVote.getText().toString());
+                            if(a1<1 || a1>10)
+                                Log.d(TAG, "Qua facciamo spuntare un messaggio d'errore");
+                        }
 
-                        Log.i("AlertDialog", "TextEntry 1 Entered " + editTextVote.getText().toString());
-                        Log.i("AlertDialog", "TextEntry 2 Entered " + editTextYear.getText().toString());
-                        /* User clicked OK so do some stuff */
+                        Matcher matcher2 = DIGIT_PATTERN_COMPILED.matcher(editTextYear.getText().toString());
+                        if(matcher.matches()) {
+                            int a2 = Integer.parseInt(editTextYear.getText().toString());
+                            if(a2<1900 || a2>2020)
+                                Log.d(TAG, "Qua facciamo spuntare un messaggio d'errore");
+                        }
                     }
                 }).setNegativeButton("Cancel",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,
                                         int whichButton) {
+                        Log.d(TAG, "Cancel");
                     }
                 });
         alert.show();
-
         return true;
     }
 
@@ -283,20 +268,11 @@ public class MainActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println("Entrato");
+                System.out.println("Enter");
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
     }
-
-
 }
-
-
-
-
-
-
-

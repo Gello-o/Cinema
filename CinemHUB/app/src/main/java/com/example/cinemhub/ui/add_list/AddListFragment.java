@@ -4,6 +4,8 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
@@ -28,6 +30,8 @@ public class AddListFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+
         addListViewModel =
                 new ViewModelProvider(this).get(AddListViewModel.class);
 
@@ -44,6 +48,12 @@ public class AddListFragment extends Fragment {
             }
         });
         return root;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main2, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     public void initMovieRV(List<Movie> movies){

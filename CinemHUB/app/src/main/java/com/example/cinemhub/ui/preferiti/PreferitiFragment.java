@@ -4,6 +4,8 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
@@ -28,6 +30,7 @@ public class PreferitiFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
 
         View root = inflater.inflate(R.layout.fragment_preferiti, container, false);
         preferitiRV = root.findViewById(R.id.recycler_view_preferiti);
@@ -40,6 +43,12 @@ public class PreferitiFragment extends Fragment {
         initMoviesRV(queryFavoriteDB());
 
         return root;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main2, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     public void initMoviesRV(List<Movie> lista){
@@ -82,7 +91,7 @@ public class PreferitiFragment extends Fragment {
                 posterPath = fav.getPosterPath();
                 Log.d(TAG, ""+posterPath);
                 plotSynopsis = fav.getPlotSynopsys();
-                Log.d(TAG, ""+plotSynopsis.substring(0, 8));
+                Log.d(TAG, ""+plotSynopsis);
                 releaseDate = fav.getReleaseDate();
                 originalTitle = fav.getOriginalTitle();
                 try {

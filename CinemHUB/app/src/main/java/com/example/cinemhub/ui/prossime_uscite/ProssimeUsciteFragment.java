@@ -2,6 +2,8 @@ package com.example.cinemhub.ui.prossime_uscite;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -19,6 +21,7 @@ public class ProssimeUsciteFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         prossimeUsciteViewModel =
                 new ViewModelProvider(this).get(ProssimeUsciteViewModel.class);
         View root = inflater.inflate(R.layout.fragment_prossime_uscite, container, false);
@@ -30,5 +33,11 @@ public class ProssimeUsciteFragment extends Fragment {
             }
         });
         return root;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main2, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }

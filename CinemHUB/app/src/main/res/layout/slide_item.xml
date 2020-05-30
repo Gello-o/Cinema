@@ -27,7 +27,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/gradient" />
-
+<!--
     <TextView
         android:id="@+id/slide_title"
         android:layout_width="0dp"
@@ -44,5 +44,5 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/imageView5"
         app:layout_constraintTop_toTopOf="@+id/imageView5" />
-
+-->
 </androidx.constraintlayout.widget.ConstraintLayout>

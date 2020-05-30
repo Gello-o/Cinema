@@ -1,17 +1,21 @@
 package com.example.cinemhub.model;
 
 import android.content.Context;
+
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {Favorite.class}, version = 2)
+@Database(entities = {Favorite.class, UserInfo.class}, version = 3)
 public abstract class FavoriteDB extends RoomDatabase {
     public final String TAG = "DbStructure";
     private static FavoriteDB favoriteDB;
+    private static FavoriteDB userRatingDB;
     private static Context mContext;
+
+
 
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
@@ -24,6 +28,16 @@ public abstract class FavoriteDB extends RoomDatabase {
         }
     };
 
+    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+
+            database.execSQL("CREATE TABLE `UserInfo` (`id` INTEGER, "
+                    + "`rating` FLOAT, `overview` TEXT, PRIMARY KEY(`id`))");
+        }
+    };
+
+
     public FavoriteDB(){}
 
     public static FavoriteDB getInstance(Context context){
@@ -31,7 +45,7 @@ public abstract class FavoriteDB extends RoomDatabase {
         if(favoriteDB == null){
             synchronized (FavoriteDB.class){
                 favoriteDB = Room.databaseBuilder(context, FavoriteDB.class,"Favorite1")
-                        .addMigrations(MIGRATION_1_2)
+                        .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                         .allowMainThreadQueries()
                         .build();
             }
@@ -44,13 +58,28 @@ public abstract class FavoriteDB extends RoomDatabase {
             return null;
         if(favoriteDB == null){
             synchronized (FavoriteDB.class){
-                favoriteDB = Room.databaseBuilder(mContext, FavoriteDB.class,"Favorite").allowMainThreadQueries().build();
+                favoriteDB = Room.databaseBuilder(mContext, FavoriteDB.class,"Favorite1")
+                        .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                        .allowMainThreadQueries()
+                        .build();
             }
         }
         return favoriteDB;
     }
 
-
+    public static FavoriteDB getInstanceUser(){
+        if(mContext == null)
+            return null;
+        if(userRatingDB == null){
+            synchronized (FavoriteDB.class){
+                favoriteDB = Room.databaseBuilder(mContext, FavoriteDB.class,"UserInfo")
+                        .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                        .allowMainThreadQueries()
+                        .build();
+            }
+        }
+        return userRatingDB;
+    }
 
     public abstract MovieDao dbInterface();
 }

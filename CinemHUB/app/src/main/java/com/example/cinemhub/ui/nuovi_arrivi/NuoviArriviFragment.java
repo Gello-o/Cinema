@@ -4,6 +4,8 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -31,6 +33,7 @@ public class NuoviArriviFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         View root = inflater.inflate(R.layout.fragment_nuovi_arrivi, container, false);
 
         prossimeUsciteRV = root.findViewById(R.id.recycler_view_nuovi_arrivi);
@@ -51,12 +54,11 @@ public class NuoviArriviFragment extends Fragment {
         return root;
     }
 
-    /*
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main2, menu);
         super.onCreateOptionsMenu(menu, inflater);
-        implementSearch(menu);
-    }*/
+    }
 
     @Override
     public void onStop() {
