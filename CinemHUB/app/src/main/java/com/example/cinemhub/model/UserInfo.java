@@ -3,66 +3,44 @@ package com.example.cinemhub.model;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+@Entity(tableName = "UserInfo")
+public class UserInfo {
+    public String TAG = "UserInfo";
 
-@Entity(tableName = "UserInfo", primaryKeys = {"CommentKey","MovieId", "UserId"})
-public class  UserInfo{
-    public static final String TAG = "UserInfo";
-
+    // definizione del Db
+    @PrimaryKey
     @NonNull
-    @ColumnInfo(name = "UserId")
-    int userId;
+    int movie_id;
 
-    @NonNull
-    @ColumnInfo(name = "MovieId")
-    int movieId;
+    @ColumnInfo(name = "Rating")
+    float rating;
 
-    @ColumnInfo(name = "CommentKey")
-    int commentKey;
+    @ColumnInfo(name = "Overview")
+    String overview;
 
-    @ColumnInfo(name = "Comment")
-    String comment;
-
-    @ColumnInfo(name = "Vote")
-    String vote;
-
-    public int getMovieId() {
-        return movieId;
+    public int getMovie_id() {
+        return movie_id;
     }
 
-    public void setMovieId(int movieId) {
-        this.movieId = movieId;
+    public void setMovie_id(int movie_id) {
+        this.movie_id = movie_id;
     }
 
-    public String getComment() {
-        return comment;
+    public float getRating() {
+        return rating;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setRating(float rating) {
+        this.rating = rating;
     }
 
-    public String getVote() {
-        return vote;
+    public String getOverview() {
+        return overview;
     }
 
-    public void setVote(String vote) {
-        this.vote = vote;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public int getCommentKey() {
-        return commentKey;
-    }
-
-    public void setCommentKey(int commentKey) {
-        this.commentKey = commentKey;
+    public void setOverview(String overview) {
+        this.overview = overview;
     }
 }

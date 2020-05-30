@@ -36,10 +36,10 @@ public class MostraCategoriaFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_genere, container, false);
-        
+
         genereRV = root.findViewById(R.id.recycler_genere);
 
-        genere = MostraCategoriaFragmentArgs.fromBundle(getArguments()).getGenere();
+       genere = MostraCategoriaFragmentArgs.fromBundle(getArguments()).getGenere();
 
         mostraCategoriaViewModel =
                 new ViewModelProvider(this).get(MostraCategoriaViewModel.class);
@@ -58,7 +58,7 @@ public class MostraCategoriaFragment extends Fragment {
 
         return root;
     }
-    
+
     public void initMoviesRV(List<Movie> movies){
         genereAdapter = new MoviesAdapter(getActivity(), movies);
         if(genereAdapter == null)
@@ -97,7 +97,7 @@ public class MostraCategoriaFragment extends Fragment {
         super.onDestroy();
         mostraCategoriaViewModel.stopRepeatingTask();
         mostraCategoriaViewModel.resetIndex();
-        
+
     }
-    
+
 }

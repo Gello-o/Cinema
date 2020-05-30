@@ -1,22 +1,12 @@
 package com.example.cinemhub.model;
 
 import android.util.Log;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
-
 import com.example.cinemhub.api.Client;
 import com.example.cinemhub.api.Service;
-
-
-import java.util.ArrayList;
-import java.util.HashSet;
+import com.example.cinemhub.utils.Constants;
 import java.util.List;
-
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -25,8 +15,7 @@ public class MoviesRepository {
 
     private static MoviesRepository instance;
     private static final String TAG = "MoviesFactory";
-    private static final String API_KEY = "740ef79d64b588653371072cdee99a0f";
-    private static String LANGUAGE = "en-US";
+
 
     private MoviesRepository(){}
 
@@ -42,31 +31,35 @@ public class MoviesRepository {
 
 
         Log.d(TAG, "CHIAMATA " + pagina);
-        call = apiService.getTMDB(categoria, API_KEY, LANGUAGE, pagina);
+        call = apiService.getTMDB(categoria, Constants.API_KEY, Constants.LINGUA, pagina);
 
         call.enqueue(new Callback<MoviesResponse>() {
 
             @Override
             public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
-                List<Movie> movies;
-                if(response.isSuccessful() && response.body() != null) {
-                    movies = response.body().getResults();
-                    moviesData.postValue(movies);
-                }
-                else
-                    movies = new ArrayList<>();
+                MoviesResponse moviesResponse = response.body();
+                List<Movie> movies = moviesResponse.getResults();
 
+                if(moviesResponse == null){
+                    Log.d(TAG, "response null");
+                    //gestione risposta nulla
+                }
+                else if(movies == null){
+                    Log.d(TAG, "movies null");
+                }
 
                 if(moviesData.getValue() == null) {
                     moviesData.setValue(movies);
-                    Log.d(TAG, "null zio pera");
+                    Log.d(TAG, "null ");
                     Log.d(TAG, "Pagina: " + pagina);
                 }
+
                 else {
                     List<Movie> a = moviesData.getValue();
                     a.addAll(movies);
                     moviesData.setValue(a); //setValue
-                    Log.d(TAG, "not null zio pera");
+
+                    Log.d(TAG, "not null ");
                 }
             }
 
@@ -87,7 +80,7 @@ public class MoviesRepository {
 
 
         Log.d(TAG, "CHIAMATA " + pagina);
-        call = apiService.getGenres(API_KEY, "popularity.desc", LANGUAGE, genere, pagina);
+        call = apiService.getGenres(Constants.API_KEY, "popularity.desc", Constants.LINGUA, genere, pagina);
 
         call.enqueue(new Callback<MoviesResponse>() {
 
@@ -106,7 +99,7 @@ public class MoviesRepository {
 
                 if(moviesData.getValue() == null) {
                     moviesData.setValue(movies);
-                    Log.d(TAG, "null zio pera");
+                    Log.d(TAG, "null ");
                     Log.d(TAG, "Pagina: " + pagina);
                 }
 
@@ -115,7 +108,7 @@ public class MoviesRepository {
                     a.addAll(movies);
                     moviesData.setValue(a); //setValue
 
-                    Log.d(TAG, "not null zio pera");
+                    Log.d(TAG, "not null ");
                 }
             }
 
@@ -137,7 +130,7 @@ public class MoviesRepository {
 
 
         Log.d(TAG, "CHIAMATA " + pagina);
-        call = apiService.search(API_KEY, LANGUAGE, pagina, query, true);
+        call = apiService.search(Constants.API_KEY, Constants.LINGUA, pagina, query, true);
 
         call.enqueue(new Callback<MoviesResponse>() {
 
@@ -156,7 +149,7 @@ public class MoviesRepository {
 
                 if(moviesData.getValue() == null) {
                     moviesData.setValue(movies);
-                    Log.d(TAG, "null zio pera");
+                    Log.d(TAG, "null ");
                     Log.d(TAG, "Pagina: " + pagina);
                 }
 
@@ -165,7 +158,7 @@ public class MoviesRepository {
                     a.addAll(movies);
                     moviesData.setValue(a); //setValue
 
-                    Log.d(TAG, "not null zio pera");
+                    Log.d(TAG, "not null ");
                 }
             }
 
@@ -180,15 +173,18 @@ public class MoviesRepository {
         });
     }
 
-    public void getTrailers(String id, MutableLiveData<String> keyDatum) {
+
+    public void getTrailer(String id, MutableLiveData<String> keyDatum) {
         Service apiService = Client.getClient().create(Service.class);
         Call<TrailerResponse> call;
-        call = apiService.getMovieTrailer(Integer.parseInt(id), API_KEY);
+        call = apiService.getMovieTrailer(Integer.parseInt(id), Constants.API_KEY);
 
         call.enqueue(new Callback<TrailerResponse>() {
             @Override
             public void onResponse(@NonNull Call<TrailerResponse> call, @NonNull Response<TrailerResponse> response) {
-                List<Trailer> trailers = response.body().getTrailers();
+                List<Trailer> trailers = null;
+                if(response.body() != null)
+                    trailers = response.body().getTrailers();
                 //Gli diamo il primo trailer.
                 String key = "";
 
@@ -211,4 +207,7 @@ public class MoviesRepository {
         });
 
     }
+
+
+
 }

@@ -149,16 +149,15 @@ public class CategorieFragment extends Fragment {
         SpannableString ss2 = new SpannableString(avventuraTxt.getText());
         SpannableString ss3 = new SpannableString(crimineTxt.getText());
 
-        CategorieFragmentDirections.GoToGenereAction action =
-                CategorieFragmentDirections.goToGenereAction(0);
+       CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
 
         ClickableSpan azioneClickableSpan = new ClickableSpan(){
 
             @Override
             public void onClick(@NonNull View widget) {
                 Log.d(TAG, "cliccato");
-                action.setGenere(28);
-                Navigation.findNavController(widget).navigate(action);
+               action.setGenere(28);
+               Navigation.findNavController(widget).navigate(action);
             }
         };
 
@@ -197,6 +196,7 @@ public class CategorieFragment extends Fragment {
         azioneTxt.setMovementMethod(LinkMovementMethod.getInstance());
         avventuraTxt.setMovementMethod(LinkMovementMethod.getInstance());
         crimineTxt.setMovementMethod(LinkMovementMethod.getInstance());
-    }
 
+
+    }
 }

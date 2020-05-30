@@ -3,88 +3,80 @@ package com.example.cinemhub;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.webkit.WebSettings;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 
 import com.bumptech.glide.Glide;
-import com.example.cinemhub.api.Client;
-import com.example.cinemhub.api.Service;
-import com.example.cinemhub.model.Favorite;
-import com.example.cinemhub.model.FavoriteDB;
-import com.example.cinemhub.model.Favorite;
 import com.example.cinemhub.model.MoviesRepository;
-import com.example.cinemhub.model.Trailer;
-import com.example.cinemhub.model.TrailerResponse;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.snackbar.Snackbar;
+
+
+import com.google.android.youtube.player.YouTubeBaseActivity;
+import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
-import com.like.LikeButton;
-import com.like.OnLikeListener;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class ActivityDetail extends AppCompatActivity {
+public class ActivityDetail extends YouTubeBaseActivity {
     private static final String TAG = "ActivityDetail";
+
+    private static final String API_KEY = "740ef79d64b588653371072cdee99a0f";
+    private final String YT_API_KEY = "AIzaSyC95r_3BNU_BxvSUE7ZyXKrar3dc127rVk";
+    private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
+
     private TextView nameOfMovie, plotSynopsis, userRating, releaseDate;
     private ImageView imageView;
     private YouTubePlayerView playerView;
-    private YouTubePlayer.OnInitializedListener onInitializedListener;
-    private WebView webView;
-    String thumbnail, movieName, synopsis, rating, release, id, originalMovieName, voteCount, genre;
-    public Favorite favorite;
-    List<Favorite> line;
-    Context context = this;
-    private static final String API_KEY = "740ef79d64b588653371072cdee99a0f";
-    private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
+    private YouTubePlayer.OnInitializedListener initializedListener;
+    private Context mContext;
+    private UserOperation userOperation ;
+    private FavoriteOperation favoriteOperation;
 
+    String thumbnail, movieName, synopsis, rating, release, id, originalMovieName, voteCount, genre;
+
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "creating ActivityDetail");
         setContentView(R.layout.activity_detail);
         Toolbar toolbar = findViewById(R.id.toolbar_activity_detail);
-        setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        userOperation = new UserOperation(this,this);
+        favoriteOperation = new FavoriteOperation(this,this);
 
         initCollapsingToolbar();
+        mContext = getBaseContext();
 
         imageView = findViewById(R.id.image_activity_detail);
         nameOfMovie = findViewById(R.id.title);
         plotSynopsis = findViewById(R.id.plotsynopsis);
         userRating = findViewById(R.id.usersRating);
         releaseDate = findViewById(R.id.releaseDate);
+        playerView = findViewById(R.id.player);
 
-
-        Log.d(TAG, "Receiving intent");
         Intent intent = getIntent();
+        Log.d(TAG, "Receiving intent");
 
-        if(intent.hasExtra("original_title")){
+        if (intent.hasExtra("original_title")) {
 
             thumbnail = intent.getExtras().getString("poster_path");
             originalMovieName = intent.getExtras().getString("original_title");
@@ -96,24 +88,40 @@ public class ActivityDetail extends AppCompatActivity {
             genre = intent.getExtras().getString("genre_id");
             voteCount = intent.getExtras().getString("vote_count");
 
-            if(thumbnail == null){
+            MutableLiveData<String> keyDatum = new MutableLiveData<>();
+            MoviesRepository.getInstance().getTrailer(id, keyDatum);
+
+            initializedListener = new YouTubePlayer.OnInitializedListener() {
+                @Override
+                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+                    youTubePlayer.loadVideo(keyDatum.getValue());
+                    Log.d(TAG, "success");
+                }
+
+                @Override
+                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+                    Log.d(TAG, "fail");
+                }
+            };
+
+            playerView.initialize(YT_API_KEY, initializedListener);
+
+            if (thumbnail == null) {
                 Log.d(TAG, "immagine nulla");
                 Glide.with(this)
                         .load(R.drawable.ic_launcher_background)
                         .into(imageView);
-            }
-            else{
+            } else {
                 Glide.with(this)
-                        .load(base_image_Url+thumbnail)
+                        .load(base_image_Url + thumbnail)
                         .dontAnimate()
                         .into(imageView);
             }
 
-            if(movieName == null && originalMovieName == null){
+            if (movieName == null && originalMovieName == null) {
                 nameOfMovie.setText("NON HA TITOLO");
-            }
-            else{
-                if(movieName != null)
+            } else {
+                if (movieName != null)
                     nameOfMovie.setText(movieName);
                 else
                     nameOfMovie.setText(originalMovieName);
@@ -122,59 +130,17 @@ public class ActivityDetail extends AppCompatActivity {
             plotSynopsis.setText(synopsis);
             userRating.setText(rating);
             releaseDate.setText(release);
-            //vedere se mostrare anche vote count
 
-            LikeButton likeButtonFavorite =
-                    (LikeButton) findViewById(R.id.favorite_button);
+//chiamat User
+            userOperation.eseguiUser(id);
+            Log.d(TAG, "superato i userOperation");
 
-            if(checkFilm())
-                likeButtonFavorite.setLiked(true);
+//chiamata favorite
+            favoriteOperation.eseguiPreferiti(id,movieName,thumbnail,rating,synopsis,release,genre,originalMovieName,voteCount);
 
-            likeButtonFavorite.setOnLikeListener(new OnLikeListener() {
-                @Override
-                public void liked(LikeButton likeButtonFavorite) {
-                    Log.d(TAG, "cliccato favorite");
-                    if(FavoriteDB.getInstance().dbInterface().getFavorite().size() > 5){
-                        cancellaDb();
-                    }
-                    saveFavorite();
-                    Snackbar.make(likeButtonFavorite, "Added to Favorite",
-                            Snackbar.LENGTH_SHORT).show();
-                    mostraDb();
-
-                }
-
-                @Override
-                public void unLiked(LikeButton likeButtonFavorite) {
-                    favorite = new Favorite();
-                    Log.d(TAG, "cliccato unfavorite");
-                    favorite.setMovieId(Integer.parseInt(id));
-                    FavoriteDB.getInstance().dbInterface().deleteFavorite(favorite);
-                    mostraDb();
-                }
-            });
-            MutableLiveData<String> keyDatum = new MutableLiveData<>();
-            MoviesRepository.getInstance().getTrailers(id, keyDatum);
-
-            Button button = findViewById(R.id.button1);
-            button.setOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent1 = new Intent(context, VideoPlayer.class);
-                            Log.d(TAG, "intent fatto");
-                            intent1.putExtra("key", keyDatum.getValue());
-                            intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(intent1);
-                        }
-                    }
-            );
+            Log.d(TAG, "end of the intent");
         }
-        else
-            Toast.makeText(this, "no api data", Toast.LENGTH_SHORT).show();
-        Log.d(TAG, "end of the intent");
     }
-
     public void initCollapsingToolbar(){
         Log.d(TAG, "initializing CollapsingToolbar");
         final CollapsingToolbarLayout collapsingToolbarLayout;
@@ -220,51 +186,46 @@ public class ActivityDetail extends AppCompatActivity {
         return true;
     }
 
-    private void saveFavorite() {
-        favorite = new Favorite();
 
-        Log.d(TAG,"entrato nel save");
-        Log.d(TAG,"contenuto id:" + id);
+    public class myChrome extends WebChromeClient {
+        private View mCustomView;
+        private WebChromeClient.CustomViewCallback mCustomViewCallback;
+        //protected FrameLayout mFullscreenContainer;
+//private int mOriginalOrientation;
+        private int mOriginalSystemUiVisibility;
 
-        favorite.setMovieId(Integer.parseInt(id));
-        favorite.setTitle(movieName);
-        favorite.setPosterPath(thumbnail);
-        favorite.setUserRating(rating);
-        favorite.setPlotSynopsys(synopsis);
-        favorite.setReleaseDate(release);
-        favorite.setGenreId(genre);
-        favorite.setOriginalTitle(originalMovieName);
-        favorite.setVoteCount(voteCount);
-
-
-        FavoriteDB.getInstance().dbInterface().addFavorite(favorite);
-        Log.d(TAG,"entarto nel Db");
-    }
-
-    private void mostraDb() {
-        line = FavoriteDB.getInstance().dbInterface().getFavorite();
-        for(Favorite favorite : line){
-            Log.d(TAG,"Database: " +
-                    "ID: " + favorite.getMovieId() +
-                    "Title: " + favorite.getTitle());
+        myChrome() {
         }
-    }
-    //DA CANCELLARE UNA VOLTA FIXATO
-    private void cancellaDb() {
-        line = FavoriteDB.getInstance().dbInterface().getFavorite();
-        FavoriteDB.getInstance().clearAllTables();
-        Log.d(TAG, "db size: " + line.size());
-        mostraDb();
-    }
 
-    private boolean checkFilm(){
-        Log.d(TAG,"entrato nel check");
-        line = FavoriteDB.getInstance().dbInterface().getFavorite();
-        for(Favorite favorite : line){
-            if(favorite.getMovieId() == Integer. parseInt(id))
-                return true;
+        public Bitmap getDefaultVideoPoster() {
+            if (mCustomView == null) {
+                return null;
+            }
+            return BitmapFactory.decodeResource(getApplicationContext().getResources(), 2130837573);
         }
-        return false;
+
+        public void onHideCustomView() {
+            ((FrameLayout) getWindow().getDecorView()).removeView(this.mCustomView);
+            this.mCustomView = null;
+            getWindow().getDecorView().setSystemUiVisibility(this.mOriginalSystemUiVisibility);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+            this.mCustomViewCallback.onCustomViewHidden();
+            this.mCustomViewCallback = null;
+        }
+
+        public void onShowCustomView(View paramView, WebChromeClient.CustomViewCallback paramCustomViewCallback) {
+            if (this.mCustomView != null) {
+                onHideCustomView();
+                return;
+            }
+            this.mCustomView = paramView;
+            this.mOriginalSystemUiVisibility = getWindow().getDecorView().getSystemUiVisibility();
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+//this.mOriginalOrientation = getRequestedOrientation();
+            this.mCustomViewCallback = paramCustomViewCallback;
+            ((FrameLayout) getWindow().getDecorView()).addView(this.mCustomView, new FrameLayout.LayoutParams(-1, -1));
+            getWindow().getDecorView().setSystemUiVisibility(3846);
+        }
     }
 
 }

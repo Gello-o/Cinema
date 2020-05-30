@@ -1,4 +1,4 @@
-package com.example.cinemhub.search;
+package com.example.cinemhub.ricerca;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -15,11 +14,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.cinemhub.R;
-import com.example.cinemhub.search.SearchViewModel;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Movie;
+
 
 import java.util.List;
 
@@ -31,6 +29,11 @@ public class SearchFragment extends Fragment {
     private MoviesAdapter moviesAdapter;
     private String query;
 
+
+    public SearchFragment(String query) {
+        this.query = query;
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         searchViewModel =
@@ -39,8 +42,6 @@ public class SearchFragment extends Fragment {
         View root = inflater.inflate(R.layout.search, container, false);
 
         searchMoviesRV = root.findViewById(R.id.recycler_view_ricerca);
-
-        query = SearchFragmentArgs.fromBundle(getArguments()).getQuery();
 
         searchViewModel.doSearch(query).observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
@@ -76,4 +77,5 @@ public class SearchFragment extends Fragment {
         searchMoviesRV.setItemAnimator(new DefaultItemAnimator());
 
     }
+
 }

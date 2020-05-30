@@ -1,7 +1,6 @@
 package com.example.cinemhub.api;
 
 import com.example.cinemhub.model.MoviesResponse;
-
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -40,5 +39,15 @@ public interface Service {
             @Query("page") int page,
             @Query("query") String query,
             @Query("include_adult") boolean adult
+    );
+
+    @GET("/3/search/movie")
+    Call<MoviesResponse> search2(
+            @Query("api_key") String apiKey,
+            @Query("language") String language,
+            @Query("page") int page,
+            @Query("query") String query,
+            @Query("include_adult") boolean adult,
+            @Query("year") int year
     );
 }
