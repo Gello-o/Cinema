@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Movie;
+import com.example.cinemhub.ricerca.FilterHandler;
 import com.example.cinemhub.ricerca.SearchHandler;
 
 import java.util.List;
@@ -71,6 +72,8 @@ public class AddListFragment extends Fragment {
         inflater.inflate(R.menu.main3, menu);
         SearchHandler searchOperation = new SearchHandler(menu, this);
         searchOperation.implementSearch(2);
+        FilterHandler filterHandler = new FilterHandler(menu, this);
+        filterHandler.implementFilter(2);
         super.onCreateOptionsMenu(menu, inflater);
     }
 }
