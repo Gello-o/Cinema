@@ -38,24 +38,19 @@ public class PreferitiFragment extends Fragment {
 
         favoriteList = FavoriteDB.getInstance().dbInterface().getFavorite();
 
-        if(favoriteList == null)
-            Log.d(TAG, "fav uguale null");
+        moviesAdapter = new MoviesAdapter(getActivity(), queryFavoriteDB());
 
-        initMoviesRV(queryFavoriteDB());
-
-        PreferitiFragmentDirections.GoToSearchAction action =
-                PreferitiFragmentDirections.goToSearchAction("");
+        initMoviesRV();
 
         setHasOptionsMenu(true);
 
         return root;
     }
 
-    public void initMoviesRV(List<Movie> lista){
-        moviesAdapter = new MoviesAdapter(getActivity(), lista);
+    public void initMoviesRV(){
 
         RecyclerView.LayoutManager layoutManager;
-        if(getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
             layoutManager = new GridLayoutManager(getActivity(), 3);
         else
             layoutManager = new GridLayoutManager(getActivity(), 4);
@@ -122,6 +117,17 @@ public class PreferitiFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        favoriteList.clear();
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        favoriteList = FavoriteDB.getInstance().dbInterface().getFavorite();
+        moviesAdapter.setData(queryFavoriteDB());
+    }
 
 }
