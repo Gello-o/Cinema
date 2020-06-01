@@ -1,16 +1,13 @@
 package com.example.cinemhub.filtri;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -18,7 +15,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import com.example.cinemhub.R;
 import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.ui.add_list.AddListFragment;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;

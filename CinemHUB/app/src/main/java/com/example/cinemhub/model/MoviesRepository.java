@@ -185,16 +185,15 @@ public class MoviesRepository {
                 List<Trailer> trailers = null;
                 if(response.body() != null)
                     trailers = response.body().getTrailers();
-                //Gli diamo il primo trailer.
                 String key = "";
 
-                //Temporaneo
+                //Gli passiamo un video eliminato
                 if (trailers == null || trailers.size() == 0) {
-                    key = "BdJKm16Co6M";
+                    key = "WECcGZLvcz0";
                 } else
                     key = trailers.get(0).getKey();
 
-                keyDatum.postValue(key);
+                keyDatum.setValue(key);
             }
 
             @Override
