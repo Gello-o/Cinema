@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.cinemhub.R;
+import com.example.cinemhub.ricerca.SearchHandler;
 
 public class ProssimeUsciteFragment extends Fragment {
 
@@ -21,7 +22,6 @@ public class ProssimeUsciteFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         prossimeUsciteViewModel =
                 new ViewModelProvider(this).get(ProssimeUsciteViewModel.class);
         View root = inflater.inflate(R.layout.fragment_prossime_uscite, container, false);
@@ -32,12 +32,17 @@ public class ProssimeUsciteFragment extends Fragment {
                 textView.setText(s);
             }
         });
+
+        setHasOptionsMenu(true);
+
         return root;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.main2, menu);
+        inflater.inflate(R.menu.main3, menu);
+        SearchHandler searchOperation = new SearchHandler(menu, this);
+        searchOperation.implementSearch(2);
         super.onCreateOptionsMenu(menu, inflater);
     }
 }

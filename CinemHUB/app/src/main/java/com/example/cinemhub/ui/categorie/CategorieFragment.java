@@ -33,6 +33,7 @@ import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.Trailer;
+import com.example.cinemhub.ricerca.SearchHandler;
 import com.example.cinemhub.ui.home.HomeFragment;
 import com.example.cinemhub.ui.home.HomeViewModel;
 
@@ -56,7 +57,6 @@ public class CategorieFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
 
         View root = inflater.inflate(R.layout.fragment_categorie, container, false);
 
@@ -107,14 +107,9 @@ public class CategorieFragment extends Fragment {
         });
 
         initTexts();
+        setHasOptionsMenu(true);
 
         return root;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.main2, menu);
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     public void initPopularRV (List<Movie>set){
@@ -207,5 +202,13 @@ public class CategorieFragment extends Fragment {
         crimineTxt.setMovementMethod(LinkMovementMethod.getInstance());
 
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main, menu);
+        SearchHandler searchOperation = new SearchHandler(menu, this);
+        searchOperation.implementSearch(1);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }

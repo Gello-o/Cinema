@@ -11,11 +11,9 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
-import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -94,7 +92,7 @@ public class ActivityDetail extends YouTubeBaseActivity {
             initializedListener = new YouTubePlayer.OnInitializedListener() {
                 @Override
                 public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-                    youTubePlayer.cueVideo(keyDatum.getValue());
+                    youTubePlayer.loadVideo(keyDatum.getValue());
                     Log.d(TAG, "success");
                 }
 
@@ -107,10 +105,7 @@ public class ActivityDetail extends YouTubeBaseActivity {
             playerView.initialize(YT_API_KEY, initializedListener);
 
             if (thumbnail == null) {
-                Log.d(TAG, "immagine nulla");
-                Glide.with(this)
-                        .load(R.drawable.ic_launcher_background)
-                        .into(imageView);
+                imageView.setImageResource(R.drawable.image_not_found);
             } else {
                 Glide.with(this)
                         .load(base_image_Url + thumbnail)

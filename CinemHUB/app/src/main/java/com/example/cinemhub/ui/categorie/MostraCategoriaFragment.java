@@ -4,6 +4,8 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -39,7 +41,7 @@ public class MostraCategoriaFragment extends Fragment {
 
         genereRV = root.findViewById(R.id.recycler_genere);
 
-        genere = MostraCategoriaFragmentArgs.fromBundle(getArguments()).getGenere();
+       genere = MostraCategoriaFragmentArgs.fromBundle(getArguments()).getGenere();
 
         mostraCategoriaViewModel =
                 new ViewModelProvider(this).get(MostraCategoriaViewModel.class);
@@ -56,19 +58,14 @@ public class MostraCategoriaFragment extends Fragment {
             }
         });
 
+        setHasOptionsMenu(false);
+
         return root;
     }
 
     public void initMoviesRV(List<Movie> movies){
         genereAdapter = new MoviesAdapter(getActivity(), movies);
-        if(genereAdapter == null)
-            Log.d(TAG, "adapter null");
-        else {
-            if (genereAdapter.getMovieList() == null)
-                Log.d(TAG, "lista null");
-            if (genereAdapter.getContext() == null)
-                Log.d(TAG, "contesto null");
-        }
+
         RecyclerView.LayoutManager layoutManager;
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
             layoutManager = new GridLayoutManager(getActivity(), 3);
@@ -100,4 +97,11 @@ public class MostraCategoriaFragment extends Fragment {
 
     }
 
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main2, menu);
+        //qua ci sono solo filtri
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 }

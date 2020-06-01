@@ -1,5 +1,6 @@
 package com.example.cinemhub;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
@@ -16,6 +17,9 @@ import android.view.MenuItem;
 import android.view.Menu;
 import com.example.cinemhub.model.FavoriteDB;
 import com.example.cinemhub.ricerca.SearchFragment;
+import com.example.cinemhub.ricerca.SearchHandler;
+import com.example.cinemhub.ui.home.HomeFragmentDirections;
+import com.example.cinemhub.ui.preferiti.PreferitiFragmentDirections;
 import com.google.android.material.navigation.NavigationView;
 import androidx.annotation.NonNull;
 
@@ -29,7 +33,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.core.view.GravityCompat;
-import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -40,19 +43,15 @@ import androidx.appcompat.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private static final String TAG = "MainActivity";
-    ProgressDialog pd;
-    private Context mContext;
-
-    private static final String DIGIT_PATTERN = "\\d+";
-    private static final Pattern DIGIT_PATTERN_COMPILED = Pattern.compile(DIGIT_PATTERN);
+    private final Context mContext = this;
+    private DrawerLayout drawer;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,9 +75,8 @@ public class MainActivity extends AppCompatActivity {
             Toolbar toolbar = findViewById(R.id.toolbar_main);
             setSupportActionBar(toolbar);
 
-            DrawerLayout drawer;
+
             drawer = findViewById(R.id.drawer_layout);
-            mContext = this;
 
             NavigationView navigationView = findViewById(R.id.nav_view);
 
@@ -87,12 +85,13 @@ public class MainActivity extends AppCompatActivity {
                     R.id.nav_home, R.id.nav_preferiti, R.id.nav_add_list, R.id.nav_categorie, R.id.nav_nuovi_arrivi, R.id.nav_prossime_uscite, R.id.nav_piu_visti)
                     .setDrawerLayout(drawer)
                     .build();
-            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+            navController = Navigation.findNavController(this, R.id.nav_host_fragment);
             NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
             NavigationUI.setupWithNavController(navigationView, navController);
 
             FavoriteDB.getInstance(getApplicationContext());
             FavoriteDB.getInstanceUser();
+
             Log.d(TAG, "creato il Db");
         }
 
@@ -109,7 +108,36 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.filter:
-                implementFilter();
+                //implementFilter();
+                /*
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+                alertDialog.setTitle("Enter Name");
+                final EditText input = new EditText(mContext);
+                final Spinner spinner = new Spinner(mContext);
+                final Spinner spinner2 = new Spinner(mContext);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT);
+                spinner.setLayoutParams(lp);
+                alertDialog.setView(spinner);
+                spinner2.setLayoutParams(lp);
+                alertDialog.setView(spinner2);
+                alertDialog.setPositiveButton("Save",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                                Toast.makeText(getApplicationContext(),
+                                        "Name successfully changed", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                alertDialog.setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                alertDialog.show();
+                */
         }
         return super.onOptionsItemSelected(item);
     }
@@ -129,12 +157,19 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
+    private boolean isConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService((Context.CONNECTIVITY_SERVICE));
 
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnected();
+    }
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         implementSearch(menu);
+        super.onCreateOptionsMenu(menu);
         return true;
     }
 
@@ -173,7 +208,9 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-
+        HomeFragmentDirections.GoToSearchAction action = 
+                HomeFragmentDirections.goToSearchAction("");
+        
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             int numeroDiSpazi = 0;
 
@@ -189,69 +226,16 @@ public class MainActivity extends AppCompatActivity {
                 String queryFinal = query.trim().replaceAll("\\s+", "+").replaceAll("[^a-zA-Z0-9+]", "");
                 System.out.println("Query: " + queryFinal);
 
-                getSupportFragmentManager().beginTransaction().replace(R.id.home_fragment, new SearchFragment(queryFinal)).commit();
+                action.setQuery(queryFinal);
+                navController.navigate(action);
                 // Do your task here
                 return false;
             }
-
         });
+
     }
-
-    private boolean isConnected() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService((Context.CONNECTIVITY_SERVICE));
-
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-
-        return networkInfo != null && networkInfo.isConnected();
-    }
-
-
-
-    private boolean implementFilter() {
-        LayoutInflater factory = LayoutInflater.from(this);
-        final View textEntryView = factory.inflate(R.layout.filter_dialog, null);
-
-        final Spinner spinnerCategroy = (Spinner) textEntryView.findViewById(R.id.spinner1);
-        final Spinner spinnerOrder = (Spinner) textEntryView.findViewById(R.id.spinner2);
-        final EditText editTextVote = (EditText) textEntryView.findViewById(R.id.vote);
-        final EditText editTextYear = (EditText) textEntryView.findViewById(R.id.year);
-
-        spinnerList(spinnerCategroy, "Action", "Romance", "Thriller", "Animation");
-        spinnerList(spinnerOrder, "Name", "Vote", "Popularity", "Year");
-
-        editTextVote.setText("", TextView.BufferType.EDITABLE);
-        editTextYear.setText("", TextView.BufferType.EDITABLE);
-
-        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setIcon(R.drawable.heart_on).setTitle(" Filter:").setView(textEntryView).setPositiveButton("Save",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,
-                                        int whichButton) {
-                        Matcher matcher = DIGIT_PATTERN_COMPILED.matcher(editTextVote.getText().toString());
-                        if(matcher.matches()) {
-                            int a1 = Integer.parseInt(editTextVote.getText().toString());
-                            if(a1<1 || a1>10)
-                                Log.d(TAG, "Qua facciamo spuntare un messaggio d'errore");
-                        }
-
-                        Matcher matcher2 = DIGIT_PATTERN_COMPILED.matcher(editTextYear.getText().toString());
-                        if(matcher.matches()) {
-                            int a2 = Integer.parseInt(editTextYear.getText().toString());
-                            if(a2<1900 || a2>2020)
-                                Log.d(TAG, "Qua facciamo spuntare un messaggio d'errore");
-                        }
-                    }
-                }).setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,
-                                        int whichButton) {
-                        Log.d(TAG, "Cancel");
-                    }
-                });
-        alert.show();
-        return true;
-    }
-
+    
+*/
 
     void spinnerList(Spinner spinner, String s1, String s2, String s3, String s4) {
         List<String> categroyList = new ArrayList<>();
@@ -275,4 +259,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }
+
+
+
+
+

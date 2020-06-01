@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.cinemhub.R;
+import com.example.cinemhub.ricerca.SearchHandler;
 
 public class PiuVistiFragment extends Fragment {
 
@@ -20,7 +21,6 @@ public class PiuVistiFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         piuVistiViewModel =
                 new ViewModelProvider(this).get(PiuVistiViewModel.class);
         View root = inflater.inflate(R.layout.fragment_piu_visti, container, false);
@@ -31,12 +31,17 @@ public class PiuVistiFragment extends Fragment {
                 textView.setText(getContext().toString());
             }
         });
+
+        setHasOptionsMenu(true);
+
         return root;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.main2, menu);
+        inflater.inflate(R.menu.main3, menu);
+        SearchHandler searchOperation = new SearchHandler(menu, this);
+        searchOperation.implementSearch(2);
         super.onCreateOptionsMenu(menu, inflater);
     }
 }

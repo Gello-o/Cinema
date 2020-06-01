@@ -14,10 +14,12 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.cinemhub.R;
+import com.example.cinemhub.ricerca.SearchHandler;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Favorite;
 import com.example.cinemhub.model.FavoriteDB;
 import com.example.cinemhub.model.Movie;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,39 +32,25 @@ public class PreferitiFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
 
         View root = inflater.inflate(R.layout.fragment_preferiti, container, false);
         preferitiRV = root.findViewById(R.id.recycler_view_preferiti);
 
         favoriteList = FavoriteDB.getInstance().dbInterface().getFavorite();
 
-        if(favoriteList == null)
-            Log.d(TAG, "fav uguale null");
+        moviesAdapter = new MoviesAdapter(getActivity(), queryFavoriteDB());
 
-        initMoviesRV(queryFavoriteDB());
+        initMoviesRV();
+
+        setHasOptionsMenu(true);
 
         return root;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.main2, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
+    public void initMoviesRV(){
 
-    public void initMoviesRV(List<Movie> lista){
-        moviesAdapter = new MoviesAdapter(getActivity(), lista);
-        if(moviesAdapter == null)
-            Log.d(TAG, "adapter null");
-        else {
-            if (moviesAdapter.getMovieList() == null)
-                Log.d(TAG, "lista null");
-            if (moviesAdapter.getContext() == null)
-                Log.d(TAG, "contesto null");
-        }
         RecyclerView.LayoutManager layoutManager;
-        if(getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
             layoutManager = new GridLayoutManager(getActivity(), 3);
         else
             layoutManager = new GridLayoutManager(getActivity(), 4);
@@ -119,6 +107,27 @@ public class PreferitiFragment extends Fragment {
             Log.d(TAG, "log else");
         }
         return lista;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main3, menu);
+        SearchHandler searchOperation = new SearchHandler(menu, this);
+        searchOperation.implementSearch(2);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        favoriteList.clear();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        favoriteList = FavoriteDB.getInstance().dbInterface().getFavorite();
+        moviesAdapter.setData(queryFavoriteDB());
     }
 
 }

@@ -1,11 +1,15 @@
 package com.example.cinemhub.ui.home;
 
+import android.app.Activity;
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
@@ -13,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,11 +26,15 @@ import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.adapter.SliderPagerAdapter;
 import com.example.cinemhub.model.Movie;
+import com.example.cinemhub.ricerca.SearchHandler;
 import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import android.os.Handler;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.SearchView;
+
 import java.util.TimerTask;
 
 
@@ -47,7 +56,6 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        setHasOptionsMenu(false);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         popularRV = root.findViewById(R.id.recycler_view_popular);
@@ -104,23 +112,18 @@ public class HomeFragment extends Fragment {
                     slides.add(moviesSet.get(i));
                 }
                 initSlider();
+                messageHandler = new Handler(Looper.getMainLooper());
+                indicator.setupWithViewPager(sliderpager,true);
+                Timer timer = new Timer();
+                timer.scheduleAtFixedRate(new HomeFragment.SliderTimer(),4000,4000);
+
                 slideAdapter.notifyDataSetChanged();
             }
         });
 
-        messageHandler = new Handler(Looper.getMainLooper());
-        // setup timer
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new HomeFragment.SliderTimer(),4000,4000);
-        indicator.setupWithViewPager(sliderpager,true);
+        setHasOptionsMenu(true);
 
         return root;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.main2, menu);
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     public void initPopularRV (List<Movie>set){
@@ -164,8 +167,7 @@ public class HomeFragment extends Fragment {
             Log.d(TAG, "Slider null");
         else if(slides.isEmpty())
             Log.d(TAG, "Slider vuoto");
-
-        slideAdapter = new SliderPagerAdapter(getContext(), slides);
+        slideAdapter = new SliderPagerAdapter(getActivity(), slides);
         sliderpager.setAdapter(slideAdapter);
     }
 
@@ -180,19 +182,12 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void run() {
 
-                    if(slides == null) {
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                    if(slides != null) {
+                        if (sliderpager.getCurrentItem() < slides.size() - 1) {
+                            sliderpager.setCurrentItem(sliderpager.getCurrentItem() + 1);
+                        } else
+                            sliderpager.setCurrentItem(0);
                     }
-
-                    if (sliderpager.getCurrentItem()<slides.size()-1) {
-                        sliderpager.setCurrentItem(sliderpager.getCurrentItem()+1);
-                    }
-                    else
-                        sliderpager.setCurrentItem(0);
                 }
             });
 
@@ -203,5 +198,13 @@ public class HomeFragment extends Fragment {
     private Handler messageHandler;
     protected void runOnUiThread(Runnable action) {
         messageHandler.post(action);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main, menu);
+        SearchHandler searchOperation = new SearchHandler(menu, this);
+        searchOperation.implementSearch(1);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }

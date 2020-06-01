@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,7 +50,7 @@ public class SliderPagerAdapter extends PagerAdapter {
        //     slideText.setText(mList.get(position).getTitle());
         }
         else {
-            slideImg.setImageResource(R.drawable.ic_launcher_background);
+            slideImg.setImageResource(R.drawable.image_not_found);
         }
 
         slideImg.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +86,10 @@ public class SliderPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return mList.size();
+        if(mList != null)
+            return mList.size();
+        else
+            return 0;
     }
 
     @Override
