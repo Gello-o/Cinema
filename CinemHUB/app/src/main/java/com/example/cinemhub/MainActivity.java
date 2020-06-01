@@ -1,5 +1,6 @@
 package com.example.cinemhub;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
@@ -11,10 +12,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Menu;
 import com.example.cinemhub.model.FavoriteDB;
 import com.example.cinemhub.ricerca.SearchFragment;
+import com.example.cinemhub.ricerca.SearchHandler;
+import com.example.cinemhub.ui.home.HomeFragmentDirections;
+import com.example.cinemhub.ui.preferiti.PreferitiFragmentDirections;
 import com.google.android.material.navigation.NavigationView;
 import androidx.annotation.NonNull;
 
@@ -44,8 +49,9 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private static final String TAG = "MainActivity";
-    ProgressDialog pd;
-    private Context mContext;
+    private final Context mContext = this;
+    private DrawerLayout drawer;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,9 +75,8 @@ public class MainActivity extends AppCompatActivity {
             Toolbar toolbar = findViewById(R.id.toolbar_main);
             setSupportActionBar(toolbar);
 
-            DrawerLayout drawer;
+
             drawer = findViewById(R.id.drawer_layout);
-            mContext = this;
 
             NavigationView navigationView = findViewById(R.id.nav_view);
 
@@ -80,15 +85,15 @@ public class MainActivity extends AppCompatActivity {
                     R.id.nav_home, R.id.nav_preferiti, R.id.nav_add_list, R.id.nav_categorie, R.id.nav_nuovi_arrivi, R.id.nav_prossime_uscite, R.id.nav_piu_visti)
                     .setDrawerLayout(drawer)
                     .build();
-            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+            navController = Navigation.findNavController(this, R.id.nav_host_fragment);
             NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
             NavigationUI.setupWithNavController(navigationView, navController);
 
             FavoriteDB.getInstance(getApplicationContext());
             FavoriteDB.getInstanceUser();
+
             Log.d(TAG, "creato il Db");
         }
-
 
     }
 
@@ -103,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.filter:
-                implementFilter();
+                //implementFilter();
                 /*
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
                 alertDialog.setTitle("Enter Name");
@@ -152,16 +157,21 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
+    private boolean isConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService((Context.CONNECTIVITY_SERVICE));
 
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnected();
+    }
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         implementSearch(menu);
+        super.onCreateOptionsMenu(menu);
         return true;
     }
-
-
 
 
     private void implementSearch(final Menu menu) {
@@ -198,7 +208,9 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-
+        HomeFragmentDirections.GoToSearchAction action = 
+                HomeFragmentDirections.goToSearchAction("");
+        
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             int numeroDiSpazi = 0;
 
@@ -214,60 +226,16 @@ public class MainActivity extends AppCompatActivity {
                 String queryFinal = query.trim().replaceAll("\\s+", "+").replaceAll("[^a-zA-Z0-9+]", "");
                 System.out.println("Query: " + queryFinal);
 
-                getSupportFragmentManager().beginTransaction().replace(R.id.home_fragment, new SearchFragment(queryFinal)).commit();
+                action.setQuery(queryFinal);
+                navController.navigate(action);
                 // Do your task here
                 return false;
             }
-
         });
+
     }
-
-    private boolean isConnected() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService((Context.CONNECTIVITY_SERVICE));
-
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-
-        return networkInfo != null && networkInfo.isConnected();
-    }
-
-
-
-    private boolean implementFilter() {
-        LayoutInflater factory = LayoutInflater.from(this);
-        final View textEntryView = factory.inflate(R.layout.filter_dialog, null);
-
-        final Spinner spinnerCategroy = (Spinner) textEntryView.findViewById(R.id.spinner1);
-        final Spinner spinnerOrder = (Spinner) textEntryView.findViewById(R.id.spinner2);
-        final EditText editTextVote = (EditText) textEntryView.findViewById(R.id.vote);
-        final EditText editTextYear = (EditText) textEntryView.findViewById(R.id.year);
-
-        spinnerList(spinnerCategroy, "Action", "Romance", "Thriller", "Animation");
-        spinnerList(spinnerOrder, "Name", "Vote", "Popularity", "Year");
-
-        editTextVote.setText("8.0", TextView.BufferType.EDITABLE);
-        editTextYear.setText("2020", TextView.BufferType.EDITABLE);
-
-        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setIcon(R.drawable.heart_on).setTitle(" Filter:").setView(textEntryView).setPositiveButton("Save",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,
-                                        int whichButton) {
-
-                        Log.i("AlertDialog", "TextEntry 1 Entered " + editTextVote.getText().toString());
-                        Log.i("AlertDialog", "TextEntry 2 Entered " + editTextYear.getText().toString());
-                        /* User clicked OK so do some stuff */
-                    }
-                }).setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,
-                                        int whichButton) {
-                    }
-                });
-        alert.show();
-
-        return true;
-    }
-
+    
+*/
 
     void spinnerList(Spinner spinner, String s1, String s2, String s3, String s4) {
         List<String> categroyList = new ArrayList<>();
@@ -294,8 +262,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 }
-
-
 
 
 

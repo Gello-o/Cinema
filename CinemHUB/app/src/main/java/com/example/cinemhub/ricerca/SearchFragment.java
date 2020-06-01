@@ -4,6 +4,8 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
@@ -29,17 +31,14 @@ public class SearchFragment extends Fragment {
     private MoviesAdapter moviesAdapter;
     private String query;
 
-
-    public SearchFragment(String query) {
-        this.query = query;
-    }
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         searchViewModel =
                 new ViewModelProvider(this).get(SearchViewModel.class);
 
         View root = inflater.inflate(R.layout.search, container, false);
+
+        query = SearchFragmentArgs.fromBundle(getArguments()).getQuery();
 
         searchMoviesRV = root.findViewById(R.id.recycler_view_ricerca);
 
@@ -53,20 +52,14 @@ public class SearchFragment extends Fragment {
             }
         });
 
+        setHasOptionsMenu(false);
 
         return root;
     }
 
     public void initMovieRV(List<Movie> movies){
         moviesAdapter = new MoviesAdapter(getActivity(), movies);
-        if(moviesAdapter == null)
-            Log.d(TAG, "adapter null");
-        else {
-            if (moviesAdapter.getMovieList() == null)
-                Log.d(TAG, "lista null");
-            if (moviesAdapter.getContext() == null)
-                Log.d(TAG, "contesto null");
-        }
+
         RecyclerView.LayoutManager layoutManager;
         if(getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
             layoutManager = new GridLayoutManager(getActivity(), 3);
@@ -76,6 +69,13 @@ public class SearchFragment extends Fragment {
         searchMoviesRV.setAdapter(moviesAdapter);
         searchMoviesRV.setItemAnimator(new DefaultItemAnimator());
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main2, menu);
+        //qua ci sono solo i filtri
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
 }
