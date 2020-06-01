@@ -112,15 +112,14 @@ public class HomeFragment extends Fragment {
                     slides.add(moviesSet.get(i));
                 }
                 initSlider();
+                messageHandler = new Handler(Looper.getMainLooper());
+                indicator.setupWithViewPager(sliderpager,true);
+                Timer timer = new Timer();
+                timer.scheduleAtFixedRate(new HomeFragment.SliderTimer(),4000,4000);
+
                 slideAdapter.notifyDataSetChanged();
             }
         });
-
-        messageHandler = new Handler(Looper.getMainLooper());
-        // setup timer
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new HomeFragment.SliderTimer(),4000,4000);
-        indicator.setupWithViewPager(sliderpager,true);
 
         setHasOptionsMenu(true);
 
@@ -168,8 +167,7 @@ public class HomeFragment extends Fragment {
             Log.d(TAG, "Slider null");
         else if(slides.isEmpty())
             Log.d(TAG, "Slider vuoto");
-
-        slideAdapter = new SliderPagerAdapter(getContext(), slides);
+        slideAdapter = new SliderPagerAdapter(getActivity(), slides);
         sliderpager.setAdapter(slideAdapter);
     }
 
@@ -184,19 +182,12 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void run() {
 
-                    if(slides == null) {
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                    if(slides != null) {
+                        if (sliderpager.getCurrentItem() < slides.size() - 1) {
+                            sliderpager.setCurrentItem(sliderpager.getCurrentItem() + 1);
+                        } else
+                            sliderpager.setCurrentItem(0);
                     }
-
-                    if (sliderpager.getCurrentItem()<slides.size()-1) {
-                        sliderpager.setCurrentItem(sliderpager.getCurrentItem()+1);
-                    }
-                    else
-                        sliderpager.setCurrentItem(0);
                 }
             });
 

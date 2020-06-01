@@ -51,7 +51,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             return new MoviesViewHolder(view);
         }
         else{
-            View view = this.layoutInflater.inflate(R.layout.loading_item, viewGroup, false);
+            View view = layoutInflater.inflate(R.layout.loading_item, viewGroup, false);
             return new LoadingMoviesViewHolder(view);
         }
             

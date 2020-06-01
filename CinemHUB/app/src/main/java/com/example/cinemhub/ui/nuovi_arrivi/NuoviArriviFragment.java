@@ -8,6 +8,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,15 +35,14 @@ public class NuoviArriviFragment extends Fragment {
     private NuoviArriviViewModel nuoviArriviViewModel;
     private MoviesAdapter moviesAdapter;
     RecyclerView prossimeUsciteRV;
-    private int totalItemCount;
-    private int lastVisibleItem;
-    private int visibleItemCount;
-    private int threshold = 1;
+    int currentItems, totalItemCount, scrolledOutItems;
+    private boolean isScrolling = false;
+    ProgressBar progressBar;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_nuovi_arrivi, container, false);
-
+        progressBar = root.findViewById(R.id.progressBarLoadingMovie);
         prossimeUsciteRV = root.findViewById(R.id.recycler_view_nuovi_arrivi);
 
         nuoviArriviViewModel =
@@ -51,10 +52,6 @@ public class NuoviArriviFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<Movie> set) {
                 initMoviesRV(set);
-                if(!nuoviArriviViewModel.isLoading()){
-
-                }
-                moviesAdapter.notifyDataSetChanged();
             }
         });
 
@@ -76,10 +73,14 @@ public class NuoviArriviFragment extends Fragment {
 
     public void initMoviesRV (List<Movie> lista){
 
-        moviesAdapter = new MoviesAdapter(getActivity(), lista);
-        RecyclerView.LayoutManager layoutManager;
+        if(moviesAdapter == null)
+            moviesAdapter = new MoviesAdapter(getActivity(), lista);
+        else
+            moviesAdapter.setData(lista);
 
-        if(getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+        GridLayoutManager layoutManager;
+
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
             layoutManager = new GridLayoutManager(getActivity(), 3);
         else
             layoutManager = new GridLayoutManager(getActivity(), 4);
@@ -90,31 +91,30 @@ public class NuoviArriviFragment extends Fragment {
         prossimeUsciteRV.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
+                    isScrolling = true;
+                }
+            }
+
+            @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
+                scrolledOutItems = layoutManager.findFirstVisibleItemPosition();
                 totalItemCount = layoutManager.getItemCount();
-                lastVisibleItem = ((GridLayoutManager)recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
-                visibleItemCount = layoutManager.getChildCount();
 
-                if (totalItemCount == visibleItemCount || (
-                        totalItemCount <= (lastVisibleItem + threshold) && dy > 0 && !nuoviArriviViewModel.isLoading()) &&
-                        nuoviArriviViewModel.getProssimeUscite().getValue() != null &&
-                        nuoviArriviViewModel.getCurrentResults() != nuoviArriviViewModel.getProssimeUscite().getValue().size()){
-
-                    MutableLiveData<List<Movie>> moviesData = nuoviArriviViewModel.getProssimeUscite();
-
-                    if(moviesData.getValue() != null){
-                        List<Movie> movies = moviesData.getValue();
-                        movies.add(null);
-                        nuoviArriviViewModel.setLoading(true);
-                        int page = nuoviArriviViewModel.getPage() + 1;
-                        nuoviArriviViewModel.setPage(page);
-                        nuoviArriviViewModel.getProssimeUscite();
-                    }
+                if (isScrolling && (currentItems+scrolledOutItems) == 12){
+                    Log.d(TAG, "DENTRO");
+                    isScrolling = false;
+                    int page = nuoviArriviViewModel.getPage()+1;
+                    nuoviArriviViewModel.setPage(page);
+                    progressBar.setVisibility(View.VISIBLE);
+                    nuoviArriviViewModel.getMoreProssimeUscite();
+                    progressBar.setVisibility(View.GONE);
                 }
             }
         });
     }
-
 }
