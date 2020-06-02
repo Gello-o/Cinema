@@ -113,7 +113,7 @@ public class AddListFragment extends Fragment {
             public void onChanged(@Nullable List<Movie> s) {
                 if (s == null)
                     Log.d(TAG, "caricamento fallito");
-                initMovieRV(s);
+                //initMovieRV(s);
             }
         });
     }

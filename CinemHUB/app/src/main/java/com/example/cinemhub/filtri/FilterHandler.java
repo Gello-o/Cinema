@@ -15,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import com.example.cinemhub.R;
 import com.example.cinemhub.model.Movie;
+import com.example.cinemhub.ui.add_list.AddListFragment;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
@@ -131,26 +132,33 @@ public class FilterHandler {
         });
     }
 
-
-    public MutableLiveData<List<Movie>> filter(String voto, String anno){
+    //MutableLiveData<List<Movie>>
+    public void filter(String voto, String anno){
         //MutableLiveData<List<Movie>> moviesData = new MutableLiveData<>();
-        globalFilterMovie = new MutableLiveData<>();
+        //globalFilterMovie = new MutableLiveData<>();
         if(anno.equals("") &&
                 voto.equals("")){
-            globalFilterMovie.setValue(moviesGlobal);
-            return globalFilterMovie;
+            Log.d(TAG, "Dimensione Lista: "+moviesGlobal.size());
+            //globalFilterMovie.setValue(moviesGlobal);
+            ((AddListFragment) fragment).initMovieRV(moviesGlobal, fragment);
+            //return globalFilterMovie;
         }
-        int i = 0;
-        //Qua non entra
-        for(Movie m : moviesGlobal) {
-            if(m.getVoteAverage() > Integer.parseInt(voto)) {
-                movieFiltered.add(m);
-                i++;
+
+        else {
+            int i = 0;
+            //Qua non entra
+            for(Movie m : moviesGlobal) {
+                if(m.getVoteAverage() > Integer.parseInt(voto)) {
+                    movieFiltered.add(m);
+                    i++;
+                }
             }
+            Log.d(TAG, "Numero Film: "+i);
+            //globalFilterMovie.setValue(movieFiltered);
+            if(fragment instanceof AddListFragment)
+                ((AddListFragment) fragment).initMovieRV(movieFiltered, fragment);
+            //return globalFilterMovie;
         }
-        Log.d(TAG, "Numero Film: "+i);
-        globalFilterMovie.setValue(movieFiltered);
-        return globalFilterMovie;
     }
 
     public MutableLiveData<List<Movie>> getGlobalFilter() {
