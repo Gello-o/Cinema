@@ -25,22 +25,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Movie;
+import com.example.cinemhub.model.Resource;
 import com.example.cinemhub.ricerca.FilterHandler;
 import com.example.cinemhub.ricerca.SearchHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class NuoviArriviFragment extends Fragment {
     private static final String TAG = "NuoviArriviFragment";
     private NuoviArriviViewModel nuoviArriviViewModel;
     private MoviesAdapter moviesAdapter;
     RecyclerView prossimeUsciteRV;
-    int lastVisibleItem, totalItemCount, visibleItemCount;
-    int threshold = 1;
-
-    List<Movie> globalList;
+    private int totalItemCount;
+    private int lastVisibleItem;
+    private int visibleItemCount;
+    private int threshold = 1;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -48,14 +48,6 @@ public class NuoviArriviFragment extends Fragment {
 
         nuoviArriviViewModel =
                 new ViewModelProvider(this).get(NuoviArriviViewModel.class);
-
-        nuoviArriviViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> set) {
-                initMoviesRV(set);
-                globalList = set;
-            }
-        });
 
         GridLayoutManager layoutManager;
 
@@ -66,6 +58,9 @@ public class NuoviArriviFragment extends Fragment {
 
         prossimeUsciteRV.setLayoutManager(layoutManager);
         prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
+
+        moviesAdapter = new MoviesAdapter(getActivity(), getMovies());
+        prossimeUsciteRV.setAdapter(moviesAdapter);
 
         prossimeUsciteRV.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
@@ -82,13 +77,58 @@ public class NuoviArriviFragment extends Fragment {
                 Log.d(TAG, "last visible item " + lastVisibleItem);
                 Log.d(TAG, "visible items " + visibleItemCount);
 
-                if(totalItemCount <= (lastVisibleItem + threshold) && dy > 0){
-                    Log.d(TAG, "entrato in lazy loading");
-                    int page = nuoviArriviViewModel.getPage() + 1;
-                    nuoviArriviViewModel.setPage(page);
-                    nuoviArriviViewModel.getMoreProssimeUscite();
+                if (totalItemCount == visibleItemCount || (
+                        totalItemCount <= (lastVisibleItem + threshold) && dy > 0 && !nuoviArriviViewModel.isLoading()) &&
+                        nuoviArriviViewModel.getMoviesLiveData().getValue() != null &&
+                        nuoviArriviViewModel.getCurrentResults() != nuoviArriviViewModel.getMoviesLiveData().getValue().getTotalResults()
+                ) {
+                    Resource<List<Movie>> moviesResource = new Resource<>();
+
+                    MutableLiveData<Resource<List<Movie>>> moviesMutableLiveData = nuoviArriviViewModel.getMoviesLiveData();
+
+                    if (moviesMutableLiveData.getValue() != null) {
+
+                        nuoviArriviViewModel.setLoading(true);
+
+                        List<Movie> currentMovies = moviesMutableLiveData.getValue().getData();
+
+                        // It adds a null element to enable the visualization of the loading item (it is managed by the class NuoviArriviAdapter)
+                        currentMovies.add(null);
+                        moviesResource.setData(currentMovies);
+                        moviesResource.setStatusMessage(moviesMutableLiveData.getValue().getStatusMessage());
+                        moviesResource.setTotalResults(moviesMutableLiveData.getValue().getTotalResults());
+                        moviesResource.setStatusCode(moviesMutableLiveData.getValue().getStatusCode());
+                        moviesResource.setLoading(true);
+                        Log.d(TAG, "STO CARICANDO");
+                        moviesMutableLiveData.postValue(moviesResource);
+
+                        int page = nuoviArriviViewModel.getPage() + 1;
+                        nuoviArriviViewModel.setPage(page);
+                        nuoviArriviViewModel.getMoreProssimeUscite();
+                    }
                 }
             }
+        });
+
+        nuoviArriviViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<Resource<List<Movie>>>() {
+            @Override
+            public void onChanged(@Nullable Resource<List<Movie>> resource) {
+                moviesAdapter.setData(resource.getData());
+
+                if (!resource.isLoading()) {
+                    Log.d(TAG, "STA CARICANDO");
+                    nuoviArriviViewModel.setLoading(false);
+                    nuoviArriviViewModel.setCurrentResults(resource.getData().size());
+                }
+
+                if (resource.getData() != null) {
+                    Log.d(TAG, "Success - Total results: " + resource.getTotalResults() + " Status code: " +
+                            resource.getStatusCode() + "Status message: " + resource.getStatusMessage());
+                } else {
+                    Log.d(TAG, "Error - Status code: " + resource.getStatusCode() + " Status message: " + resource.getStatusMessage());
+                }
+            }
+
         });
     }
 
@@ -109,14 +149,14 @@ public class NuoviArriviFragment extends Fragment {
     }
 
 
-    public void initMoviesRV (List<Movie> lista){
-        if(moviesAdapter == null)
-            moviesAdapter = new MoviesAdapter(getActivity(), lista);
-        else
-            moviesAdapter.setData(lista);
+    private List<Movie> getMovies() {
 
-        prossimeUsciteRV.setAdapter(moviesAdapter);
+        Resource<List<Movie>> moviesResource = nuoviArriviViewModel.getProssimeUscite().getValue();
 
+        if (moviesResource != null) {
+            return moviesResource.getData();
+        }
+
+        return null;
     }
-
 }

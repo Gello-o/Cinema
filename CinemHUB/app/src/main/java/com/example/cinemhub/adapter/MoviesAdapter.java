@@ -22,7 +22,6 @@ import com.example.cinemhub.utils.Constants;
 import java.util.List;
 
 public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
-    
 
     private Context context;
     private List<Movie> movieList;
@@ -30,7 +29,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private static final int ARTICLE_VIEW_TYPE = 0;
     private static final int LOADING_VIEW_TYPE = 1;
     private static final String TAG = "MoviesAdapter";
-
 
     public MoviesAdapter(Context context, List<Movie> movieList) {
         if(movieList != null)
@@ -41,7 +39,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.context = context;
         this.movieList = movieList;
         layoutInflater  = layoutInflater.from(context);
-
     }
 
     @Override
@@ -66,14 +63,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if(movieList.isEmpty())
             Log.d(TAG, "movieList nulla");
         if(viewHolder instanceof MoviesViewHolder) {
-            if (movieList.get(i).getPosterPath() == null) {
-                ((MoviesViewHolder)viewHolder).thumbnail.setImageResource(R.drawable.image_not_found);
-            } else {
-                Glide.with(context)
-                        .load(Constants.BASE_IMAGE_URL + movieList.get(i).getPosterPath())
-                        .dontAnimate()
-                        .into(((MoviesViewHolder)viewHolder).thumbnail);
-            }
+            ((MoviesViewHolder) viewHolder).bind(movieList.get(i));
         }
         else if(viewHolder instanceof LoadingMoviesViewHolder){
             ((LoadingMoviesViewHolder) viewHolder).progressBarLoadingMovie.setIndeterminate(true);
@@ -146,6 +136,16 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             });
         }
 
+        public void bind(Movie m){
+            if (m.getPosterPath() == null) {
+                thumbnail.setImageResource(R.drawable.image_not_found);
+            } else {
+                Glide.with(context)
+                        .load(Constants.BASE_IMAGE_URL + m.getPosterPath())
+                        .dontAnimate()
+                        .into(thumbnail);
+            }
+        }
     }
 
     static class LoadingMoviesViewHolder extends RecyclerView.ViewHolder {
