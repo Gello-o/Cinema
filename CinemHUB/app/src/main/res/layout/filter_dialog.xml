@@ -54,8 +54,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/year"
-        android:inputType="number"
         android:autofillHints="2020"
+        android:inputType="number"
         tools:ignore="MissingConstraints"
         app:layout_constraintTop_toBottomOf="@+id/textView3"/>
 

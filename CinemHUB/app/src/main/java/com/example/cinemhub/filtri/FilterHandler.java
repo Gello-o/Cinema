@@ -140,10 +140,15 @@ public class FilterHandler {
             globalFilterMovie.setValue(moviesGlobal);
             return globalFilterMovie;
         }
+        int i = 0;
+        //Qua non entra
         for(Movie m : moviesGlobal) {
-            if(m.getVoteAverage() > Integer.parseInt(voto))
+            if(m.getVoteAverage() > Integer.parseInt(voto)) {
                 movieFiltered.add(m);
+                i++;
+            }
         }
+        Log.d(TAG, "Numero Film: "+i);
         globalFilterMovie.setValue(movieFiltered);
         return globalFilterMovie;
     }
@@ -152,6 +157,7 @@ public class FilterHandler {
         return new MutableLiveData<>();
     }
 
+    //Setta la lista globale
     public void setMovie(List<Movie> moviesGlobal) {
         if(moviesGlobal==null || moviesGlobal.size()==0)
             Log.d(TAG, "Lista null");

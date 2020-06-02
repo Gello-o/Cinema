@@ -1,5 +1,6 @@
 package com.example.cinemhub.ui.add_list;
 
+import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -79,6 +80,21 @@ public class AddListFragment extends Fragment {
 
     }
 
+    public void initMovieRV(List<Movie> movies, Fragment fragment) {
+        moviesAdapter = new MoviesAdapter(fragment.getActivity(), movies);
+        Log.d(TAG, "primofilm: " + movies.get(0).getVoteAverage());
+
+        RecyclerView.LayoutManager layoutManager;
+        if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+            layoutManager = new GridLayoutManager(getActivity(), 3);
+        else
+            layoutManager = new GridLayoutManager(getActivity(), 4);
+        actionMoviesRV.setLayoutManager(layoutManager);
+        actionMoviesRV.setAdapter(moviesAdapter);
+        actionMoviesRV.setItemAnimator(new DefaultItemAnimator());
+
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main3, menu);
@@ -97,6 +113,7 @@ public class AddListFragment extends Fragment {
             public void onChanged(@Nullable List<Movie> s) {
                 if (s == null)
                     Log.d(TAG, "caricamento fallito");
+                initMovieRV(s);
             }
         });
     }

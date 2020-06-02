@@ -3,9 +3,15 @@ package com.example.cinemhub;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.webkit.WebChromeClient;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,9 +36,6 @@ import com.google.android.youtube.player.YouTubePlayerView;
 
 public class ActivityDetail extends YouTubeBaseActivity {
     private static final String TAG = "ActivityDetail";
-
-    private static final String API_KEY = "740ef79d64b588653371072cdee99a0f";
-    private final String base_image_Url = "https://image.tmdb.org/t/p/w500";
 
     private TextView nameOfMovie, plotSynopsis, userRating, releaseDate;
     private ImageView imageView;
@@ -86,9 +89,6 @@ public class ActivityDetail extends YouTubeBaseActivity {
             initializedListener = new YouTubePlayer.OnInitializedListener() {
                 @Override
                 public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-                    if(youTubePlayer==null) Log.d(TAG, "Nulll: YTPlayer");
-                    if(keyDatum==null) Log.d(TAG, "Nulll: keyDatum");
-                    if(keyDatum.getValue()==null) Log.d(TAG, "Nulll: keyDatum.getValue()");
                     youTubePlayer.cueVideo(keyDatum.getValue());
                     Log.d(TAG, "success");
                 }
@@ -105,7 +105,7 @@ public class ActivityDetail extends YouTubeBaseActivity {
                 imageView.setImageResource(R.drawable.image_not_found);
             } else {
                 Glide.with(this)
-                        .load(base_image_Url + thumbnail)
+                        .load(Constants.BASE_IMAGE_URL + thumbnail)
                         .dontAnimate()
                         .into(imageView);
             }
