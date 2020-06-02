@@ -44,6 +44,7 @@ public class AddListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         addListViewModel =
                 new ViewModelProvider(this).get(AddListViewModel.class);
 
@@ -52,21 +53,16 @@ public class AddListFragment extends Fragment {
             layoutManager = new GridLayoutManager(getActivity(), 3);
         else
             layoutManager = new GridLayoutManager(getActivity(), 4);
+
         actionMoviesRV.setLayoutManager(layoutManager);
-
         actionMoviesRV.setItemAnimator(new DefaultItemAnimator());
-
-
-        moviesAdapter = new MoviesAdapter(getActivity(), new ArrayList<>());
-
-        actionMoviesRV.setAdapter(moviesAdapter);
 
         addListViewModel.getText().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> s) {
                 if(s == null)
                     Log.d(TAG, "caricamento fallito");
-                moviesAdapter.setData(s);
+                initMoviesRV(s);
                 global.addAll(s);
             }
         });
@@ -80,5 +76,23 @@ public class AddListFragment extends Fragment {
         FilterHandler filterHandler = new FilterHandler(menu, this);
         filterHandler.implementFilter(2);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    public void initMoviesRV(List<Movie> lista){
+        moviesAdapter = new MoviesAdapter(getContext(), lista);
+        moviesAdapter.notifyDataSetChanged();
+        actionMoviesRV.setAdapter(moviesAdapter);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(global != null && !global.isEmpty()){
+            Log.d(TAG, "dalla pausa setto la lista a global");
+            initMoviesRV(global);
+        }
+        else{
+            Log.d(TAG, "global null");
+        }
     }
 }
