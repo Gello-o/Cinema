@@ -1,6 +1,5 @@
 package com.example.cinemhub;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
@@ -23,10 +22,10 @@ public class UserOperation {
     public Activity activity;
     private Context context;
 
-    private TextView showVote, warning, comment;
+    private TextView showVote, warning, comment, usersRating;
     private EditText editText;
     private RatingBar ratingBar, ratingBarUser;
-    private Button button;
+    private Button button, editRatingButton;
     private List<UserRatingDB> lineUser;
     private UserRatingDB userRatingDB;
 
@@ -49,18 +48,19 @@ public class UserOperation {
 
         button = this.activity.findViewById(R.id.submit_rating);
         ratingBar =  this.activity.findViewById(R.id.ratingBar);
-        ratingBarUser = this.activity.findViewById(R.id.ratingBar_user);
         editText =  this.activity.findViewById(R.id.user_overview);
         showVote = this.activity.findViewById(R.id.show_vote);
         warning = this.activity.findViewById(R.id.warning);
         comment = this.activity.findViewById(R.id.comment);
         editText = this.activity.findViewById(R.id.user_overview);
+        editRatingButton = this.activity.findViewById(R.id.edit_rating);
+        usersRating = this.activity.findViewById(R.id.users_rating2);
 
-        checkComment();
+
+        writeComment();
         recensito=checkUser();
 
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @SuppressLint("SetTextI18n")
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 submittedRating = ratingBar.getRating();
@@ -69,36 +69,76 @@ public class UserOperation {
             }
         });
 
+        if(!editText.getText().toString().equals(commento)) {
+            editText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editText.setText("");
+                    editText.setFocusableInTouchMode(true);
+                    editText.setFocusable(true);
+                    editText.setTextColor(ContextCompat.getColor(context, R.color.textColor));
+                    if (recensito) {
+                        warning.setText("WARNING! you'll override your comment");
+                    }
+                }
+            });
+        }
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userRatingDB = new UserRatingDB();
 
-                String name = editText.getText().toString();
-                userRatingDB.setMovie_id(Integer.parseInt(_id));
-                userRatingDB.setRating(submittedRating);
-                userRatingDB.setOverview(name);
+                saveUser(id);
 
-                if (recensito) {
-                    FavoriteDB.getInstance().dbInterface().updateUserRating(userRatingDB);
-                    Log.d(TAG, "update dbuser ok ");
-                    checkComment();
+                //debug
+                Log.d(TAG,userRatingDB.getOverview());
+                Log.d(TAG,""+userRatingDB.getRating());
+                Log.d(TAG,""+userRatingDB.getMovie_id());
+                //
+                writeComment();
+
+                if(recensito){
                     if(!commento.equals("") && submittedRating == 0) {
-                        //in realtà c'e ma e null
-                        Toast.makeText(context, "Commento rimosso correttamente", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Comment removed", Toast.LENGTH_SHORT).show();
                     }else {
-                        Toast.makeText(context, "Commento aggiunto correttamente", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Comment added", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    FavoriteDB.getInstance().dbInterface().addUserRating(userRatingDB);
-                    Log.d(TAG, "memorizzato in dbUser prima volta");
-                    checkComment();
-                    Toast.makeText(context, "Commento aggiunto correttamente", Toast.LENGTH_SHORT).show();
+                }else{
+                    if(!commento.equals("") && submittedRating == 0){
+                        Toast.makeText(context, "Please add a comment or a rating", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(context, "Comment added", Toast.LENGTH_SHORT).show();
+                    }
                 }
+
                 //azzero tutto
                 warning.setText("");
                 editText.setText("");
                 ratingBar.setRating(0);
+            }
+        });
+
+
+        editRatingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkUser()) {
+                    ratingBar.setRating(submittedRating);
+
+                    editText.setTextColor(ContextCompat.getColor(context, R.color.textColor));
+                    warning.setText("WARNING! you'll change your comment");
+                    editText.setText("" + commento);
+                    editText.hasFocus();
+                    editText.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            editText.setFocusableInTouchMode(true);
+                            editText.setFocusable(true);
+                        }
+                    });
+                } else {
+                    Toast.makeText(context, "Leave a comment first", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -110,6 +150,24 @@ public class UserOperation {
                     " ID: " + userRatingDB.getMovie_id() +
                     " Rating: " + userRatingDB.getRating() +
                     " Overview: " + userRatingDB.getOverview());
+        }
+    }
+
+    private void saveUser(String _id){
+        userRatingDB = new UserRatingDB();
+
+        String name = editText.getText().toString();
+        userRatingDB.setMovie_id(Integer.parseInt(_id));
+        userRatingDB.setRating(submittedRating);
+        userRatingDB.setOverview(name);
+
+        if (recensito) {
+            FavoriteDB.getInstance().dbInterface().updateUserRating(userRatingDB);
+            Log.d(TAG, "update dbuser ok ");
+
+        } else {
+            FavoriteDB.getInstance().dbInterface().addUserRating(userRatingDB);
+            Log.d(TAG, "added dbuser 1 time ok ");
         }
     }
 
@@ -126,32 +184,10 @@ public class UserOperation {
         }
     }
 
-    private void checkComment(){
+    private void writeComment(){
         if(checkUser()){//==true)
-            editText.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(TAG,"entrato nel onclick edit");
-                    editText.setText("");
-                    editText.setFocusableInTouchMode(true);
-                    editText.setFocusable(true);
-                    editText.setTextColor(ContextCompat.getColor(context, R.color.editTextColor));
-                    warning.setText("WARNING! you'll override your comment");
-                }
-            });
-            ratingBarUser.setRating(submittedRating);
+            usersRating.setText((int) submittedRating + " / 10");
             comment.setText(commento);
-        } else{
-            editText.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(TAG,"entrato nel onclick edit");
-                    editText.setText("");
-                    editText.setFocusableInTouchMode(true);
-                    editText.setFocusable(true);
-                    editText.setTextColor(ContextCompat.getColor(context, R.color.editTextColor));
-                }
-            });
         }
     }
 }

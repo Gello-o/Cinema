@@ -11,11 +11,9 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
-import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -69,7 +67,7 @@ public class ActivityDetail extends YouTubeBaseActivity {
         imageView = findViewById(R.id.image_activity_detail);
         nameOfMovie = findViewById(R.id.title);
         plotSynopsis = findViewById(R.id.plotsynopsis);
-        userRating = findViewById(R.id.usersRating);
+        userRating = findViewById(R.id.users_rating);
         releaseDate = findViewById(R.id.releaseDate);
         playerView = findViewById(R.id.player);
 
@@ -227,18 +225,6 @@ public class ActivityDetail extends YouTubeBaseActivity {
             getWindow().getDecorView().setSystemUiVisibility(3846);
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

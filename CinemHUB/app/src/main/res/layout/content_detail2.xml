@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <TextView
@@ -36,7 +36,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:text="@string/show_vote"
-        android:textSize="10dp" />
+        android:textSize="12sp" />
 
     <EditText
         android:id="@+id/user_overview"
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_margin_top2"
         android:text="@string/edit_text"
-        android:textColor="#E0E0E0"
+        android:textColor="@color/editTextColor"
         android:focusable="false">
     </EditText>
 
@@ -69,14 +69,13 @@
 
 
     <RelativeLayout
-        android:id="@+id/relative"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp">
 
         <TextView
             android:id="@+id/text_comment"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
@@ -87,20 +86,21 @@
             android:textSize="20dp"
             android:textStyle="bold" />
 
-        <RatingBar
-            android:id="@+id/ratingBar_user"
-            style="?android:attr/ratingBarStyleSmall"
+
+        <TextView
+            android:id="@+id/users_rating2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_alignRight="@id/text_comment"
-            android:layout_marginTop="6dp"
-            android:layout_marginRight="20dp"
-            android:max="10"
-            android:numStars="10"
-            android:stepSize="1.0" />
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="11dp"
+            android:layout_marginRight="54dp"
+            android:layout_marginBottom="-1dp"
+            android:text="@string/user_rating"
+            android:textSize="12sp" />
+
     </RelativeLayout>
 
     <TextView
@@ -114,4 +114,15 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:textSize="20dp" />
+
+
+    <Button
+        android:id="@+id/edit_rating"
+        android:background="@drawable/button_border"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"
+        android:text="Edit"
+        android:layout_gravity="center_vertical|center_horizontal"/>
 </LinearLayout>
