@@ -13,13 +13,12 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
-
 import com.example.cinemhub.R;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.ui.add_list.AddListFragment;
+
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +31,8 @@ public class FilterHandler {
     private Menu menu;
     private static final String DIGIT_PATTERN = "\\d+";
     private static final Pattern DIGIT_PATTERN_COMPILED = Pattern.compile(DIGIT_PATTERN);
+    List<Movie> moviesGlobal;
+    List<Movie> movieFiltered = new ArrayList<>();
 
     public FilterHandler(Menu menu, Fragment fragment){
         this.fragment = fragment;
@@ -40,7 +41,7 @@ public class FilterHandler {
 
     public void implementFilter(int tipo) {
         LayoutInflater factory = LayoutInflater.from(fragment.getActivity());
-        View textEntryView = factory.inflate(R.layout.filter_dialog, null);
+        final View textEntryView = factory.inflate(R.layout.filter_dialog, null);
 
         MenuItem filterMenuItem;
         if(tipo==1)
@@ -48,10 +49,10 @@ public class FilterHandler {
         else
             filterMenuItem = menu.findItem(R.id.filter1);
 
-        Spinner spinnerCategroy = textEntryView.findViewById(R.id.spinner1);
-        Spinner spinnerOrder = textEntryView.findViewById(R.id.spinner2);
-        EditText editTextVote = textEntryView.findViewById(R.id.vote);
-        EditText editTextYear = textEntryView.findViewById(R.id.year);
+        final Spinner spinnerCategroy = textEntryView.findViewById(R.id.spinner1);
+        final Spinner spinnerOrder = textEntryView.findViewById(R.id.spinner2);
+        final EditText editTextVote = textEntryView.findViewById(R.id.vote);
+        final EditText editTextYear = textEntryView.findViewById(R.id.year);
 
         spinnerList(spinnerCategroy, "Action", "Romance", "Thriller", "Animation");
         spinnerList(spinnerOrder, "Name", "Vote", "Popularity", "Year");
@@ -59,8 +60,13 @@ public class FilterHandler {
         editTextVote.setText("", TextView.BufferType.EDITABLE);
         editTextYear.setText("", TextView.BufferType.EDITABLE);
 
-        AlertDialog.Builder alert = new AlertDialog.Builder(fragment.getActivity());
+        View filterOpt = filterMenuItem.getActionView();
+        Log.d(TAG, "FilterMenuItem: "+filterMenuItem);
+        Log.d(TAG, "FilterOpt: "+filterOpt);
 
+
+
+        final AlertDialog.Builder alert = new AlertDialog.Builder(fragment.getActivity()).setView(textEntryView).setTitle(" Filter:");
         filterMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -68,23 +74,23 @@ public class FilterHandler {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
                                                 int whichButton) {
+                                movieFiltered.clear();
                                 Matcher matcher = DIGIT_PATTERN_COMPILED.matcher(editTextVote.getText().toString());
                                 if(matcher.matches()) {
                                     int a1 = Integer.parseInt(editTextVote.getText().toString());
                                     if(a1<1 || a1>10)
                                         Log.d(TAG, "Qua facciamo spuntare un messaggio d'errore");
                                 }
-
                                 Matcher matcher2 = DIGIT_PATTERN_COMPILED.matcher(editTextYear.getText().toString());
                                 if(matcher2.matches()) {
                                     int a2 = Integer.parseInt(editTextYear.getText().toString());
                                     if(a2<1900 || a2>2020)
                                         Log.d(TAG, "Qua facciamo spuntare un messaggio d'errore");
                                 }
+                                filter(editTextVote.getText().toString(), editTextYear.getText().toString());
 
                                 ViewGroup viewGroup = (ViewGroup) textEntryView.getParent();
                                 viewGroup.removeView(textEntryView);
-
                             }
                         }).setNegativeButton("Cancel",
                         new DialogInterface.OnClickListener() {
@@ -123,6 +129,42 @@ public class FilterHandler {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+    }
+
+    //MutableLiveData<List<Movie>>
+    public void filter(String voto, String anno) {
+        //MutableLiveData<List<Movie>> moviesData = new MutableLiveData<>();
+        //globalFilterMovie = new MutableLiveData<>();
+        if (anno.equals("") &&
+                voto.equals("")) {
+            Log.d(TAG, "Dimensione Lista: " + moviesGlobal.size());
+            //globalFilterMovie.setValue(moviesGlobal);
+            ( (AddListFragment) fragment ).initMoviesRV(moviesGlobal);
+            //return globalFilterMovie;
+        } else {
+            int i = 0;
+            //Qua non entra
+            for (Movie m : moviesGlobal) {
+                if (m.getVoteAverage() > Integer.parseInt(voto)) {
+                    movieFiltered.add(m);
+                    i++;
+                }
+            }
+            Log.d(TAG, "Numero Film: " + i);
+            //globalFilterMovie.setValue(movieFiltered);
+            if (fragment instanceof AddListFragment)
+                ( (AddListFragment) fragment ).initMoviesRV(movieFiltered);
+            //return globalFilterMovie;
+        }
+    }
+    //Setta la lista globale
+    public void setMovie(List<Movie> movies) {
+        if(movies==null || movies.size()==0)
+            Log.d(TAG, "Lista null");
+        else {
+            this.moviesGlobal = movies;
+            Log.d(TAG, "Voto:"+moviesGlobal.get(0).getVoteAverage());
+        }
     }
 
 }
