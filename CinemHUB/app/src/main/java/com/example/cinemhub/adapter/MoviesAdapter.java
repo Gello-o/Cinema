@@ -96,9 +96,17 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public void setData(List<Movie> movies) {
         if (movieList != null) {
+            this.movieList.addAll(movies);
+            notifyDataSetChanged();
+        }
+        else {
             this.movieList = movies;
             notifyDataSetChanged();
         }
+    }
+
+    public List<Movie> getData() {
+        return movieList;
     }
 
     public class MoviesViewHolder extends RecyclerView.ViewHolder{
@@ -144,7 +152,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         LoadingMoviesViewHolder(View view) {
             super(view);
-            progressBarLoadingMovie = view.findViewById(R.id.progressBarLoadingMovie);
+            progressBarLoadingMovie = view.findViewById(R.id.progressBarLoadingMovie1);
         }
     }
 

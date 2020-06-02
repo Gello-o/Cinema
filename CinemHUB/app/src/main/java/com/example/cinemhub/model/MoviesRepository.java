@@ -194,7 +194,7 @@ public class MoviesRepository {
                 } else
                     key = trailers.get(0).getKey();
 
-                keyDatum.postValue(key);
+                keyDatum.setValue(key);
             }
 
             @Override

@@ -34,9 +34,6 @@ public class UserOperation {
     boolean recensito;
     public String id, commento;
 
-
-
-
     //costructor allow findview and Toast
     public UserOperation(Activity activity,Context context){
         this.activity = activity;
@@ -121,9 +118,9 @@ public class UserOperation {
             commento = user.getOverview();
             submittedRating = user.getRating();
             return true;
-        }else {
+        }else
             return false;
-        }
+
     }
 
     private void checkComment(){

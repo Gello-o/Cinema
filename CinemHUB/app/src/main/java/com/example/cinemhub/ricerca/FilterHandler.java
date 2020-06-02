@@ -15,8 +15,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.cinemhub.R;
+import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.ui.add_list.AddListFragment;
 
 import java.util.ArrayList;
@@ -30,7 +32,6 @@ public class FilterHandler {
     private Menu menu;
     private static final String DIGIT_PATTERN = "\\d+";
     private static final Pattern DIGIT_PATTERN_COMPILED = Pattern.compile(DIGIT_PATTERN);
-
 
     public FilterHandler(Menu menu, Fragment fragment){
         this.fragment = fragment;
@@ -123,4 +124,5 @@ public class FilterHandler {
             }
         });
     }
+
 }

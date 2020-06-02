@@ -22,6 +22,7 @@ import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.ricerca.FilterHandler;
 import com.example.cinemhub.ricerca.SearchHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AddListFragment extends Fragment {
@@ -30,31 +31,21 @@ public class AddListFragment extends Fragment {
     private AddListViewModel addListViewModel;
     private RecyclerView actionMoviesRV;
     private MoviesAdapter moviesAdapter;
+    private List<Movie> global = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        addListViewModel =
-                new ViewModelProvider(this).get(AddListViewModel.class);
-
         View root = inflater.inflate(R.layout.fragment_add_list, container, false);
-
         actionMoviesRV = root.findViewById(R.id.recycler_view_add_list);
-
-        addListViewModel.getText().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> s) {
-                if(s == null)
-                    Log.d(TAG, "caricamento fallito");
-                initMovieRV(s);
-            }
-        });
-
         setHasOptionsMenu(true);
         return root;
     }
 
-    public void initMovieRV(List<Movie> movies){
-        moviesAdapter = new MoviesAdapter(getActivity(), movies);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        addListViewModel =
+                new ViewModelProvider(this).get(AddListViewModel.class);
 
         RecyclerView.LayoutManager layoutManager;
         if(getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
@@ -62,9 +53,23 @@ public class AddListFragment extends Fragment {
         else
             layoutManager = new GridLayoutManager(getActivity(), 4);
         actionMoviesRV.setLayoutManager(layoutManager);
-        actionMoviesRV.setAdapter(moviesAdapter);
+
         actionMoviesRV.setItemAnimator(new DefaultItemAnimator());
 
+
+        moviesAdapter = new MoviesAdapter(getActivity(), new ArrayList<>());
+
+        actionMoviesRV.setAdapter(moviesAdapter);
+
+        addListViewModel.getText().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> s) {
+                if(s == null)
+                    Log.d(TAG, "caricamento fallito");
+                moviesAdapter.setData(s);
+                global.addAll(s);
+            }
+        });
     }
 
     @Override
