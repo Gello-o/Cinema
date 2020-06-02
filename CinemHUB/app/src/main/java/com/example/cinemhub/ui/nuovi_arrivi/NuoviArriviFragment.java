@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
+import com.example.cinemhub.filtri.FilterHandler;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.ricerca.SearchHandler;
 
@@ -33,6 +34,7 @@ public class NuoviArriviFragment extends Fragment {
     RecyclerView prossimeUsciteRV;
     int lastVisibleItem, totalItemCount, visibleItemCount;
     int threshold = 1;
+    FilterHandler filterOperation;
 
     List<Movie> globalList;
 
@@ -47,6 +49,10 @@ public class NuoviArriviFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<Movie> set) {
                 initMoviesRV(set);
+                if (filterOperation != null) {
+                    filterOperation.setMovie(set);
+                } else
+                    Log.d(TAG, "FilterOperationNull");
                 globalList = set;
             }
         });
@@ -86,6 +92,31 @@ public class NuoviArriviFragment extends Fragment {
         });
     }
 
+    public void initMoviesRV (List<Movie> lista){
+        if(moviesAdapter == null)
+            moviesAdapter = new MoviesAdapter(getActivity(), lista);
+        else
+            moviesAdapter.setData(lista);
+
+        prossimeUsciteRV.setAdapter(moviesAdapter);
+
+    }
+
+    public void initMovieRV(List<Movie> movies, Fragment fragment) {
+        moviesAdapter = new MoviesAdapter(fragment.getActivity(), movies);
+        Log.d(TAG, "primofilm: " + movies.get(0).getVoteAverage());
+
+        RecyclerView.LayoutManager layoutManager;
+        if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+            layoutManager = new GridLayoutManager(getActivity(), 3);
+        else
+            layoutManager = new GridLayoutManager(getActivity(), 4);
+        prossimeUsciteRV.setLayoutManager(layoutManager);
+        prossimeUsciteRV.setAdapter(moviesAdapter);
+        prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
+
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_nuovi_arrivi, container, false);
@@ -98,19 +129,10 @@ public class NuoviArriviFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.main3, menu);
         SearchHandler searchOperation = new SearchHandler(menu, this);
+        filterOperation = new FilterHandler(menu, this);
         searchOperation.implementSearch(2);
+        filterOperation.implementFilter(2);
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-
-    public void initMoviesRV (List<Movie> lista){
-        if(moviesAdapter == null)
-            moviesAdapter = new MoviesAdapter(getActivity(), lista);
-        else
-            moviesAdapter.setData(lista);
-
-        prossimeUsciteRV.setAdapter(moviesAdapter);
-
     }
 
 }

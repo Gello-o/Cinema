@@ -54,7 +54,7 @@ public class AddListFragment extends Fragment {
                 initMovieRV(s);
                 if (filterOperation != null) {
                     filterOperation.setMovie(s);
-                    initFilterObserver();
+                    //initFilterObserver();
                 } else
                     Log.d(TAG, "FilterOperationNull");
                 Log.d(TAG, "OnChanged");
@@ -82,7 +82,6 @@ public class AddListFragment extends Fragment {
 
     public void initMovieRV(List<Movie> movies, Fragment fragment) {
         moviesAdapter = new MoviesAdapter(fragment.getActivity(), movies);
-        Log.d(TAG, "primofilm: " + movies.get(0).getVoteAverage());
 
         RecyclerView.LayoutManager layoutManager;
         if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
@@ -105,17 +104,6 @@ public class AddListFragment extends Fragment {
 
         Log.d(TAG, "OnCreateOptionsMenu");
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    private void initFilterObserver() {
-        filterOperation.getGlobalFilter().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> s) {
-                if (s == null)
-                    Log.d(TAG, "caricamento fallito");
-                //initMovieRV(s);
-            }
-        });
     }
 
 }

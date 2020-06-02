@@ -16,8 +16,12 @@ public class AddListViewModel extends ViewModel {
         if(mText == null){
             mText = new MutableLiveData<>();
             repo = MoviesRepository.getInstance();
-            repo.searchMovie(1, "iron+man", mText);
+            for(int i=1; i<3; i++) {
+                repo.searchMovie(i, "iron+man", mText);
+            }
         }
         return mText;
     }
+
+
 }

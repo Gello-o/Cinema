@@ -16,11 +16,15 @@ import android.widget.TextView;
 import com.example.cinemhub.R;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.ui.add_list.AddListFragment;
+import com.example.cinemhub.ui.nuovi_arrivi.NuoviArriviFragment;
+import com.example.cinemhub.utils.Constants;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,7 +37,7 @@ public class FilterHandler {
     private static final Pattern DIGIT_PATTERN_COMPILED = Pattern.compile(DIGIT_PATTERN);
     List<Movie> moviesGlobal;
     List<Movie> movieFiltered = new ArrayList<>();
-    private MutableLiveData<List<Movie>> globalFilterMovie;
+    List<Movie> movieWork;
 
 
     public FilterHandler(Menu menu, Fragment fragment){
@@ -56,8 +60,28 @@ public class FilterHandler {
         final EditText editTextVote = (EditText) textEntryView.findViewById(R.id.vote);
         final EditText editTextYear = (EditText) textEntryView.findViewById(R.id.year);
 
-        spinnerList(spinnerCategroy, "Action", "Romance", "Thriller", "Animation");
-        spinnerList(spinnerOrder, "Name", "Vote", "Popularity", "Year");
+
+        List<String> listVote = new ArrayList<>();
+        listVote.add("");
+        listVote.add("Action");
+        listVote.add("Romance");
+        listVote.add("Thriller");
+        listVote.add("Animation");
+        spinnerList(spinnerCategroy, listVote);
+
+
+        List<String> listYear = new ArrayList<>();
+        listYear.add("");
+        listYear.add("Name");
+        listYear.add("Vote");
+        listYear.add("Popularity");
+        listYear.add("Year");
+        spinnerList(spinnerOrder, listYear);
+
+
+
+        //spinnerList(spinnerCategroy, "Action", "Romance", "Thriller", "Animation");
+        //spinnerList(spinnerOrder, "Name", "Vote", "Popularity", "Year");
 
         editTextVote.setText("", TextView.BufferType.EDITABLE);
         editTextYear.setText("", TextView.BufferType.EDITABLE);
@@ -88,11 +112,18 @@ public class FilterHandler {
                                     if(a2<1900 || a2>2020)
                                         Log.d(TAG, "Qua facciamo spuntare un messaggio d'errore");
                                 }
-                                filter(editTextVote.getText().toString(), editTextYear.getText().toString());
+                                String stringSpinnerCategory = spinnerCategroy.getSelectedItem().toString();
+                                String stringSpinnerOrder = spinnerOrder.getSelectedItem().toString();
+
+                                filter2(editTextVote.getText().toString(), editTextYear.getText().toString(),
+                                        stringSpinnerCategory, stringSpinnerOrder);
 
                                 ViewGroup viewGroup = (ViewGroup) textEntryView.getParent();
                                 viewGroup.removeView(textEntryView);
                             }
+
+
+
                         }).setNegativeButton("Cancel",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
@@ -132,33 +163,25 @@ public class FilterHandler {
         });
     }
 
-    //MutableLiveData<List<Movie>>
-    public void filter(String voto, String anno){
-        //MutableLiveData<List<Movie>> moviesData = new MutableLiveData<>();
-        //globalFilterMovie = new MutableLiveData<>();
-        if(anno.equals("") &&
-                voto.equals("")){
-            Log.d(TAG, "Dimensione Lista: "+moviesGlobal.size());
-            //globalFilterMovie.setValue(moviesGlobal);
-            ((AddListFragment) fragment).initMovieRV(moviesGlobal, fragment);
-            //return globalFilterMovie;
-        }
+    void spinnerList(Spinner spinner, List<String> spinnerFilter) {
+        List<String> categroyList = new ArrayList<>();
 
-        else {
-            int i = 0;
-            //Qua non entra
-            for(Movie m : moviesGlobal) {
-                if(m.getVoteAverage() > Integer.parseInt(voto)) {
-                    movieFiltered.add(m);
-                    i++;
-                }
+        for(String s : spinnerFilter)
+            categroyList.add(s);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(fragment.getActivity(),
+                android.R.layout.simple_spinner_item, categroyList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                System.out.println("Enter");
             }
-            Log.d(TAG, "Numero Film: "+i);
-            //globalFilterMovie.setValue(movieFiltered);
-            if(fragment instanceof AddListFragment)
-                ((AddListFragment) fragment).initMovieRV(movieFiltered, fragment);
-            //return globalFilterMovie;
-        }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     public MutableLiveData<List<Movie>> getGlobalFilter() {
@@ -171,8 +194,259 @@ public class FilterHandler {
             Log.d(TAG, "Lista null");
         else {
             this.moviesGlobal = moviesGlobal;
+            this.movieWork = moviesGlobal;
             Log.d(TAG, "Voto:"+moviesGlobal.get(0).getVoteAverage());
         }
     }
 
+    public void filter(String voto, String anno, String category, String order){
+        if(anno.equals("") && voto.equals("") && category.equals("") && order.equals("")){
+            Log.d(TAG, "Dimensione Lista: "+moviesGlobal.size());
+            ((AddListFragment) fragment).initMovieRV(moviesGlobal, fragment);
+        }
+        else {
+            int genId = 0;
+            if(category.equals("Action"))
+                genId = Constants.ACTION;
+            if(category.equals("Romance"))
+                genId = Constants.ROMANCE;
+            if(category.equals("Thriller"))
+                genId = Constants.THRILLER;
+            if(category.equals("Animation"))
+                genId = Constants.ANIMATION;
+
+            int i = 0;
+            movieFiltered.clear();
+
+            for(Movie m : movieWork) {
+                if(m.getVoteAverage() >= Integer.parseInt(voto)) {
+                    for(Integer gen : m.getGenreIds())
+                        if(gen==genId) {
+                            i++;
+                            movieFiltered.add(m);
+                        }
+                }
+            }
+
+            if(order.equals("Name"))
+                Collections.sort(movieFiltered, new NameFunctor());
+            if(order.equals("Vote"))
+                Collections.sort(movieFiltered, new VoteFunctor());
+            if(order.equals("Popularity"))
+                Collections.sort(movieFiltered, new PopularityFunctor());
+            if(order.equals("Year"))
+                Collections.sort(movieFiltered, new YearFunctor());
+
+            movieWork.clear();
+            movieWork.addAll(movieFiltered);
+
+            Log.d(TAG, "Numero Film Animazione: "+i);
+            if(fragment instanceof AddListFragment)
+                ((AddListFragment) fragment).initMovieRV(movieFiltered, fragment);
+        }
+    }
+
+    public void filterVote(String vote) {
+        Boolean flag = false;
+        for(Movie m : movieWork) {
+            if(m.getVoteAverage() >= Integer.parseInt(vote)) { // && !movieFiltered.contains(m)
+                for(Movie m2 : movieFiltered) {
+                    if (m2.getId().equals(m.getId())) {
+                        flag = true;
+                    }
+                }
+                if (!flag) {
+                    movieFiltered.add(m);
+                }
+            }
+        }
+        movieWork.clear();
+        movieWork.addAll(movieFiltered);
+    }
+
+    public void filterGen(int genId) {
+        Boolean flag = false;
+        for(Movie m : movieWork) {
+            for(Integer genM : m.getGenreIds()) {
+                if(genM.equals(genId)) {
+                    for(Movie m2 : movieFiltered) {
+                        if (m2.getId().equals(m.getId())) {
+                            flag = true;
+                        }
+                    }
+                    if(!flag)
+                        movieFiltered.add(m);
+                }
+            }
+        }
+        movieWork.clear();
+        movieWork.addAll(movieFiltered);
+    }
+
+    public void filterOrder(String order) {
+        if(movieFiltered.size()==0) {
+            if(order.equals("Name"))
+                Collections.sort(movieWork, new NameFunctor());
+            else if(order.equals("Vote"))
+                Collections.sort(movieWork, new VoteFunctor());
+            else if(order.equals("Popularity"))
+                Collections.sort(movieWork, new PopularityFunctor());
+            else if(order.equals("Year"))
+                Collections.sort(movieWork, new YearFunctor());
+        }
+        else {
+            if(order.equals("Name"))
+                Collections.sort(movieFiltered, new NameFunctor());
+            else if(order.equals("Vote"))
+                Collections.sort(movieFiltered, new VoteFunctor());
+            else if(order.equals("Popularity"))
+                Collections.sort(movieFiltered, new PopularityFunctor());
+            else if(order.equals("Year"))
+                Collections.sort(movieFiltered, new YearFunctor());
+        }
+        //movieWork.clear();
+        //movieWork.addAll(movieFiltered);
+    }
+
+    public void filterYear(String year) {
+        Boolean flag = false;
+        int yearInt = Integer.parseInt(year);
+        int yearMovieInt;
+        //String s;
+        for(Movie m : movieWork) {
+            //s = "";
+            yearMovieInt = 0;
+            if(m.getReleaseDate().length()==10)
+                yearMovieInt = Integer.parseInt(m.getReleaseDate().substring(0,4));
+                //Log.d(TAG, "ReleaseMovieMFId: "+m.getId()+ " " + m.getReleaseDate());
+            if(yearMovieInt >= yearInt) {
+                for(Movie m2 : movieFiltered) {
+                    if (m2.getId().equals(m.getId())) {
+                        flag = true;
+                    }
+                }
+                if (!flag) {
+                    movieFiltered.add(m);
+                }
+            }
+        }
+        movieWork.clear();
+        movieWork.addAll(movieFiltered);
+    }
+
+    public void filter2(String voto, String anno, String category, String order) {
+        //1) Controllo
+        if(anno.equals("") && voto.equals("") && category.equals("") && order.equals("")){
+            Log.d(TAG, "Dimensione Lista: "+moviesGlobal.size());
+            ((AddListFragment) fragment).initMovieRV(moviesGlobal, fragment);
+        }
+
+        else {
+            int genId = 0;
+            if(category.equals("Action"))
+                genId = Constants.ACTION;
+            else {
+                if(category.equals("Romance"))
+                    genId = Constants.ROMANCE;
+                else if(category.equals("Thriller"))
+                    genId = Constants.THRILLER;
+                else if(category.equals("Animation"))
+                    genId = Constants.ANIMATION;
+            }
+
+            int i = 0;
+            movieFiltered.clear();
+
+            if(anno.equals("") && voto.equals("") && category.equals("") && !order.equals("")) {
+                Log.d(TAG, "Entrato1");
+                filterOrder(order);
+            }
+
+            else if(anno.equals("") && voto.equals("") && !category.equals("") && order.equals("")) {
+                Log.d(TAG, "Entrato2");
+                filterGen(genId);
+            }
+
+            else if(anno.equals("") && voto.equals("") && !category.equals("") && !order.equals("")) {
+                Log.d(TAG, "Entrato3");
+                filterGen(genId);
+                filterOrder(order);
+            }
+            else if(anno.equals("") && !voto.equals("") && category.equals("") && order.equals("")) {
+                Log.d(TAG, "Entrato4");
+                filterVote(voto);
+            }
+
+            else if(anno.equals("") && !voto.equals("") && category.equals("") && !order.equals("")) {
+                Log.d(TAG, "Entrato5");
+                filterVote(voto);
+                filterOrder(order);
+            }
+            else if(anno.equals("") && !voto.equals("") && !category.equals("") && order.equals("")) {
+                Log.d(TAG, "Entrato6");
+                filterVote(voto);
+                filterGen(genId);
+            }
+            else if(anno.equals("") && !voto.equals("") && !category.equals("") && !order.equals("")) {
+                Log.d(TAG, "Entrato7");
+                filterVote(voto);
+                filterGen(genId);
+                filterOrder(order);
+            }
+            else if(!anno.equals("") && voto.equals("") && category.equals("") && order.equals("")) {
+                Log.d(TAG, "Entrato8");
+                filterYear(anno);
+            }
+
+            else if(!anno.equals("") && voto.equals("") && category.equals("") && !order.equals("")) {
+                Log.d(TAG, "Entrato9");
+                filterYear(anno);
+                filterOrder(order);
+            }
+            else if(!anno.equals("") && voto.equals("") && !category.equals("") && order.equals("")) {
+                Log.d(TAG, "Entrato10");
+                filterYear(anno);
+                filterGen(genId);
+            }
+            else if(!anno.equals("") && voto.equals("") && !category.equals("") && !order.equals("")) {
+                Log.d(TAG, "Entrato11");
+                filterYear(anno);
+                filterGen(genId);
+                filterOrder(order);
+            }
+            else if(!anno.equals("") && !voto.equals("") && category.equals("") && order.equals("")) {
+                Log.d(TAG, "Entrato12");
+                filterYear(anno);
+                filterVote(voto);
+            }
+            else if(!anno.equals("") && !voto.equals("") && category.equals("") && !order.equals("")) {
+                Log.d(TAG, "Entrato13");
+                filterYear(anno);
+                filterVote(voto);
+                filterOrder(order);
+            }
+            else if(!anno.equals("") && !voto.equals("") && !category.equals("") && order.equals("")) {
+                Log.d(TAG, "Entrato14");
+                filterYear(anno);
+                filterVote(voto);
+                filterGen(genId);
+            }
+            else if(!anno.equals("") && !voto.equals("") && !category.equals("") && !order.equals("")) {
+                Log.d(TAG, "Entrato15");
+                filterYear(anno);
+                filterVote(voto);
+                filterGen(genId);
+                filterOrder(order);
+            }
+
+            movieWork.clear();
+            movieWork.addAll(movieFiltered);
+
+            if(fragment instanceof AddListFragment)
+                ((AddListFragment) fragment).initMovieRV(movieFiltered, fragment);
+
+            if(fragment instanceof NuoviArriviFragment)
+                ((NuoviArriviFragment) fragment).initMovieRV(movieFiltered, fragment);
+        }
+    }
 }
