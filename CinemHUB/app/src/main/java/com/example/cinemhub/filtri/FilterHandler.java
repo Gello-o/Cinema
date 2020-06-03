@@ -190,8 +190,11 @@ public class FilterHandler {
 
     //Setta la lista globale
     public void setMovie(List<Movie> moviesGlobal) {
-        if(moviesGlobal==null || moviesGlobal.size()==0)
+        if(moviesGlobal==null || moviesGlobal.size()==0) {
             Log.d(TAG, "Lista null");
+            this.moviesGlobal = new ArrayList<>();
+        }
+
         else {
             this.moviesGlobal = moviesGlobal;
             this.movieWork = moviesGlobal;
@@ -199,6 +202,7 @@ public class FilterHandler {
         }
     }
 
+    /*
     public void filter(String voto, String anno, String category, String order){
         if(anno.equals("") && voto.equals("") && category.equals("") && order.equals("")){
             Log.d(TAG, "Dimensione Lista: "+moviesGlobal.size());
@@ -245,6 +249,7 @@ public class FilterHandler {
                 ((AddListFragment) fragment).initMovieRV(movieFiltered, fragment);
         }
     }
+    */
 
     public void filterVote(String vote) {
         Boolean flag = false;
@@ -262,6 +267,7 @@ public class FilterHandler {
         }
         movieWork.clear();
         movieWork.addAll(movieFiltered);
+        movieFiltered.clear();
     }
 
     public void filterGen(int genId) {
@@ -281,10 +287,10 @@ public class FilterHandler {
         }
         movieWork.clear();
         movieWork.addAll(movieFiltered);
+        movieFiltered.clear();
     }
 
     public void filterOrder(String order) {
-        if(movieFiltered.size()==0) {
             if(order.equals("Name"))
                 Collections.sort(movieWork, new NameFunctor());
             else if(order.equals("Vote"))
@@ -293,19 +299,9 @@ public class FilterHandler {
                 Collections.sort(movieWork, new PopularityFunctor());
             else if(order.equals("Year"))
                 Collections.sort(movieWork, new YearFunctor());
-        }
-        else {
-            if(order.equals("Name"))
-                Collections.sort(movieFiltered, new NameFunctor());
-            else if(order.equals("Vote"))
-                Collections.sort(movieFiltered, new VoteFunctor());
-            else if(order.equals("Popularity"))
-                Collections.sort(movieFiltered, new PopularityFunctor());
-            else if(order.equals("Year"))
-                Collections.sort(movieFiltered, new YearFunctor());
-        }
         //movieWork.clear();
         //movieWork.addAll(movieFiltered);
+        //movieFiltered.clear();
     }
 
     public void filterYear(String year) {
@@ -332,13 +328,15 @@ public class FilterHandler {
         }
         movieWork.clear();
         movieWork.addAll(movieFiltered);
+        movieFiltered.clear();
     }
 
     public void filter2(String voto, String anno, String category, String order) {
         //1) Controllo
         if(anno.equals("") && voto.equals("") && category.equals("") && order.equals("")){
-            Log.d(TAG, "Dimensione Lista: "+moviesGlobal.size());
-            ((AddListFragment) fragment).initMovieRV(moviesGlobal, fragment);
+            Log.d(TAG, "Entrato0");
+            if(fragment instanceof AddListFragment)
+                ((AddListFragment) fragment).initMovieRV(moviesGlobal, fragment);
         }
 
         else {
@@ -355,7 +353,7 @@ public class FilterHandler {
             }
 
             int i = 0;
-            movieFiltered.clear();
+            //movieFiltered.clear();
 
             if(anno.equals("") && voto.equals("") && category.equals("") && !order.equals("")) {
                 Log.d(TAG, "Entrato1");
@@ -439,14 +437,15 @@ public class FilterHandler {
                 filterOrder(order);
             }
 
-            movieWork.clear();
-            movieWork.addAll(movieFiltered);
+            //movieWork.clear();
+            //movieWork.addAll(movieFiltered);
 
             if(fragment instanceof AddListFragment)
-                ((AddListFragment) fragment).initMovieRV(movieFiltered, fragment);
+                ((AddListFragment) fragment).initMovieRV(movieWork, fragment);
+
 
             if(fragment instanceof NuoviArriviFragment)
-                ((NuoviArriviFragment) fragment).initMovieRV(movieFiltered, fragment);
+                ((NuoviArriviFragment) fragment).initMovieRV(movieWork, fragment);
         }
     }
 }

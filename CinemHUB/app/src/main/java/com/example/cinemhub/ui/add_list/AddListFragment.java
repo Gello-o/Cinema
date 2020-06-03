@@ -67,7 +67,7 @@ public class AddListFragment extends Fragment {
 
     public void initMovieRV(List<Movie> movies) {
         moviesAdapter = new MoviesAdapter(getActivity(), movies);
-        Log.d(TAG, "primofilm: " + movies.get(0).getVoteAverage());
+        //Log.d(TAG, "primofilm: " + movies.get(0).getVoteAverage());
 
         RecyclerView.LayoutManager layoutManager;
         if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
