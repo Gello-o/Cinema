@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import com.example.cinemhub.model.Favorite;
 import com.example.cinemhub.model.FavoriteDB;
-import com.example.cinemhub.model.UserInfo;
+import com.example.cinemhub.model.UserRatingDB;
 import com.google.android.material.snackbar.Snackbar;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
@@ -32,12 +32,12 @@ public class FavoriteOperation {
         this.context = context;
     }
 
-    public void eseguiPreferiti(String id, String movieName, String thumbnail,String rating,String _synopsis,
+    public void eseguiPreferiti(String id, String movieName, String thumbnail,String rating,String synopsis,
                                 String release,String genre,String originalMovieName,String voteCount){
         this.id = id;
         this.movieName = movieName;
         this.thumbnail = thumbnail;
-        this.rating = rating;
+        this.rating  = rating;
         this.synopsis = synopsis;
         this.release = release;
         this.genre = genre;
@@ -64,6 +64,7 @@ public class FavoriteOperation {
                 Log.d(TAG, "cliccato unfavorite");
                 favorite.setMovieId(Integer.parseInt(id));
                 FavoriteDB.getInstance().dbInterface().deleteFavorite(favorite);
+                Snackbar.make(likeButtonFavorite, "Removed to Favorite", Snackbar.LENGTH_SHORT).show();
             }
         });
     }
@@ -117,3 +118,4 @@ public class FavoriteOperation {
 
 
 }
+

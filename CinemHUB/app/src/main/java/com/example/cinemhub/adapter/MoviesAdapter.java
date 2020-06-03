@@ -6,7 +6,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,19 +21,14 @@ import com.example.cinemhub.utils.Constants;
 
 import java.util.List;
 
-public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHolder>{
-
-    public Context getContext() {
-        return context;
-    }
-
-    public List<Movie> getMovieList() {
-        return movieList;
-    }
+public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+    
 
     private Context context;
     private List<Movie> movieList;
     LayoutInflater layoutInflater;
+    private static final int ARTICLE_VIEW_TYPE = 0;
+    private static final int LOADING_VIEW_TYPE = 1;
     private static final String TAG = "MoviesAdapter";
 
 
@@ -48,44 +46,75 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
 
     @Override
     @NonNull
-    public MoviesAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i){
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i){
         Log.d(TAG, "onCreateViewHolder called");
-        View view = layoutInflater.inflate(R.layout.movie_card, viewGroup, false);
-        return new MyViewHolder(view);
+        if(i == ARTICLE_VIEW_TYPE) {
+            View view = layoutInflater.inflate(R.layout.movie_card, viewGroup, false);
+            return new MoviesViewHolder(view);
+        }
+        else{
+            View view = layoutInflater.inflate(R.layout.loading_item, viewGroup, false);
+            return new LoadingMoviesViewHolder(view);
+        }
+            
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder viewHolder, int i){
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i){
         Log.d(TAG, "onBindViewHolder called");
 
         if(movieList.isEmpty())
             Log.d(TAG, "movieList nulla");
-
-        if(movieList.get(i).getPosterPath() == null){
-            Glide.with(context)
-                    .load(R.drawable.ic_launcher_background)
-                    .dontAnimate()
-                    .into(viewHolder.thumbnail);
+        if(viewHolder instanceof MoviesViewHolder) {
+            if (movieList.get(i).getPosterPath() == null) {
+                ((MoviesViewHolder)viewHolder).thumbnail.setImageResource(R.drawable.image_not_found);
+            } else {
+                Glide.with(context)
+                        .load(Constants.BASE_IMAGE_URL + movieList.get(i).getPosterPath())
+                        .dontAnimate()
+                        .into(((MoviesViewHolder)viewHolder).thumbnail);
+            }
         }
-        else{
-            Glide.with(context)
-                    .load(Constants.BASE_IMAGE_URL+movieList.get(i).getPosterPath())
-                    .dontAnimate()
-                    .into(viewHolder.thumbnail);
+        else if(viewHolder instanceof LoadingMoviesViewHolder){
+            ((LoadingMoviesViewHolder) viewHolder).progressBarLoadingMovie.setIndeterminate(true);
         }
-
     }
 
     @Override
     public int getItemCount() {
-        return movieList.size();
+        if(movieList != null)
+            return movieList.size();
+        else
+            return 0;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if(movieList.get(position) == null)
+            return LOADING_VIEW_TYPE;
+        else
+            return ARTICLE_VIEW_TYPE;
+    }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public void setData(List<Movie> movies) {
+        if (movieList != null) {
+            this.movieList.addAll(movies);
+            notifyDataSetChanged();
+        }
+        else {
+            this.movieList = movies;
+            notifyDataSetChanged();
+        }
+    }
+
+    public List<Movie> getData() {
+        return movieList;
+    }
+
+    public class MoviesViewHolder extends RecyclerView.ViewHolder{
         ImageView thumbnail;
 
-        public MyViewHolder(View view){
+        public MoviesViewHolder(View view){
             super(view);
             Log.d(TAG, "creating viewHolder for recyclerView");
             thumbnail = view.findViewById(R.id.card_view_thumbnail);
@@ -117,6 +146,16 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
             });
         }
 
+    }
+
+    static class LoadingMoviesViewHolder extends RecyclerView.ViewHolder {
+
+        ProgressBar progressBarLoadingMovie;
+
+        LoadingMoviesViewHolder(View view) {
+            super(view);
+            progressBarLoadingMovie = view.findViewById(R.id.progressBarLoadingMovie1);
+        }
     }
 
 }
