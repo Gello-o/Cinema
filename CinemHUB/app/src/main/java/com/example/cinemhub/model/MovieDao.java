@@ -38,4 +38,7 @@ public interface MovieDao {
 
     @Update
     public void updateUserRating(UserRatingDB nextDb);
+
+    @Delete
+    public void deleteUser(UserRatingDB dbToDelete);
 }

@@ -64,6 +64,7 @@ public class FavoriteOperation {
                 Log.d(TAG, "cliccato unfavorite");
                 favorite.setMovieId(Integer.parseInt(_id));
                 FavoriteDB.getInstance().dbInterface().deleteFavorite(favorite);
+                Snackbar.make(likeButtonFavorite, "Removed to Favorite", Snackbar.LENGTH_SHORT).show();
             }
         });
     }
