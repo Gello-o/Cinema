@@ -55,6 +55,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/year"
         android:autofillHints="2020"
+        android:inputType="number"
         tools:ignore="MissingConstraints"
         app:layout_constraintTop_toBottomOf="@+id/textView3"/>
 
@@ -74,6 +75,7 @@
     android:layout_height="wrap_content"
     android:layout_below="@id/vote"
     android:layout_alignParentStart="true"
+    android:inputType="number"
     android:autofillHints="8.0"
     tools:ignore="MissingConstraints"
     app:layout_constraintTop_toBottomOf="@+id/textView4" />

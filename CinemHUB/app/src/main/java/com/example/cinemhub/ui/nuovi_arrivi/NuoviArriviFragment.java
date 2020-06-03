@@ -8,22 +8,19 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
+import com.example.cinemhub.filtri.FilterHandler;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.ricerca.SearchHandler;
 
@@ -35,48 +32,30 @@ public class NuoviArriviFragment extends Fragment {
     private NuoviArriviViewModel nuoviArriviViewModel;
     private MoviesAdapter moviesAdapter;
     RecyclerView prossimeUsciteRV;
-    int currentItems, totalItemCount, scrolledOutItems;
-    private boolean isScrolling = false;
-    ProgressBar progressBar;
+    int lastVisibleItem, totalItemCount, visibleItemCount;
+    int threshold = 1;
+    FilterHandler filterOperation;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_nuovi_arrivi, container, false);
-        progressBar = root.findViewById(R.id.progressBarLoadingMovie);
-        prossimeUsciteRV = root.findViewById(R.id.recycler_view_nuovi_arrivi);
+    List<Movie> globalList;
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         nuoviArriviViewModel =
-        new ViewModelProvider(this).get(NuoviArriviViewModel.class);
+                new ViewModelProvider(this).get(NuoviArriviViewModel.class);
 
         nuoviArriviViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> set) {
                 initMoviesRV(set);
+                if (filterOperation != null) {
+                    filterOperation.setMovie(set);
+                } else
+                    Log.d(TAG, "FilterOperationNull");
+                globalList = set;
             }
         });
-
-        setHasOptionsMenu(true);
-
-        return root;
-    }
-
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.main3, menu);
-        SearchHandler searchOperation = new SearchHandler(menu, this);
-        searchOperation.implementSearch(2);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-
-
-    public void initMoviesRV (List<Movie> lista){
-
-        if(moviesAdapter == null)
-            moviesAdapter = new MoviesAdapter(getActivity(), lista);
-        else
-            moviesAdapter.setData(lista);
 
         GridLayoutManager layoutManager;
 
@@ -85,36 +64,75 @@ public class NuoviArriviFragment extends Fragment {
         else
             layoutManager = new GridLayoutManager(getActivity(), 4);
 
-        prossimeUsciteRV.setAdapter(moviesAdapter);
+        prossimeUsciteRV.setLayoutManager(layoutManager);
         prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
 
         prossimeUsciteRV.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
-                    isScrolling = true;
-                }
-            }
-
-            @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+                Log.d(TAG, "entrato in onScrolled");
 
-                scrolledOutItems = layoutManager.findFirstVisibleItemPosition();
                 totalItemCount = layoutManager.getItemCount();
+                lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                visibleItemCount = layoutManager.getChildCount();
 
-                if (isScrolling && (currentItems+scrolledOutItems) == 12){
-                    Log.d(TAG, "DENTRO");
-                    isScrolling = false;
-                    int page = nuoviArriviViewModel.getPage()+1;
+                Log.d(TAG, "total items " + totalItemCount);
+                Log.d(TAG, "last visible item " + lastVisibleItem);
+                Log.d(TAG, "visible items " + visibleItemCount);
+
+                if(totalItemCount <= (lastVisibleItem + threshold) && dy > 0){
+                    Log.d(TAG, "entrato in lazy loading");
+                    int page = nuoviArriviViewModel.getPage() + 1;
                     nuoviArriviViewModel.setPage(page);
-                    progressBar.setVisibility(View.VISIBLE);
                     nuoviArriviViewModel.getMoreProssimeUscite();
-                    progressBar.setVisibility(View.GONE);
                 }
             }
         });
     }
+
+    public void initMoviesRV (List<Movie> lista){
+        if(moviesAdapter == null)
+            moviesAdapter = new MoviesAdapter(getActivity(), lista);
+        else
+            moviesAdapter.setData(lista);
+
+        prossimeUsciteRV.setAdapter(moviesAdapter);
+
+    }
+
+    public void initMovieRV(List<Movie> movies, Fragment fragment) {
+        moviesAdapter = new MoviesAdapter(fragment.getActivity(), movies);
+        Log.d(TAG, "primofilm: " + movies.get(0).getVoteAverage());
+
+        RecyclerView.LayoutManager layoutManager;
+        if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+            layoutManager = new GridLayoutManager(getActivity(), 3);
+        else
+            layoutManager = new GridLayoutManager(getActivity(), 4);
+        prossimeUsciteRV.setLayoutManager(layoutManager);
+        prossimeUsciteRV.setAdapter(moviesAdapter);
+        prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
+
+    }
+
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_nuovi_arrivi, container, false);
+        prossimeUsciteRV = root.findViewById(R.id.recycler_view_nuovi_arrivi);
+        setHasOptionsMenu(true);
+        return root;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.main3, menu);
+        SearchHandler searchOperation = new SearchHandler(menu, this);
+        filterOperation = new FilterHandler(menu, this);
+        searchOperation.implementSearch(2);
+        filterOperation.implementFilter(2);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
 }

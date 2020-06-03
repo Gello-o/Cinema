@@ -31,10 +31,7 @@ public class NuoviArriviViewModel extends ViewModel {
     }
 
     public LiveData<List<Movie>> getMoreProssimeUscite() {
-
-        Log.d(TAG, "getArticles: More News");
         MoviesRepository.getInstance().getMovies("upcoming", page, film);
-
         return film;
     }
 

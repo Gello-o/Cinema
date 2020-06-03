@@ -42,6 +42,7 @@
     <string name="edit_text">Write There:</string>
     <string name="show_vote">Your Rating:</string>
     <string name="your_comment">Your Comment:</string>
+    <string name="user_rating">0 / 10</string>
 
 
 

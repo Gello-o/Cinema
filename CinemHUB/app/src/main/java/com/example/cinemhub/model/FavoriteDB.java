@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {Favorite.class, UserInfo.class}, version = 3)
+@Database(entities = {Favorite.class, UserRatingDB.class}, version = 3)
 public abstract class FavoriteDB extends RoomDatabase {
     public final String TAG = "DbStructure";
     private static FavoriteDB favoriteDB;
@@ -32,7 +32,7 @@ public abstract class FavoriteDB extends RoomDatabase {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
 
-            database.execSQL("CREATE TABLE `UserInfo` (`id` INTEGER, "
+            database.execSQL("CREATE TABLE `UserRatingDB` (`id` INTEGER, "
                     + "`rating` FLOAT, `overview` TEXT, PRIMARY KEY(`id`))");
         }
     };
@@ -45,7 +45,8 @@ public abstract class FavoriteDB extends RoomDatabase {
         if(favoriteDB == null){
             synchronized (FavoriteDB.class){
                 favoriteDB = Room.databaseBuilder(context, FavoriteDB.class,"Favorite1")
-                        .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                        .addMigrations(MIGRATION_1_2)
+                        .addMigrations(MIGRATION_2_3)
                         .allowMainThreadQueries()
                         .build();
             }
@@ -59,7 +60,8 @@ public abstract class FavoriteDB extends RoomDatabase {
         if(favoriteDB == null){
             synchronized (FavoriteDB.class){
                 favoriteDB = Room.databaseBuilder(mContext, FavoriteDB.class,"Favorite1")
-                        .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                        .addMigrations(MIGRATION_1_2)
+                        .addMigrations(MIGRATION_2_3)
                         .allowMainThreadQueries()
                         .build();
             }
@@ -72,8 +74,9 @@ public abstract class FavoriteDB extends RoomDatabase {
             return null;
         if(userRatingDB == null){
             synchronized (FavoriteDB.class){
-                favoriteDB = Room.databaseBuilder(mContext, FavoriteDB.class,"UserInfo")
-                        .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                favoriteDB = Room.databaseBuilder(mContext, FavoriteDB.class,"UserRatingDB")
+                        .addMigrations(MIGRATION_1_2)
+                        .addMigrations(MIGRATION_2_3)
                         .allowMainThreadQueries()
                         .build();
             }

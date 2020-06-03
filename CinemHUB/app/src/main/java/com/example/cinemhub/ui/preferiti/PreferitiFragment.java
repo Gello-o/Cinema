@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -30,34 +31,28 @@ public class PreferitiFragment extends Fragment {
     MoviesAdapter moviesAdapter;
     List<Favorite> favoriteList;
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        GridLayoutManager layoutManager;
+
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+            layoutManager = new GridLayoutManager(getActivity(), 3);
+        else
+            layoutManager = new GridLayoutManager(getActivity(), 4);
+
+        preferitiRV.setLayoutManager(layoutManager);
+        preferitiRV.setItemAnimator(new DefaultItemAnimator());
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_preferiti, container, false);
         preferitiRV = root.findViewById(R.id.recycler_view_preferiti);
-
-        favoriteList = FavoriteDB.getInstance().dbInterface().getFavorite();
-
-        moviesAdapter = new MoviesAdapter(getActivity(), queryFavoriteDB());
-
-        initMoviesRV();
-
         setHasOptionsMenu(true);
-
         return root;
-    }
-
-    public void initMoviesRV(){
-
-        RecyclerView.LayoutManager layoutManager;
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
-            layoutManager = new GridLayoutManager(getActivity(), 3);
-        else
-            layoutManager = new GridLayoutManager(getActivity(), 4);
-        preferitiRV.setLayoutManager(layoutManager);
-        preferitiRV.setAdapter(moviesAdapter);
-        preferitiRV.setItemAnimator(new DefaultItemAnimator());
-        moviesAdapter.notifyDataSetChanged();
     }
 
     public List <Movie> queryFavoriteDB(){
@@ -71,15 +66,15 @@ public class PreferitiFragment extends Fragment {
 
             for (Favorite fav : favoriteList) {
                 id = fav.getMovieId();
-                Log.d(TAG, ""+id);
+                Log.d(TAG, "id "+id);
                 title = fav.getTitle();
-                Log.d(TAG, ""+title);
+                Log.d(TAG, "title "+title);
                 userRating = Double.parseDouble(fav.getUserRating());
-                Log.d(TAG, ""+userRating);
+                Log.d(TAG, "rating "+userRating);
                 posterPath = fav.getPosterPath();
-                Log.d(TAG, ""+posterPath);
+                Log.d(TAG, "posterpath "+posterPath);
                 plotSynopsis = fav.getPlotSynopsys();
-                Log.d(TAG, ""+plotSynopsis);
+                Log.d(TAG, "synopsis " + plotSynopsis);
                 releaseDate = fav.getReleaseDate();
                 originalTitle = fav.getOriginalTitle();
                 try {
@@ -117,6 +112,18 @@ public class PreferitiFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    public void initMovies(List<Movie> movies){
+        moviesAdapter = new MoviesAdapter(getActivity(), movies);
+        moviesAdapter.notifyDataSetChanged();
+        preferitiRV.setAdapter(moviesAdapter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        favoriteList.clear();
+    }
+
     @Override
     public void onStop() {
         super.onStop();
@@ -127,7 +134,6 @@ public class PreferitiFragment extends Fragment {
     public void onResume() {
         super.onResume();
         favoriteList = FavoriteDB.getInstance().dbInterface().getFavorite();
-        moviesAdapter.setData(queryFavoriteDB());
+        initMovies(queryFavoriteDB());
     }
-
 }
