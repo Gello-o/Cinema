@@ -31,7 +31,7 @@ public class NuoviArriviFragment extends Fragment {
     private static final String TAG = "NuoviArriviFragment";
     private NuoviArriviViewModel nuoviArriviViewModel;
     private MoviesAdapter moviesAdapter;
-    RecyclerView prossimeUsciteRV;
+    RecyclerView nuoviArriviRV;
     int lastVisibleItem, totalItemCount, visibleItemCount;
     int threshold = 1;
     FilterHandler filterOperation;
@@ -45,7 +45,7 @@ public class NuoviArriviFragment extends Fragment {
         nuoviArriviViewModel =
                 new ViewModelProvider(this).get(NuoviArriviViewModel.class);
 
-        nuoviArriviViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+        nuoviArriviViewModel.getNuoviArrivi().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> set) {
                 initMoviesRV(set);
@@ -64,10 +64,10 @@ public class NuoviArriviFragment extends Fragment {
         else
             layoutManager = new GridLayoutManager(getActivity(), 4);
 
-        prossimeUsciteRV.setLayoutManager(layoutManager);
-        prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
+        nuoviArriviRV.setLayoutManager(layoutManager);
+        nuoviArriviRV.setItemAnimator(new DefaultItemAnimator());
 
-        prossimeUsciteRV.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        nuoviArriviRV.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -86,7 +86,7 @@ public class NuoviArriviFragment extends Fragment {
                     Log.d(TAG, "entrato in lazy loading");
                     int page = nuoviArriviViewModel.getPage() + 1;
                     nuoviArriviViewModel.setPage(page);
-                    nuoviArriviViewModel.getMoreProssimeUscite();
+                    nuoviArriviViewModel.getMoreNuoviArrivi();
                 }
             }
         });
@@ -98,7 +98,7 @@ public class NuoviArriviFragment extends Fragment {
         else
             moviesAdapter.setData(lista);
 
-        prossimeUsciteRV.setAdapter(moviesAdapter);
+        nuoviArriviRV.setAdapter(moviesAdapter);
 
     }
 
@@ -111,16 +111,16 @@ public class NuoviArriviFragment extends Fragment {
             layoutManager = new GridLayoutManager(getActivity(), 3);
         else
             layoutManager = new GridLayoutManager(getActivity(), 4);
-        prossimeUsciteRV.setLayoutManager(layoutManager);
-        prossimeUsciteRV.setAdapter(moviesAdapter);
-        prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
+        nuoviArriviRV.setLayoutManager(layoutManager);
+        nuoviArriviRV.setAdapter(moviesAdapter);
+        nuoviArriviRV.setItemAnimator(new DefaultItemAnimator());
 
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_nuovi_arrivi, container, false);
-        prossimeUsciteRV = root.findViewById(R.id.recycler_view_nuovi_arrivi);
+        nuoviArriviRV = root.findViewById(R.id.recycler_view_nuovi_arrivi);
         setHasOptionsMenu(true);
         return root;
     }

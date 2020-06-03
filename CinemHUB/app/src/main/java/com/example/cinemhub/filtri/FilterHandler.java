@@ -15,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import com.example.cinemhub.R;
 import com.example.cinemhub.model.Movie;
+import com.example.cinemhub.ricerca.SearchFragment;
 import com.example.cinemhub.ui.add_list.AddListFragment;
 import com.example.cinemhub.ui.nuovi_arrivi.NuoviArriviFragment;
 import com.example.cinemhub.utils.Constants;
@@ -337,6 +338,10 @@ public class FilterHandler {
             Log.d(TAG, "Entrato0");
             if(fragment instanceof AddListFragment)
                 ((AddListFragment) fragment).initMovieRV(moviesGlobal, fragment);
+            if(fragment instanceof NuoviArriviFragment)
+                ((NuoviArriviFragment) fragment).initMovieRV(movieWork, fragment);
+            if(fragment instanceof SearchFragment)
+                ((SearchFragment) fragment).initMovieRV(movieWork, fragment);
         }
 
         else {
@@ -443,9 +448,11 @@ public class FilterHandler {
             if(fragment instanceof AddListFragment)
                 ((AddListFragment) fragment).initMovieRV(movieWork, fragment);
 
-
             if(fragment instanceof NuoviArriviFragment)
                 ((NuoviArriviFragment) fragment).initMovieRV(movieWork, fragment);
+
+            if(fragment instanceof SearchFragment)
+                ((SearchFragment) fragment).initMovieRV(movieWork, fragment);
         }
     }
 }

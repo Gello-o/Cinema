@@ -126,11 +126,15 @@ public class ActivityDetail extends YouTubeBaseActivity {
             userRating.setText(rating);
             releaseDate.setText(release);
 
-//chiamat User
+            //chiamat User
             userOperation.eseguiUser(id);
             Log.d(TAG, "superato i userOperation");
 
-//chiamata favorite
+            //chiamata favorite
+            favoriteOperation.eseguiPreferiti(id,movieName,thumbnail,rating,synopsis,release,genre,originalMovieName,voteCount);
+
+
+            //chiamata favorite
             favoriteOperation.eseguiPreferiti(id,movieName,thumbnail,rating,synopsis,release,genre,originalMovieName,voteCount);
 
             Log.d(TAG, "end of the intent");

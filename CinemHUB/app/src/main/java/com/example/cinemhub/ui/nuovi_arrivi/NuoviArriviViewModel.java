@@ -22,16 +22,16 @@ public class NuoviArriviViewModel extends ViewModel {
     private int currentResults;
     private boolean isLoading;
 
-    public MutableLiveData<List<Movie>> getProssimeUscite() {
+    public MutableLiveData<List<Movie>> getNuoviArrivi() {
         if(film == null) {
             film = new MutableLiveData<>();
-            MoviesRepository.getInstance().getMovies("upcoming", page, film);
+            MoviesRepository.getInstance().getMovies("now_playing", page, film);
         }
         return film;
     }
 
-    public LiveData<List<Movie>> getMoreProssimeUscite() {
-        MoviesRepository.getInstance().getMovies("upcoming", page, film);
+    public LiveData<List<Movie>> getMoreNuoviArrivi() {
+        MoviesRepository.getInstance().getMovies("now_playing", page, film);
         return film;
     }
 
