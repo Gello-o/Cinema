@@ -44,11 +44,11 @@ public class MoviesRepository {
                     Resource<List<Movie>> resource = new Resource<>();
 
                     if (moviesData.getValue() != null && moviesData.getValue().getData() != null) {
-                        List<Movie> currentArticleList = moviesData.getValue().getData();
+                        List<Movie> currentMovieList = moviesData.getValue().getData();
 
-                        currentArticleList.remove(currentArticleList.size() - 1);
-                        currentArticleList.addAll(response.body().getResults());
-                        resource.setData(currentArticleList);
+                        currentMovieList.remove(currentMovieList.size() - 1);
+                        currentMovieList.addAll(response.body().getResults());
+                        resource.setData(currentMovieList);
                     } else {
                         resource.setData(response.body().getResults());
                     }

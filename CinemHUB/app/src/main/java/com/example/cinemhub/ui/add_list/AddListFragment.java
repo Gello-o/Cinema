@@ -87,7 +87,7 @@ public class AddListFragment extends Fragment {
     }
 
     public void initMoviesRV(List<Movie> lista) {
-        moviesAdapter = new MoviesAdapter(getContext(), lista);
+        moviesAdapter = new MoviesAdapter(getActivity(), lista);
         moviesAdapter.notifyDataSetChanged();
         actionMoviesRV.setAdapter(moviesAdapter);
     }

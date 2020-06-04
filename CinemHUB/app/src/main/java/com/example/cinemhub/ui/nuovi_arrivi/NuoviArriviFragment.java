@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -41,6 +42,15 @@ public class NuoviArriviFragment extends Fragment {
     private int lastVisibleItem;
     private int visibleItemCount;
     private int threshold = 1;
+
+
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_nuovi_arrivi, container, false);
+        prossimeUsciteRV = root.findViewById(R.id.recycler_view_nuovi_arrivi);
+        setHasOptionsMenu(true);
+        return root;
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -77,10 +87,11 @@ public class NuoviArriviFragment extends Fragment {
                 Log.d(TAG, "last visible item " + lastVisibleItem);
                 Log.d(TAG, "visible items " + visibleItemCount);
 
-                if (totalItemCount == visibleItemCount || (
-                        totalItemCount <= (lastVisibleItem + threshold) && dy > 0 && !nuoviArriviViewModel.isLoading()) &&
-                        nuoviArriviViewModel.getMoviesLiveData().getValue() != null &&
-                        nuoviArriviViewModel.getCurrentResults() != nuoviArriviViewModel.getMoviesLiveData().getValue().getTotalResults()
+                if (totalItemCount == visibleItemCount ||
+                        (totalItemCount <= (lastVisibleItem + threshold) && dy > 0  && !nuoviArriviViewModel.isLoading()) &&
+                                nuoviArriviViewModel.getMoviesLiveData().getValue() != null &&
+                                nuoviArriviViewModel.getCurrentResults() != nuoviArriviViewModel.getMoviesLiveData().getValue().getTotalResults()
+
                 ) {
                     Resource<List<Movie>> moviesResource = new Resource<>();
 
@@ -98,12 +109,13 @@ public class NuoviArriviFragment extends Fragment {
                         moviesResource.setStatusMessage(moviesMutableLiveData.getValue().getStatusMessage());
                         moviesResource.setTotalResults(moviesMutableLiveData.getValue().getTotalResults());
                         moviesResource.setStatusCode(moviesMutableLiveData.getValue().getStatusCode());
-                        moviesResource.setLoading(true);
                         Log.d(TAG, "STO CARICANDO");
+                        moviesResource.setLoading(true);
                         moviesMutableLiveData.postValue(moviesResource);
 
                         int page = nuoviArriviViewModel.getPage() + 1;
                         nuoviArriviViewModel.setPage(page);
+
                         nuoviArriviViewModel.getMoreProssimeUscite();
                     }
                 }
@@ -118,7 +130,9 @@ public class NuoviArriviFragment extends Fragment {
                 if (!resource.isLoading()) {
                     Log.d(TAG, "STA CARICANDO");
                     nuoviArriviViewModel.setLoading(false);
-                    nuoviArriviViewModel.setCurrentResults(resource.getData().size());
+                    if (resource.getData() != null) {
+                        nuoviArriviViewModel.setCurrentResults(resource.getData().size());
+                    }
                 }
 
                 if (resource.getData() != null) {
@@ -130,14 +144,8 @@ public class NuoviArriviFragment extends Fragment {
             }
 
         });
-    }
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_nuovi_arrivi, container, false);
-        prossimeUsciteRV = root.findViewById(R.id.recycler_view_nuovi_arrivi);
-        setHasOptionsMenu(true);
-        return root;
+
     }
 
     @Override
