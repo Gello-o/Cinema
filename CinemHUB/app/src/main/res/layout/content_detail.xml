@@ -27,7 +27,7 @@
                 app:icon_size="10dp"
                 app:icon_type="heart"
                 android:gravity="center_horizontal"
-               />
+                />
 
             <TextView
                 android:id="@+id/movieTitle"
@@ -96,7 +96,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/users_rating"
+                android:id="@+id/usersRating"
                 android:layout_marginLeft="@dimen/layout_margin_left"
                 android:padding="@dimen/padding_layout"
                 android:layout_marginTop="@dimen/layout_margin_top"

@@ -1,10 +1,14 @@
 package com.example.cinemhub;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.text.InputType;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
@@ -13,7 +17,6 @@ import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
-import com.example.cinemhub.model.Favorite;
 import com.example.cinemhub.model.FavoriteDB;
 import com.example.cinemhub.model.UserRatingDB;
 
@@ -26,10 +29,10 @@ public class UserOperation {
 
     private TextView showVote, warning, comment, usersRating;
     private EditText editText;
-    private RatingBar ratingBar, ratingBarUser;
+    private RatingBar ratingBar;
     private Button button, editRatingButton, deleteButton;
-    private List<UserRatingDB> lineUser;
     private UserRatingDB userRatingDB;
+    private AlertDialog.Builder alertDialog;
 
     float submittedRating;
     public String id, commento;
@@ -37,17 +40,16 @@ public class UserOperation {
 
 
 
-
-//costructor allow findview and Toast
-    public UserOperation(Activity _activity,Context _context){
-        this.activity = _activity;
-        this.context = _context;
+    //costructor allow findview and Toast
+    public UserOperation(Activity activity,Context context){
+        this.activity = activity;
+        this.context = context;
     }
 
-//////////
     public void eseguiUser(String _id) {
         // cancellaDb();
         id = _id;
+
 
         button = this.activity.findViewById(R.id.submit_rating);
         ratingBar = this.activity.findViewById(R.id.ratingBar);
@@ -59,6 +61,7 @@ public class UserOperation {
         editRatingButton = this.activity.findViewById(R.id.edit_rating);
         usersRating = this.activity.findViewById(R.id.users_rating2);
         deleteButton = this.activity.findViewById(R.id.delete_button);
+
 
         writeComment();
 
@@ -151,30 +154,36 @@ public class UserOperation {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserRatingDB user;
-                user = FavoriteDB.getInstance().dbInterface().getUserInfo(Integer.parseInt(id));
-                if(user != null){
-                    FavoriteDB.getInstance().dbInterface().deleteUser(user);
-                    ratingBar.setRating(0);
-                    usersRating.setText("0 / 10");
-                    comment.setText("");
-                    Toast.makeText(context, "Comment Deleted", Toast.LENGTH_SHORT).show();
-                }else{
+                alertDialog = new AlertDialog.Builder(context);
+
+                if (checkUser()){
+                    Log.d(TAG,"entrato if");
+                    alertDialog.setMessage("Delete the comment?")
+                            .setCancelable(false)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    deleteUser();
+                                    dialog.cancel();
+                                    Toast.makeText(context, "Comment Deleted", Toast.LENGTH_SHORT).show();
+
+                                }
+                            })
+
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+                    AlertDialog alert = alertDialog.create();
+                    alert.show();
+              }else{
+                    Log.d(TAG,"entarto nell'else");
                     Toast.makeText(context, "There is no comment to delete", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-    }
-    ///////////////
-
-    private void showInfo() {
-        lineUser = FavoriteDB.getInstance().dbInterface().getUserOverview();
-        for(UserRatingDB userRatingDB : lineUser){
-            Log.d(TAG,"Database: " +
-                    " ID: " + userRatingDB.getMovie_id() +
-                    " Rating: " + userRatingDB.getRating() +
-                    " Overview: " + userRatingDB.getOverview());
-        }
     }
 
     private void saveUser(String _id){
@@ -226,10 +235,22 @@ public class UserOperation {
         }
     }
 
+    //per cancellare tutta la table solo per debug
     private void cancellaDb() {
         List<UserRatingDB> line = FavoriteDB.getInstance().dbInterface().getUserOverview();
         FavoriteDB.getInstance().clearAllTables();
         Log.d(TAG, "db size: " + line.size());
+    }
+
+    private void deleteUser(){
+        UserRatingDB user;
+        user = FavoriteDB.getInstance().dbInterface().getUserInfo(Integer.parseInt(id));
+        if(user != null){
+            FavoriteDB.getInstance().dbInterface().deleteUser(user);
+            ratingBar.setRating(0);
+            usersRating.setText("0 / 10");
+            comment.setText("");
+        }
     }
 
 }

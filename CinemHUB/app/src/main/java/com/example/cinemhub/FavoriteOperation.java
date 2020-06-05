@@ -27,22 +27,22 @@ public class FavoriteOperation {
 
 
     //costructor allow findview and Toast
-    public FavoriteOperation(Activity _activity, Context _context){
-        this.activity = _activity;
-        this.context = _context;
+    public FavoriteOperation(Activity activity, Context context){
+        this.activity = activity;
+        this.context = context;
     }
 
-    public void eseguiPreferiti(String _id, String _movieName, String _thumbnail,String _rating,String _synopsis,
-                                String _release,String _genre,String _originalMovieName,String _voteCount){
-        id = _id;
-        movieName = _movieName;
-        thumbnail = _thumbnail;
-        rating  = _rating;
-        synopsis = _synopsis;
-        release = _release;
-        genre = _genre;
-        originalMovieName = _originalMovieName;
-        voteCount = _voteCount;
+    public void eseguiPreferiti(String id, String movieName, String thumbnail,String rating,String synopsis,
+                                String release,String genre,String originalMovieName,String voteCount){
+        this.id = id;
+        this.movieName = movieName;
+        this.thumbnail = thumbnail;
+        this.rating  = rating;
+        this.synopsis = synopsis;
+        this.release = release;
+        this.genre = genre;
+        this.originalMovieName = originalMovieName;
+        this.voteCount = voteCount;
 
         likeButtonFavorite = this.activity.findViewById(R.id.favorite_button);
 
@@ -60,10 +60,8 @@ public class FavoriteOperation {
 
             @Override
             public void unLiked(LikeButton likeButtonFavorite) {
-                favorite = new Favorite();
                 Log.d(TAG, "cliccato unfavorite");
-                favorite.setMovieId(Integer.parseInt(_id));
-                FavoriteDB.getInstance().dbInterface().deleteFavorite(favorite);
+                deleteFavorite();
                 Snackbar.make(likeButtonFavorite, "Removed to Favorite", Snackbar.LENGTH_SHORT).show();
             }
         });
@@ -89,20 +87,18 @@ public class FavoriteOperation {
         Log.d(TAG,"entarto nella tab Favorite");
     }
 
-    private void mostraDb() {
-        line = FavoriteDB.getInstance().dbInterface().getFavorite();
-        for(Favorite favorite : line){
-            Log.d(TAG,"Database: " +
-                    "ID: " + favorite.getMovieId() +
-                    "Title: " + favorite.getTitle());
-        }
+    private void  deleteFavorite(){
+        favorite = new Favorite();
+
+        favorite.setMovieId(Integer.parseInt(id));
+        FavoriteDB.getInstance().dbInterface().deleteFavorite(favorite);
     }
+
 
     private void cancellaDb() {
         line = FavoriteDB.getInstance().dbInterface().getFavorite();
         FavoriteDB.getInstance().clearAllTables();
         Log.d(TAG, "db size: " + line.size());
-        mostraDb();
     }
 
     private boolean checkFilm(){

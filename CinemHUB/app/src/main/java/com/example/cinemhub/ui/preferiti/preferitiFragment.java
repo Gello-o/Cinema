@@ -4,26 +4,22 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.cinemhub.MainActivity;
 import com.example.cinemhub.R;
+import com.example.cinemhub.ricerca.SearchHandler;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Favorite;
 import com.example.cinemhub.model.FavoriteDB;
 import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.ui.piu_visti.PiuVistiViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,41 +31,28 @@ public class PreferitiFragment extends Fragment {
     MoviesAdapter moviesAdapter;
     List<Favorite> favoriteList;
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        GridLayoutManager layoutManager;
+
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+            layoutManager = new GridLayoutManager(getActivity(), 3);
+        else
+            layoutManager = new GridLayoutManager(getActivity(), 4);
+
+        preferitiRV.setLayoutManager(layoutManager);
+        preferitiRV.setItemAnimator(new DefaultItemAnimator());
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_preferiti, container, false);
         preferitiRV = root.findViewById(R.id.recycler_view_preferiti);
-
-        favoriteList = FavoriteDB.getInstance().dbInterface().getFavorite();
-
-        if(favoriteList == null)
-            Log.d(TAG, "fav uguale null");
-
-        initMoviesRV(queryFavoriteDB());
-
+        setHasOptionsMenu(true);
         return root;
-    }
-
-    public void initMoviesRV(List<Movie> lista){
-        moviesAdapter = new MoviesAdapter(getActivity(), lista);
-        if(moviesAdapter == null)
-            Log.d(TAG, "adapter null");
-        else {
-            if (moviesAdapter.getMovieList() == null)
-                Log.d(TAG, "lista null");
-            if (moviesAdapter.getContext() == null)
-                Log.d(TAG, "contesto null");
-        }
-        RecyclerView.LayoutManager layoutManager;
-        if(getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
-            layoutManager = new GridLayoutManager(getActivity(), 3);
-        else
-            layoutManager = new GridLayoutManager(getActivity(), 4);
-        preferitiRV.setLayoutManager(layoutManager);
-        preferitiRV.setAdapter(moviesAdapter);
-        preferitiRV.setItemAnimator(new DefaultItemAnimator());
-        moviesAdapter.notifyDataSetChanged();
     }
 
     public List <Movie> queryFavoriteDB(){
@@ -83,15 +66,15 @@ public class PreferitiFragment extends Fragment {
 
             for (Favorite fav : favoriteList) {
                 id = fav.getMovieId();
-                Log.d(TAG, ""+id);
+                Log.d(TAG, "id "+id);
                 title = fav.getTitle();
-                Log.d(TAG, ""+title);
+                Log.d(TAG, "title "+title);
                 userRating = Double.parseDouble(fav.getUserRating());
-                Log.d(TAG, ""+userRating);
+                Log.d(TAG, "rating "+userRating);
                 posterPath = fav.getPosterPath();
-                Log.d(TAG, ""+posterPath);
+                Log.d(TAG, "posterpath "+posterPath);
                 plotSynopsis = fav.getPlotSynopsys();
-                Log.d(TAG, ""+plotSynopsis.substring(0, 8));
+                Log.d(TAG, "synopsis " + plotSynopsis);
                 releaseDate = fav.getReleaseDate();
                 originalTitle = fav.getOriginalTitle();
                 try {
@@ -116,9 +99,41 @@ public class PreferitiFragment extends Fragment {
             }
         }
         else{
-            Log.d(TAG, "CIAO BELO");
+            Log.d(TAG, "log else");
         }
         return lista;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main3, menu);
+        SearchHandler searchOperation = new SearchHandler(menu, this);
+        searchOperation.implementSearch(2);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    public void initMovies(List<Movie> movies){
+        moviesAdapter = new MoviesAdapter(getActivity(), movies);
+        moviesAdapter.notifyDataSetChanged();
+        preferitiRV.setAdapter(moviesAdapter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        favoriteList.clear();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        favoriteList.clear();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        favoriteList = FavoriteDB.getInstance().dbInterface().getFavorite();
+        initMovies(queryFavoriteDB());
+    }
 }

@@ -11,53 +11,133 @@
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_nav_home_to_searchFragment"
-            app:destination="@id/searchFragment" />
+            android:id="@+id/goToSearchAction"
+            app:destination="@id/nav_search">
+            <argument
+                android:name="query"
+                app:argType="string" />
+        </action>
     </fragment>
 
     <fragment
         android:id="@+id/nav_preferiti"
         android:name="com.example.cinemhub.ui.preferiti.PreferitiFragment"
         android:label="@string/menu_preferiti"
-        tools:layout="@layout/fragment_preferiti" />
+        tools:layout="@layout/fragment_preferiti">
+        <action
+            android:id="@+id/goToSearchAction"
+            app:destination="@id/nav_search">
+            <argument
+                android:name="query"
+                app:argType="string" />
+        </action>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_add_list"
         android:name="com.example.cinemhub.ui.add_list.AddListFragment"
         android:label="@string/menu_add_list"
-        tools:layout="@layout/fragment_add_list" />
+        tools:layout="@layout/fragment_add_list">
+        <action
+            android:id="@+id/goToSearchAction"
+            app:destination="@id/nav_search">
+            <argument
+                android:name="query"
+                app:argType="string" />
+        </action>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_categorie"
         android:name="com.example.cinemhub.ui.categorie.CategorieFragment"
         android:label="@string/menu_categorie"
-        tools:layout="@layout/fragment_categorie" />
+        tools:layout="@layout/fragment_categorie">
+        <action
+            android:id="@+id/goToGenereAction"
+            app:destination="@id/nav_genere"
+            app:popUpTo="@id/nav_categorie" >
+            <argument
+                android:name="genere"
+                app:argType="integer" />
+        </action>
+        <action
+            android:id="@+id/goToSearchAction"
+            app:destination="@id/nav_search"
+            app:popUpTo="@id/nav_categorie" >
+            <argument
+                android:name="query"
+                app:argType="string" />
+        </action>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_nuovi_arrivi"
         android:name="com.example.cinemhub.ui.nuovi_arrivi.NuoviArriviFragment"
         android:label="@string/menu_nuovi_arrivi"
-        tools:layout="@layout/fragment_nuovi_arrivi" />
+        tools:layout="@layout/fragment_nuovi_arrivi" >
+        <action
+            android:id="@+id/goToSearchAction"
+            app:destination="@id/nav_search">
+            <argument
+                android:name="query"
+                app:argType="string" />
+        </action>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_prossime_uscite"
         android:name="com.example.cinemhub.ui.prossime_uscite.ProssimeUsciteFragment"
         android:label="@string/menu_prossime_uscite"
-        tools:layout="@layout/fragment_prossime_uscite" />
+        tools:layout="@layout/fragment_prossime_uscite" >
+        <action
+            android:id="@+id/goToSearchAction"
+            app:destination="@id/nav_search">
+            <argument
+                android:name="query"
+                app:argType="string" />
+        </action>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_piu_visti"
         android:name="com.example.cinemhub.ui.piu_visti.PiuVistiFragment"
         android:label="@string/menu_piu_visti"
-        tools:layout="@layout/fragment_piu_visti" />
+        tools:layout="@layout/fragment_piu_visti" >
+        <action
+            android:id="@+id/goToSearchAction"
+            app:destination="@id/nav_search">
+            <argument
+                android:name="query"
+                app:argType="string" />
+        </action>
+    </fragment>
+
     <fragment
-        android:id="@+id/searchFragment"
+        android:id="@+id/nav_genere"
+        android:name="com.example.cinemhub.ui.categorie.MostraCategoriaFragment"
+        android:label="@string/menu_genere"
+        tools:layout="@layout/fragment_genere" >
+        <action
+            android:id="@+id/goToCategorieAction"
+            app:destination="@id/nav_categorie"
+            app:popUpTo="@id/nav_categorie">
+        </action>
+        <argument
+            android:name="genere"
+            app:argType="integer" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_search"
         android:name="com.example.cinemhub.ricerca.SearchFragment"
-        android:label="search"
-        tools:layout="@layout/search" />
-    <fragment
-        android:id="@+id/trailer"
-        android:name="com.example.cinemhub.trailer"
-        android:label="fragment_trailer"
-        tools:layout="@layout/fragment_trailer" />
+        android:label="@string/menu_genere"
+        tools:layout="@layout/search" >
+        <action
+            android:id="@+id/goToHomeAction"
+            app:destination="@id/nav_home" />
+        <argument
+            android:name="query"
+            app:argType="string" />
+    </fragment>
+
 </navigation>

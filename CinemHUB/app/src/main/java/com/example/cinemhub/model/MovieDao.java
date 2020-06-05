@@ -24,9 +24,6 @@ public interface MovieDao {
     @Delete
     public void deleteFavorite(Favorite dbToDelete);
 
-    @Update
-    public void changeDb(Favorite nextDb);
-
     @Insert
     public void addUserRating(UserRatingDB userRatingDB);
 
