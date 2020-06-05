@@ -36,18 +36,18 @@
 
         <TextView
             android:id="@+id/text_prossime_uscite"
-            android:layout_width="265dp"
-            android:layout_height="26dp"
+            android:layout_width="255dp"
+            android:layout_height="38dp"
             android:layout_marginEnd="85dp"
             android:layout_marginRight="85dp"
             android:orientation="horizontal"
-            android:text="Next exits"
-            android:textStyle="bold"
+            android:text="Upcoming"
             android:textColor="#FBF9F9"
             android:textSize="24sp"
+            android:textStyle="bold"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.475"
+            app:layout_constraintHorizontal_bias="0.575"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/indicator" />
 
@@ -68,7 +68,7 @@
             android:layout_marginEnd="85dp"
             android:layout_marginRight="85dp"
             android:orientation="horizontal"
-            android:text="Popular"
+            android:text="Most opular"
             android:textColor="#FBF9F9"
             android:textSize="24sp"
             android:textStyle="bold"
