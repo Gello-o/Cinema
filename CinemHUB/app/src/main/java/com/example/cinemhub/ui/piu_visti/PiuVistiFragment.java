@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -19,12 +18,13 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cinemhub.R;
+import com.example.cinemhub.Refresh;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.filtri.FilterHandler;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.ricerca.SearchHandler;
-import com.example.cinemhub.ui.piu_visti.PiuVistiViewModel;
 
+import java.util.HashSet;
 import java.util.List;
 
 public class PiuVistiFragment extends Fragment {
@@ -35,25 +35,41 @@ public class PiuVistiFragment extends Fragment {
     int lastVisibleItem, totalItemCount, visibleItemCount;
     int threshold = 1;
     FilterHandler filterOperation;
-
+    Refresh refreshOperation;
+    private HashSet<Movie> currentList2 = new HashSet<>();
     List<Movie> globalList;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
 
         piuVistiViewModel =
                 new ViewModelProvider(this).get(PiuVistiViewModel.class);
 
+        prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
+
         piuVistiViewModel.getPiuVisti().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> set) {
-                initMoviesRV(set);
+                initMovieRV(set);
+
+                refreshOperation.count();
+                currentList2.addAll(set);
+                Log.d(TAG, "CurrentListSize: "+currentList2.size());
+
                 if (filterOperation != null) {
                     filterOperation.setMovie(set);
-                } else
+                    Log.d(TAG, "FilterSetMovie");
+                }
+                else
                     Log.d(TAG, "FilterOperationNull");
-                globalList = set;
+
+                if(refreshOperation != null && refreshOperation.getCount()==piuVistiViewModel.getPage()-1) {
+                    refreshOperation.setMovie(currentList2);
+                    Log.d(TAG, "RefreshSetMovie");
+                }
+                else
+                    Log.d(TAG, "RefreshOperationNull");
+                //globalList = set;
             }
         });
 
@@ -65,7 +81,9 @@ public class PiuVistiFragment extends Fragment {
             layoutManager = new GridLayoutManager(getActivity(), 4);
 
         prossimeUsciteRV.setLayoutManager(layoutManager);
-        prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
+
+        super.onViewCreated(view, savedInstanceState);
+
 
         prossimeUsciteRV.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
@@ -92,29 +110,10 @@ public class PiuVistiFragment extends Fragment {
         });
     }
 
-    public void initMoviesRV (List<Movie> lista){
-        if(moviesAdapter == null)
-            moviesAdapter = new MoviesAdapter(getActivity(), lista);
-        else
-            moviesAdapter.setData(lista);
-
+    public void initMovieRV (List<Movie> lista){
+        moviesAdapter = new MoviesAdapter(getActivity(), lista);
+        moviesAdapter.notifyDataSetChanged();
         prossimeUsciteRV.setAdapter(moviesAdapter);
-
-    }
-
-    public void initMovieRV(List<Movie> movies, Fragment fragment) {
-        moviesAdapter = new MoviesAdapter(fragment.getActivity(), movies);
-        Log.d(TAG, "primofilm: " + movies.get(0).getVoteAverage());
-
-        RecyclerView.LayoutManager layoutManager;
-        if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
-            layoutManager = new GridLayoutManager(getActivity(), 3);
-        else
-            layoutManager = new GridLayoutManager(getActivity(), 4);
-        prossimeUsciteRV.setLayoutManager(layoutManager);
-        prossimeUsciteRV.setAdapter(moviesAdapter);
-        prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
-
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -130,8 +129,10 @@ public class PiuVistiFragment extends Fragment {
         inflater.inflate(R.menu.main3, menu);
         SearchHandler searchOperation = new SearchHandler(menu, this);
         filterOperation = new FilterHandler(menu, this);
+        refreshOperation = new Refresh(menu, this);
         searchOperation.implementSearch(2);
         filterOperation.implementFilter(2);
+        refreshOperation.implementRefresh(2);
         super.onCreateOptionsMenu(menu, inflater);
     }
 }

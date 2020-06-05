@@ -11,20 +11,26 @@ import java.util.List;
 
 public class PiuVistiViewModel extends ViewModel {
     private MutableLiveData<List<Movie>> film;
-    int page = 1;
+    int page = 4;
+    private MoviesRepository repo;
     private int currentResults;
     private boolean isLoading;
 
     public MutableLiveData<List<Movie>> getPiuVisti() {
         if(film == null) {
             film = new MutableLiveData<>();
-            MoviesRepository.getInstance().getMovies("top_rated", page, film);
+            repo = MoviesRepository.getInstance();
+            for(int i=1; i<page; i++)
+                repo.getMovies("top_rated", i, film);
         }
         return film;
     }
 
+
     public LiveData<List<Movie>> getMorePiuVisti() {
-        MoviesRepository.getInstance().getMovies("top_rated", page, film);
+        repo = MoviesRepository.getInstance();
+        for(int i=1; i<page; i++)
+            repo.getMovies("top_rated", i, film);
         return film;
     }
 

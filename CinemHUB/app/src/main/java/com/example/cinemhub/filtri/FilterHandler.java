@@ -17,7 +17,11 @@ import com.example.cinemhub.R;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.ricerca.SearchFragment;
 import com.example.cinemhub.ui.add_list.AddListFragment;
+import com.example.cinemhub.ui.categorie.MostraCategoriaFragment;
 import com.example.cinemhub.ui.nuovi_arrivi.NuoviArriviFragment;
+import com.example.cinemhub.ui.piu_visti.PiuVistiFragment;
+import com.example.cinemhub.ui.piu_visti.PiuVistiViewModel;
+import com.example.cinemhub.ui.prossime_uscite.ProssimeUsciteFragment;
 import com.example.cinemhub.utils.Constants;
 
 import androidx.fragment.app.Fragment;
@@ -44,6 +48,8 @@ public class FilterHandler {
     public FilterHandler(Menu menu, Fragment fragment){
         this.fragment = fragment;
         this.menu = menu;
+        this.movieWork = new ArrayList<>();
+        this.moviesGlobal = new ArrayList<>();
     }
 
     public void implementFilter(int tipo) {
@@ -194,63 +200,14 @@ public class FilterHandler {
         if(moviesGlobal==null || moviesGlobal.size()==0) {
             Log.d(TAG, "Lista null");
             this.moviesGlobal = new ArrayList<>();
+            this.movieWork = new ArrayList<>();
         }
 
         else {
             this.moviesGlobal = moviesGlobal;
             this.movieWork = moviesGlobal;
-            Log.d(TAG, "Voto:"+moviesGlobal.get(0).getVoteAverage());
         }
     }
-
-    /*
-    public void filter(String voto, String anno, String category, String order){
-        if(anno.equals("") && voto.equals("") && category.equals("") && order.equals("")){
-            Log.d(TAG, "Dimensione Lista: "+moviesGlobal.size());
-            ((AddListFragment) fragment).initMovieRV(moviesGlobal, fragment);
-        }
-        else {
-            int genId = 0;
-            if(category.equals("Action"))
-                genId = Constants.ACTION;
-            if(category.equals("Romance"))
-                genId = Constants.ROMANCE;
-            if(category.equals("Thriller"))
-                genId = Constants.THRILLER;
-            if(category.equals("Animation"))
-                genId = Constants.ANIMATION;
-
-            int i = 0;
-            movieFiltered.clear();
-
-            for(Movie m : movieWork) {
-                if(m.getVoteAverage() >= Integer.parseInt(voto)) {
-                    for(Integer gen : m.getGenreIds())
-                        if(gen==genId) {
-                            i++;
-                            movieFiltered.add(m);
-                        }
-                }
-            }
-
-            if(order.equals("Name"))
-                Collections.sort(movieFiltered, new NameFunctor());
-            if(order.equals("Vote"))
-                Collections.sort(movieFiltered, new VoteFunctor());
-            if(order.equals("Popularity"))
-                Collections.sort(movieFiltered, new PopularityFunctor());
-            if(order.equals("Year"))
-                Collections.sort(movieFiltered, new YearFunctor());
-
-            movieWork.clear();
-            movieWork.addAll(movieFiltered);
-
-            Log.d(TAG, "Numero Film Animazione: "+i);
-            if(fragment instanceof AddListFragment)
-                ((AddListFragment) fragment).initMovieRV(movieFiltered, fragment);
-        }
-    }
-    */
 
     public void filterVote(String vote) {
         Boolean flag = false;
@@ -333,15 +290,20 @@ public class FilterHandler {
     }
 
     public void filter2(String voto, String anno, String category, String order) {
-        //1) Controllo
         if(anno.equals("") && voto.equals("") && category.equals("") && order.equals("")){
             Log.d(TAG, "Entrato0");
             if(fragment instanceof AddListFragment)
-                ((AddListFragment) fragment).initMovieRV(moviesGlobal, fragment);
+                ((AddListFragment) fragment).initMovieRV(moviesGlobal);
             if(fragment instanceof NuoviArriviFragment)
-                ((NuoviArriviFragment) fragment).initMovieRV(movieWork, fragment);
+                ((NuoviArriviFragment) fragment).initMovieRV(moviesGlobal);
             if(fragment instanceof SearchFragment)
-                ((SearchFragment) fragment).initMovieRV(movieWork, fragment);
+                ((SearchFragment) fragment).initMovieRV(moviesGlobal);
+            if(fragment instanceof ProssimeUsciteFragment)
+                ((ProssimeUsciteFragment) fragment).initMovieRV(moviesGlobal);
+            if(fragment instanceof PiuVistiFragment)
+                ((PiuVistiFragment) fragment).initMovieRV(moviesGlobal);
+            if(fragment instanceof MostraCategoriaFragment)
+                ((MostraCategoriaFragment) fragment).initMovieRV(moviesGlobal);
         }
 
         else {
@@ -446,13 +408,17 @@ public class FilterHandler {
             //movieWork.addAll(movieFiltered);
 
             if(fragment instanceof AddListFragment)
-                ((AddListFragment) fragment).initMovieRV(movieWork, fragment);
-
+                ((AddListFragment) fragment).initMovieRV(moviesGlobal);
             if(fragment instanceof NuoviArriviFragment)
-                ((NuoviArriviFragment) fragment).initMovieRV(movieWork, fragment);
-
+                ((NuoviArriviFragment) fragment).initMovieRV(moviesGlobal);
             if(fragment instanceof SearchFragment)
-                ((SearchFragment) fragment).initMovieRV(movieWork, fragment);
+                ((SearchFragment) fragment).initMovieRV(moviesGlobal);
+            if(fragment instanceof ProssimeUsciteFragment)
+                ((ProssimeUsciteFragment) fragment).initMovieRV(moviesGlobal);;
+            if(fragment instanceof PiuVistiFragment)
+                ((PiuVistiFragment) fragment).initMovieRV(moviesGlobal);
+            if(fragment instanceof MostraCategoriaFragment)
+                ((MostraCategoriaFragment) fragment).initMovieRV(moviesGlobal);
         }
     }
 }

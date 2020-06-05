@@ -19,11 +19,13 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cinemhub.R;
+import com.example.cinemhub.Refresh;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.filtri.FilterHandler;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.ricerca.SearchHandler;
 
+import java.util.HashSet;
 import java.util.List;
 
 public class ProssimeUsciteFragment extends Fragment {
@@ -34,6 +36,8 @@ public class ProssimeUsciteFragment extends Fragment {
     int lastVisibleItem, totalItemCount, visibleItemCount;
     int threshold = 1;
     FilterHandler filterOperation;
+    Refresh refreshOperation;
+    private HashSet<Movie> currentList2 = new HashSet<>();
 
     List<Movie> globalList;
 
@@ -47,12 +51,26 @@ public class ProssimeUsciteFragment extends Fragment {
         prossimeUsciteViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> set) {
-                initMoviesRV(set);
+                initMovieRV(set);
+
+                refreshOperation.count();
+                currentList2.addAll(set);
+                Log.d(TAG, "CurrentListSize: "+currentList2.size());
+
                 if (filterOperation != null) {
                     filterOperation.setMovie(set);
-                } else
+                    Log.d(TAG, "FilterSetMovie");
+                }
+                else
                     Log.d(TAG, "FilterOperationNull");
-                globalList = set;
+
+                if(refreshOperation != null && refreshOperation.getCount()==prossimeUsciteViewModel.getPage()-1) {
+                    refreshOperation.setMovie(currentList2);
+                    Log.d(TAG, "RefreshSetMovie");
+                }
+                else
+                    Log.d(TAG, "RefreshOperationNull");
+                //globalList = set;
             }
         });
 
@@ -91,29 +109,10 @@ public class ProssimeUsciteFragment extends Fragment {
         });
     }
 
-    public void initMoviesRV (List<Movie> lista){
-        if(moviesAdapter == null)
-            moviesAdapter = new MoviesAdapter(getActivity(), lista);
-        else
-            moviesAdapter.setData(lista);
-
+    public void initMovieRV (List<Movie> lista){
+        moviesAdapter = new MoviesAdapter(getActivity(), lista);
+        moviesAdapter.notifyDataSetChanged();
         prossimeUsciteRV.setAdapter(moviesAdapter);
-
-    }
-
-    public void initMovieRV(List<Movie> movies, Fragment fragment) {
-        moviesAdapter = new MoviesAdapter(fragment.getActivity(), movies);
-        Log.d(TAG, "primofilm: " + movies.get(0).getVoteAverage());
-
-        RecyclerView.LayoutManager layoutManager;
-        if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
-            layoutManager = new GridLayoutManager(getActivity(), 3);
-        else
-            layoutManager = new GridLayoutManager(getActivity(), 4);
-        prossimeUsciteRV.setLayoutManager(layoutManager);
-        prossimeUsciteRV.setAdapter(moviesAdapter);
-        prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
-
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -129,8 +128,10 @@ public class ProssimeUsciteFragment extends Fragment {
         inflater.inflate(R.menu.main3, menu);
         SearchHandler searchOperation = new SearchHandler(menu, this);
         filterOperation = new FilterHandler(menu, this);
+        refreshOperation = new Refresh(menu, this);
         searchOperation.implementSearch(2);
         filterOperation.implementFilter(2);
+        refreshOperation.implementRefresh(2);
         super.onCreateOptionsMenu(menu, inflater);
     }
 }

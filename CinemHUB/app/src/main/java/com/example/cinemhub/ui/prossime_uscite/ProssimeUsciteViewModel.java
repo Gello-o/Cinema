@@ -11,20 +11,26 @@ import java.util.List;
 
 public class ProssimeUsciteViewModel extends ViewModel {
     private MutableLiveData<List<Movie>> film;
-    int page = 1;
+    int page;
+    MoviesRepository repo;
     private int currentResults;
     private boolean isLoading;
 
     public MutableLiveData<List<Movie>> getProssimeUscite() {
         if(film == null) {
             film = new MutableLiveData<>();
-            MoviesRepository.getInstance().getMovies("upcoming", page, film);
+            repo = MoviesRepository.getInstance();
+            int i;
+            for(i=1; i<2; i++)
+                repo.getMovies("upcoming", i, film);
+            page = i;
         }
         return film;
     }
 
     public LiveData<List<Movie>> getMoreProssimeUscite() {
-        MoviesRepository.getInstance().getMovies("upcoming", page, film);
+        repo = MoviesRepository.getInstance();
+        repo.getMovies("upcoming", 1, film);
         return film;
     }
 

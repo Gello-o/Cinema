@@ -21,7 +21,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cinemhub.R;
+import com.example.cinemhub.Refresh;
 import com.example.cinemhub.adapter.MoviesAdapter;
+import com.example.cinemhub.filtri.FilterHandler;
 import com.example.cinemhub.model.Movie;
 
 import java.util.List;
@@ -31,6 +33,8 @@ public class MostraCategoriaFragment extends Fragment {
     private RecyclerView genereRV;
     private MoviesAdapter genereAdapter;
     private MostraCategoriaViewModel mostraCategoriaViewModel;
+    FilterHandler filterOperation;
+    Refresh refreshOperation;
     private final static String TAG = "MostraCategoriaFragment";
 
     @Nullable
@@ -41,7 +45,7 @@ public class MostraCategoriaFragment extends Fragment {
 
         genereRV = root.findViewById(R.id.recycler_genere);
 
-       genere = MostraCategoriaFragmentArgs.fromBundle(getArguments()).getGenere();
+        genere = MostraCategoriaFragmentArgs.fromBundle(getArguments()).getGenere();
 
         mostraCategoriaViewModel =
                 new ViewModelProvider(this).get(MostraCategoriaViewModel.class);
@@ -53,27 +57,37 @@ public class MostraCategoriaFragment extends Fragment {
                     Log.d(TAG, "moviesSet nullo");
                 else
                     Log.d(TAG, ""+moviesSet.size());
-                initMoviesRV(moviesSet);
+                initMovieRV(moviesSet);
+                //if(refreshOperation != null)
+                    //refreshOperation.setMovie(moviesSet);
+                //else
+                    //Log.d(TAG, "RefreshOperationNull");
+                if (filterOperation != null) {
+                    filterOperation.setMovie(moviesSet);
+                    //initFilterObserver();
+                } else
+                    Log.d(TAG, "FilterOperationNull");
                 genereAdapter.notifyDataSetChanged();
             }
         });
 
-        setHasOptionsMenu(false);
+        setHasOptionsMenu(true);
 
         return root;
     }
 
-    public void initMoviesRV(List<Movie> movies){
+    public void initMovieRV(List<Movie> movies) {
         genereAdapter = new MoviesAdapter(getActivity(), movies);
 
         RecyclerView.LayoutManager layoutManager;
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+        if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
             layoutManager = new GridLayoutManager(getActivity(), 3);
         else
             layoutManager = new GridLayoutManager(getActivity(), 4);
         genereRV.setLayoutManager(layoutManager);
         genereRV.setAdapter(genereAdapter);
         genereRV.setItemAnimator(new DefaultItemAnimator());
+
     }
 
     @Override
@@ -97,11 +111,17 @@ public class MostraCategoriaFragment extends Fragment {
 
     }
 
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main2, menu);
-        //qua ci sono solo filtri
+        filterOperation = new FilterHandler(menu, this);
+        filterOperation.implementFilter(1);
+
+        refreshOperation = new Refresh(menu, this);
+        //refreshOperation.setIntegerMutableLiveData();
+        refreshOperation.implementRefresh(1);
         super.onCreateOptionsMenu(menu, inflater);
     }
+
+
 }

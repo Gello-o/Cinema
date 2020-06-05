@@ -43,7 +43,8 @@
     <string name="show_vote">Your Rating:</string>
     <string name="your_comment">Your Comment:</string>
     <string name="user_rating">0 / 10</string>
-
+    <string name="refresh" />
+    <string name="refresh1" />
 
 
 </resources>
