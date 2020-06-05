@@ -65,7 +65,7 @@ public class AddListFragment extends Fragment {
         searchOperation.implementSearch(2);
         filterOperation.implementFilter(2);
 
-        refreshOperation = new Refresh(menu, this);
+        refreshOperation = new Refresh(menu, this, filterOperation);
         refreshOperation.implementRefresh(2);
         Log.d(TAG, "onCreateOptionsMenu");
 

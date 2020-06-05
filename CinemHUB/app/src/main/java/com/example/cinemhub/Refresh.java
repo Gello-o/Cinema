@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.cinemhub.filtri.FilterHandler;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.ui.add_list.AddListFragment;
 import com.example.cinemhub.ui.categorie.MostraCategoriaFragment;
@@ -22,14 +23,16 @@ public class Refresh {
     private static final String TAG = "Refresh";
     private Fragment fragment;
     private Menu menu;
+    private FilterHandler filterOperation;
     List<Movie> moviesGlobal;
     int c;
 
-    public Refresh(Menu menu, Fragment fragment){
+    public Refresh(Menu menu, Fragment fragment, FilterHandler filterOperation){
         this.fragment = fragment;
         this.menu = menu;
         c = 0;
         moviesGlobal = new ArrayList<>();
+        this.filterOperation = filterOperation;
         Log.d(TAG, "RefreshConstructor");
     }
 
@@ -53,6 +56,8 @@ public class Refresh {
                     Log.d(TAG, "Film: "+m.getTitle());
                 */
                 Log.d(TAG, "#Film: "+moviesGlobal.size());
+
+                filterOperation.setMovie(moviesGlobal);
 
                 if(fragment instanceof MostraCategoriaFragment)
                     ((MostraCategoriaFragment) fragment).initMovieRV(moviesGlobal);

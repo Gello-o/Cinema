@@ -146,30 +146,6 @@ public class FilterHandler {
         });
     }
 
-
-    void spinnerList(Spinner spinner, String s1, String s2, String s3, String s4) {
-        List<String> categroyList = new ArrayList<>();
-
-        categroyList.add(s1);
-        categroyList.add(s2);
-        categroyList.add(s3);
-        categroyList.add(s4);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(fragment.getActivity(),
-                android.R.layout.simple_spinner_item, categroyList);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println("Enter");
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-    }
-
     void spinnerList(Spinner spinner, List<String> spinnerFilter) {
         List<String> categroyList = new ArrayList<>();
 
@@ -206,6 +182,7 @@ public class FilterHandler {
         else {
             this.moviesGlobal = moviesGlobal;
             this.movieWork = moviesGlobal;
+            Log.d(TAG, "MoviesGlobalSize: "+movieWork.size());
         }
     }
 

@@ -117,7 +117,7 @@ public class MostraCategoriaFragment extends Fragment {
         filterOperation = new FilterHandler(menu, this);
         filterOperation.implementFilter(1);
 
-        refreshOperation = new Refresh(menu, this);
+        refreshOperation = new Refresh(menu, this, filterOperation);
         //refreshOperation.setIntegerMutableLiveData();
         refreshOperation.implementRefresh(1);
         super.onCreateOptionsMenu(menu, inflater);

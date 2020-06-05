@@ -128,7 +128,7 @@ public class ProssimeUsciteFragment extends Fragment {
         inflater.inflate(R.menu.main3, menu);
         SearchHandler searchOperation = new SearchHandler(menu, this);
         filterOperation = new FilterHandler(menu, this);
-        refreshOperation = new Refresh(menu, this);
+        refreshOperation = new Refresh(menu, this, filterOperation);
         searchOperation.implementSearch(2);
         filterOperation.implementFilter(2);
         refreshOperation.implementRefresh(2);
