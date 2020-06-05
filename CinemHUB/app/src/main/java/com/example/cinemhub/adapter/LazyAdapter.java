@@ -72,6 +72,17 @@ public class LazyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     }
 
     @Override
+    public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if ((getItemCount() - 1) == holder.getAdapterPosition()){
+            Log.d(TAG,"list done");
+            ((NuoviArriviViewModel) viewModel).getMoreProssimeUscite();
+        } else {
+            Log.d(TAG,"remain item : " + (getItemCount() - holder.getAdapterPosition() - 1));
+        }
+    }
+
+    @Override
     public int getItemCount() {
         if(movieList != null)
             return movieList.size();
