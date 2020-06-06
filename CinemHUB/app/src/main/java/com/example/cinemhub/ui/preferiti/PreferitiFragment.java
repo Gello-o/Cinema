@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.cinemhub.R;
-import com.example.cinemhub.ricerca.SearchHandler;
+import com.example.cinemhub.menu_items.ricerca.SearchHandler;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Favorite;
 import com.example.cinemhub.model.FavoriteDB;

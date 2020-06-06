@@ -1,13 +1,13 @@
-package com.example.cinemhub;
+package com.example.cinemhub.menu_items;
 
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 
-import com.example.cinemhub.filtri.FilterHandler;
+import com.example.cinemhub.R;
+import com.example.cinemhub.menu_items.filtri.FilterHandler;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.ui.add_list.AddListFragment;
 import com.example.cinemhub.ui.categorie.MostraCategoriaFragment;

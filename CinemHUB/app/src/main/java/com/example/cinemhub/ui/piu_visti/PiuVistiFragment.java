@@ -18,11 +18,11 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cinemhub.R;
-import com.example.cinemhub.Refresh;
+import com.example.cinemhub.menu_items.Refresh;
 import com.example.cinemhub.adapter.MoviesAdapter;
-import com.example.cinemhub.filtri.FilterHandler;
+import com.example.cinemhub.menu_items.filtri.FilterHandler;
 import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.ricerca.SearchHandler;
+import com.example.cinemhub.menu_items.ricerca.SearchHandler;
 
 import java.util.HashSet;
 import java.util.List;

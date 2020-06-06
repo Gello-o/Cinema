@@ -1,4 +1,4 @@
-package com.example.cinemhub.filtri;
+package com.example.cinemhub.menu_items.filtri;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -6,12 +6,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -20,12 +18,11 @@ import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarFinalValueListen
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
 import com.example.cinemhub.R;
 import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.ricerca.SearchFragment;
+import com.example.cinemhub.menu_items.ricerca.SearchFragment;
 import com.example.cinemhub.ui.add_list.AddListFragment;
 import com.example.cinemhub.ui.categorie.MostraCategoriaFragment;
 import com.example.cinemhub.ui.nuovi_arrivi.NuoviArriviFragment;
 import com.example.cinemhub.ui.piu_visti.PiuVistiFragment;
-import com.example.cinemhub.ui.piu_visti.PiuVistiViewModel;
 import com.example.cinemhub.ui.prossime_uscite.ProssimeUsciteFragment;
 import com.example.cinemhub.utils.Constants;
 
@@ -34,7 +31,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -47,6 +43,14 @@ public class FilterHandler {
     List<Movie> moviesGlobal;
     List<Movie> movieFiltered = new ArrayList<>();
     List<Movie> movieWork;
+    private TextView textViewVoteMax;
+    private TextView textViewVoteMin;
+    private TextView textViewYearMax;
+    private TextView textViewYearMin;
+    private CrystalRangeSeekbar rangeSeekbarVote;
+    private CrystalRangeSeekbar rangeSeekbarYear;
+    private Spinner spinnerCategroy;
+    private Spinner spinnerOrder;
 
 
     public FilterHandler(Menu menu, Fragment fragment){
@@ -68,34 +72,30 @@ public class FilterHandler {
         else
             filterMenuItem = menu.findItem(R.id.filter1);
 
-        final Spinner spinnerCategroy = (Spinner) textEntryView.findViewById(R.id.spinnerCategory);
-        final Spinner spinnerOrder = (Spinner) textEntryView.findViewById(R.id.spinnerOrder);
-        final CrystalRangeSeekbar rangeSeekbarVote = (CrystalRangeSeekbar) textEntryView.findViewById(R.id.rangeSeekbarVote);
-        final CrystalRangeSeekbar rangeSeekbarYear = (CrystalRangeSeekbar) textEntryView.findViewById(R.id.rangeSeekbarYear);
-        TextView textViewVoteMax = textEntryView.findViewById(R.id.textViewMaxVote);
-        TextView textViewVoteMin = textEntryView.findViewById(R.id.textViewMinVote);
-        TextView textViewYearMax = textEntryView.findViewById(R.id.textViewMaxYear);
-        TextView textViewYearMin = textEntryView.findViewById(R.id.textViewMinYear);
-
-        EditText editTextVote = null;
-        EditText editTextYear = null;
+        spinnerCategroy = textEntryView.findViewById(R.id.spinnerCategory);
+        spinnerOrder = textEntryView.findViewById(R.id.spinnerOrder);
+        rangeSeekbarVote = textEntryView.findViewById(R.id.rangeSeekbarVote);
+        rangeSeekbarYear = textEntryView.findViewById(R.id.rangeSeekbarYear);
+        textViewVoteMax = textEntryView.findViewById(R.id.textViewMaxVote);
+        textViewVoteMin = textEntryView.findViewById(R.id.textViewMinVote);
+        textViewYearMax = textEntryView.findViewById(R.id.textViewMaxYear);
+        textViewYearMin = textEntryView.findViewById(R.id.textViewMinYear);
 
 
-        List<String> listVote = new ArrayList<>();
-        listVote.add("");
-        listVote.add("Action");
-        listVote.add("Romance");
-        listVote.add("Thriller");
-        listVote.add("Animation");
+        List<String> listVote = Constants.setGenre();
         spinnerList(spinnerCategroy, listVote);
 
 
         List<String> listYear = new ArrayList<>();
         listYear.add("");
-        listYear.add("Name");
-        listYear.add("Vote");
-        listYear.add("Popularity");
-        listYear.add("Year");
+        listYear.add("Name ASC");
+        listYear.add("Name DESC");
+        listYear.add("Vote ASC");
+        listYear.add("Vote DESC");
+        listYear.add("Popularity ASC");
+        listYear.add("Popularity DESC");
+        listYear.add("Year ASC");
+        listYear.add("Year DESC");
         spinnerList(spinnerOrder, listYear);
 
         View filterOpt = filterMenuItem.getActionView();
@@ -108,43 +108,7 @@ public class FilterHandler {
             public boolean onMenuItemClick(MenuItem item) {
                 Log.d(TAG, "onClick");
 
-
-
-                // set listener
-                rangeSeekbarVote.setOnRangeSeekbarChangeListener(new OnRangeSeekbarChangeListener() {
-                    @Override
-                    public void valueChanged(Number minValue, Number maxValue) {
-                        Log.d(TAG, "ChangedVote: "+minValue+", "+maxValue);
-                        textViewVoteMin.setText(String.valueOf(minValue));
-                        textViewVoteMax.setText(String.valueOf(maxValue));
-                    }
-                });
-                // set final value listener
-                rangeSeekbarVote.setOnRangeSeekbarFinalValueListener(new OnRangeSeekbarFinalValueListener() {
-                    @Override
-                    public void finalValue(Number minValue, Number maxValue) {
-                        Log.d("CRS=>", String.valueOf(minValue) + " : " + String.valueOf(maxValue));
-                    }
-                });
-
-                // set listener
-                rangeSeekbarYear.setOnRangeSeekbarChangeListener(new OnRangeSeekbarChangeListener() {
-                    @Override
-                    public void valueChanged(Number minValue, Number maxValue) {
-                        Log.d(TAG, "ChangedYear: "+minValue+", "+maxValue);
-                        textViewYearMin.setText(String.valueOf(minValue));
-                        textViewYearMax.setText(String.valueOf(maxValue));
-                    }
-                });
-
-                // set final value listener
-                rangeSeekbarYear.setOnRangeSeekbarFinalValueListener(new OnRangeSeekbarFinalValueListener() {
-                    @Override
-                    public void finalValue(Number minValue, Number maxValue) {
-                        Log.d("CRS=>", String.valueOf(minValue) + " : " + String.valueOf(maxValue));
-                    }
-                });
-
+                seekBarMove();
 
                 alert.setIcon(R.drawable.heart_on).setTitle(" Filter:").setView(textEntryView).setPositiveButton("Save",
                         new DialogInterface.OnClickListener() {
@@ -161,8 +125,6 @@ public class FilterHandler {
                                 ViewGroup viewGroup = (ViewGroup) textEntryView.getParent();
                                 viewGroup.removeView(textEntryView);
                             }
-
-
 
                         }).setNegativeButton("Cancel",
                         new DialogInterface.OnClickListener() {
@@ -200,8 +162,43 @@ public class FilterHandler {
         });
     }
 
-    public MutableLiveData<List<Movie>> getGlobalFilter() {
-        return new MutableLiveData<>();
+    public void seekBarMove() {
+
+
+        // set listener
+        rangeSeekbarVote.setOnRangeSeekbarChangeListener(new OnRangeSeekbarChangeListener() {
+            @Override
+            public void valueChanged(Number minValue, Number maxValue) {
+                Log.d(TAG, "ChangedVote: "+minValue+", "+maxValue);
+                textViewVoteMin.setText(String.valueOf(minValue));
+                textViewVoteMax.setText(String.valueOf(maxValue));
+            }
+        });
+        // set final value listener
+        rangeSeekbarVote.setOnRangeSeekbarFinalValueListener(new OnRangeSeekbarFinalValueListener() {
+            @Override
+            public void finalValue(Number minValue, Number maxValue) {
+                Log.d("CRS=>", String.valueOf(minValue) + " : " + String.valueOf(maxValue));
+            }
+        });
+
+        // set listener
+        rangeSeekbarYear.setOnRangeSeekbarChangeListener(new OnRangeSeekbarChangeListener() {
+            @Override
+            public void valueChanged(Number minValue, Number maxValue) {
+                Log.d(TAG, "ChangedYear: "+minValue+", "+maxValue);
+                textViewYearMin.setText(String.valueOf(minValue));
+                textViewYearMax.setText(String.valueOf(maxValue));
+            }
+        });
+
+        // set final value listener
+        rangeSeekbarYear.setOnRangeSeekbarFinalValueListener(new OnRangeSeekbarFinalValueListener() {
+            @Override
+            public void finalValue(Number minValue, Number maxValue) {
+                Log.d("CRS=>", String.valueOf(minValue) + " : " + String.valueOf(maxValue));
+            }
+        });
     }
 
     //Setta la lista globale
@@ -213,9 +210,7 @@ public class FilterHandler {
         }
 
         else {
-            //this.moviesGlobal = moviesGlobal;
             this.moviesGlobal = moviesGlobal;
-            //this.movieWork = moviesGlobal;
             Log.d(TAG, "MoviesGlobalSize: "+moviesGlobal.size());
         }
     }
@@ -264,14 +259,22 @@ public class FilterHandler {
     }
 
     public void filterOrder(String order) {
-        if(order.equals("Name"))
-            Collections.sort(movieWork, new NameFunctor());
-        else if(order.equals("Vote"))
-            Collections.sort(movieWork, new VoteFunctor());
-        else if(order.equals("Popularity"))
-            Collections.sort(movieWork, new PopularityFunctor());
-        else if(order.equals("Year"))
-            Collections.sort(movieWork, new YearFunctor());
+        if(order.equals("Name ASC"))
+            Collections.sort(movieWork, new NameFunctor("A"));
+        else if(order.equals("Name DESC"))
+            Collections.sort(movieWork, new NameFunctor("D"));
+        else if(order.equals("Vote ASC"))
+            Collections.sort(movieWork, new NameFunctor("A"));
+        else if(order.equals("Vote DESC"))
+            Collections.sort(movieWork, new VoteFunctor("D"));
+        else if(order.equals("Popularity ASC"))
+            Collections.sort(movieWork, new PopularityFunctor("A"));
+        else if(order.equals("Popularity DESC"))
+            Collections.sort(movieWork, new PopularityFunctor("D"));
+        else if(order.equals("Year ASC"))
+            Collections.sort(movieWork, new YearFunctor("A"));
+        else if(order.equals("Year DESC"))
+            Collections.sort(movieWork, new YearFunctor("D"));
     }
 
     public void filterYear(String yearMin, String yearMax) {
@@ -316,18 +319,7 @@ public class FilterHandler {
         }
 
         else {
-            int genId = 0;
-            if(category.equals("Action"))
-                genId = Constants.ACTION;
-            else {
-                if(category.equals("Romance"))
-                    genId = Constants.ROMANCE;
-                else if(category.equals("Thriller"))
-                    genId = Constants.THRILLER;
-                else if(category.equals("Animation"))
-                    genId = Constants.ANIMATION;
-            }
-
+            int genId = genSet(category);
 
             if(category.equals("") && !order.equals("")) {
                 Log.d(TAG, "Entrato1");
@@ -365,5 +357,50 @@ public class FilterHandler {
         if(fragment instanceof MostraCategoriaFragment)
             ((MostraCategoriaFragment) fragment).initMovieRV(movieWork);
 
+    }
+
+    private int genSet(String category) {
+        int genId = 0;
+        if(category.equals("Action"))
+            genId = Constants.ACTION;
+        else {
+            if(category.equals("Adventure"))
+                genId = Constants.ADVENTURE;
+            else if(category.equals("Animation"))
+                genId = Constants.ANIMATION;
+            else if(category.equals("Comedy"))
+                genId = Constants.COMEDY;
+            else if(category.equals("Crime"))
+                genId = Constants.CRIME;
+            else if(category.equals("Documentary"))
+                genId = Constants.DOCUMENTARY;
+            else if(category.equals("Drama"))
+                genId = Constants.DRAMA;
+            else if(category.equals("Family"))
+                genId = Constants.FAMILY;
+            else if(category.equals("Fantasy"))
+                genId = Constants.FANTASY;
+            else if(category.equals("History"))
+                genId = Constants.HISTORY;
+            else if(category.equals("Horror"))
+                genId = Constants.HORROR;
+            else if(category.equals("Music"))
+                genId = Constants.MUSIC;
+            else if(category.equals("Mystery"))
+                genId = Constants.MYSTERY;
+            else if(category.equals("Romance"))
+                genId = Constants.ROMANCE;
+            else if(category.equals("SciFi"))
+                genId = Constants.SCIFI;
+            else if(category.equals("Thriller"))
+                genId = Constants.THRILLER;
+            else if(category.equals("Tv-Movie"))
+                genId = Constants.TVMOVIE;
+            else if(category.equals("War"))
+                genId = Constants.WAR;
+            else if(category.equals("Western"))
+                genId = Constants.WESTERN;
+        }
+        return genId;
     }
 }

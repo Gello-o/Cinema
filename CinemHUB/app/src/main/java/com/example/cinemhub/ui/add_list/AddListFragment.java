@@ -1,6 +1,5 @@
 package com.example.cinemhub.ui.add_list;
 
-import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,16 +17,14 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.cinemhub.R;
-import com.example.cinemhub.Refresh;
+import com.example.cinemhub.menu_items.Refresh;
 import com.example.cinemhub.adapter.MoviesAdapter;
-import com.example.cinemhub.filtri.FilterHandler;
+import com.example.cinemhub.menu_items.filtri.FilterHandler;
 import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.ricerca.SearchHandler;
+import com.example.cinemhub.menu_items.ricerca.SearchHandler;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class AddListFragment extends Fragment {
 

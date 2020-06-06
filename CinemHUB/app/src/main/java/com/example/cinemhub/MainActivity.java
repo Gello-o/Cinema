@@ -1,36 +1,22 @@
 package com.example.cinemhub;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.Menu;
+
 import com.example.cinemhub.model.FavoriteDB;
-import com.example.cinemhub.ricerca.SearchFragment;
-import com.example.cinemhub.ricerca.SearchHandler;
-import com.example.cinemhub.ui.home.HomeFragmentDirections;
-import com.example.cinemhub.ui.preferiti.PreferitiFragmentDirections;
 import com.google.android.material.navigation.NavigationView;
 import androidx.annotation.NonNull;
 
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.SearchView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;

@@ -12,18 +12,16 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cinemhub.R;
-import com.example.cinemhub.Refresh;
+import com.example.cinemhub.menu_items.Refresh;
 import com.example.cinemhub.adapter.MoviesAdapter;
-import com.example.cinemhub.filtri.FilterHandler;
+import com.example.cinemhub.menu_items.filtri.FilterHandler;
 import com.example.cinemhub.model.Movie;
 
 import java.util.List;
