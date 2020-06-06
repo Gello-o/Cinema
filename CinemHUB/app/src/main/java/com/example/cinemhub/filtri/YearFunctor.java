@@ -7,6 +7,6 @@ import java.util.Comparator;
 public class YearFunctor implements Comparator<Movie> {
     @Override
     public int compare(Movie o1, Movie o2) {
-        return o2.getReleaseDate().compareTo(o2.getReleaseDate());
+        return o2.getReleaseDate().compareTo(o1.getReleaseDate());
     }
 }

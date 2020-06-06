@@ -67,5 +67,6 @@ dependencies {
     implementation 'androidx.mediarouter:mediarouter:1.1.0'
 
     apply plugin: 'androidx.navigation.safeargs'
+    implementation 'com.crystal:crystalrangeseekbar:1.1.3'
 }
 

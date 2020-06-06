@@ -67,7 +67,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             Log.d(TAG, "movieList nulla");
         if(viewHolder instanceof MoviesViewHolder) {
             if (movieList.get(i).getPosterPath() == null) {
-                ((MoviesViewHolder)viewHolder).thumbnail.setImageResource(R.drawable.image_not_found);
+                ((MoviesViewHolder)viewHolder).thumbnail.setImageResource(R.drawable.image_not_found_card);
             } else {
                 Glide.with(context)
                         .load(Constants.BASE_IMAGE_URL + movieList.get(i).getPosterPath())

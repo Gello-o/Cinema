@@ -34,6 +34,7 @@ import java.util.Timer;
 import android.os.Handler;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import java.util.TimerTask;
 
@@ -44,10 +45,13 @@ public class HomeFragment extends Fragment {
     private HomeViewModel homeViewModel;
     private RecyclerView popularRV;
     private MoviesAdapter popularAdapter;
+    private TextView popularTV;
     private RecyclerView topRatedRV;
     private MoviesAdapter topRatedAdapter;
+    private TextView topRatedTV;
     private RecyclerView prossimeUsciteRV;
     private MoviesAdapter prossimeUsciteAdapter;
+    private TextView prossimeUsciteTV;
     private ViewPager sliderpager;
     private TabLayout indicator;
     List<Movie> slides;
@@ -61,6 +65,9 @@ public class HomeFragment extends Fragment {
         popularRV = root.findViewById(R.id.recycler_view_popular);
         topRatedRV = root.findViewById(R.id.recycler_view_top_rated);
         prossimeUsciteRV = root.findViewById(R.id.recycler_prossime_uscite);
+        popularTV = root.findViewById(R.id.text_popular);
+        topRatedTV = root.findViewById(R.id.text_topRated);
+        prossimeUsciteTV = root.findViewById(R.id.text_prossime_uscite);
         sliderpager = root.findViewById(R.id.slider_pager);
         indicator = root.findViewById(R.id.indicator);
 
@@ -136,6 +143,7 @@ public class HomeFragment extends Fragment {
         popularRV.setLayoutManager(layoutManager);
         popularRV.setAdapter(popularAdapter);
         popularRV.setItemAnimator(new DefaultItemAnimator());
+        popularTV.setText("Popular");
     }
 
     public void initTopRatedRV (List<Movie>set){
@@ -148,6 +156,7 @@ public class HomeFragment extends Fragment {
         topRatedRV.setLayoutManager(layoutManager);
         topRatedRV.setAdapter(topRatedAdapter);
         topRatedRV.setItemAnimator(new DefaultItemAnimator());
+        topRatedTV.setText("Top Rated");
     }
 
     public void initProssimeUscite (List<Movie>set){
@@ -160,6 +169,7 @@ public class HomeFragment extends Fragment {
         prossimeUsciteRV.setLayoutManager(layoutManager);
         prossimeUsciteRV.setAdapter(prossimeUsciteAdapter);
         prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
+        prossimeUsciteTV.setText("Upcoming");
     }
 
     public void initSlider(){
