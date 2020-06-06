@@ -88,11 +88,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public void setData(List<Movie> movies) {
-        if (movieList != null) {
-            this.movieList.addAll(movies);
-            notifyDataSetChanged();
-        }
-        else {
+        if (movies != null) {
             this.movieList = movies;
             notifyDataSetChanged();
         }
