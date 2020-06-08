@@ -53,6 +53,7 @@ public class ProssimeUsciteFragment extends Fragment {
             public void onChanged(@Nullable List<Movie> set) {
                 initMovieRV(set);
 
+                refreshOperation.count();
                 currentList2.addAll(set);
                 Log.d(TAG, "CurrentListSize: "+currentList2.size());
 
@@ -63,7 +64,7 @@ public class ProssimeUsciteFragment extends Fragment {
                 else
                     Log.d(TAG, "FilterOperationNull");
 
-                if(refreshOperation != null) {
+                if(refreshOperation != null && refreshOperation.getCount()==prossimeUsciteViewModel.getPage()-1) {
                     refreshOperation.setMovie(currentList2);
                     Log.d(TAG, "RefreshSetMovie");
                 }
