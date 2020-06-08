@@ -25,12 +25,10 @@ public class Refresh {
     private Menu menu;
     private FilterHandler filterOperation;
     List<Movie> moviesGlobal;
-    int c;
 
     public Refresh(Menu menu, Fragment fragment, FilterHandler filterOperation){
         this.fragment = fragment;
         this.menu = menu;
-        c = 0;
         moviesGlobal = new ArrayList<>();
         this.filterOperation = filterOperation;
         Log.d(TAG, "RefreshConstructor");
@@ -50,6 +48,7 @@ public class Refresh {
             public boolean onMenuItemClick(MenuItem item) {
                 Log.d(TAG, "ClickedRefresh");
 
+                ((NuoviArriviFragment) fragment).setCanLoad(true);
                 //Qua stampa la lista attuale invece che quella iniziale (da fixare)
                 /*
                 for(Movie m : moviesGlobal)
@@ -87,14 +86,5 @@ public class Refresh {
         }
     }
 
-    public void count() {
-        c++;
-        Log.d(TAG, "count() -> "+c);
-    }
-
-    public int getCount() {
-        Log.d(TAG, "getCount() -> "+c);
-        return c;
-    }
 
 }

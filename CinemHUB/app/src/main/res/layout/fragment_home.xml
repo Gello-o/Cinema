@@ -1,118 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/home_fragment"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.home.HomeFragment"
-    tools:showIn="@layout/activity_main"
-    android:background="@color/colorPrimary">
+    >
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/slider_pager"
-            android:layout_width="wrap_content"
-            android:layout_height="275dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <com.google.android.material.tabs.TabLayout
-            app:tabGravity="center"
-            android:id="@+id/indicator"
-            app:tabBackground="@drawable/indicator_selector"
-            app:tabIndicatorHeight="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/home_fragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/slider_pager">
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:context=".ui.home.HomeFragment"
+            tools:showIn="@layout/activity_main"
+            android:background="@color/colorPrimary">
 
-        </com.google.android.material.tabs.TabLayout>
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/slider_pager"
+                    android:layout_width="wrap_content"
+                    android:layout_height="275dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
-        <TextView
-            android:id="@+id/text_prossime_uscite"
-            android:layout_width="265dp"
-            android:layout_height="26dp"
-            android:layout_marginEnd="85dp"
-            android:layout_marginRight="85dp"
-            android:orientation="horizontal"
-            android:text=""
-            android:textStyle="bold"
-            android:textColor="#FBF9F9"
-            android:textSize="24sp"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.475"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/indicator" />
+                <com.google.android.material.tabs.TabLayout
+                    app:tabGravity="center"
+                    android:id="@+id/indicator"
+                    app:tabBackground="@drawable/indicator_selector"
+                    app:tabIndicatorHeight="0dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/slider_pager">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_prossime_uscite"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:orientation="horizontal"
-            android:visibility="visible"
-            app:layout_constraintTop_toBottomOf="@+id/text_prossime_uscite"
-            tools:layout_editor_absoluteX="2dp"/>
+                </com.google.android.material.tabs.TabLayout>
 
-        <TextView
-            android:id="@+id/text_popular"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="85dp"
-            android:layout_marginRight="85dp"
-            android:orientation="horizontal"
-            android:text=""
-            android:textColor="#FBF9F9"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.067"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recycler_prossime_uscite" />
+                <TextView
+                    android:id="@+id/text_prossime_uscite"
+                    android:layout_width="265dp"
+                    android:layout_height="26dp"
+                    android:layout_marginEnd="85dp"
+                    android:layout_marginRight="85dp"
+                    android:orientation="horizontal"
+                    android:text=""
+                    android:textStyle="bold"
+                    android:textColor="#FBF9F9"
+                    android:textSize="24sp"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.475"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/indicator" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_popular"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="visible"
-            app:layout_constraintTop_toBottomOf="@id/text_popular"
-            tools:layout_editor_absoluteX="52dp" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_prossime_uscite"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal"
+                    android:visibility="visible"
+                    app:layout_constraintTop_toBottomOf="@+id/text_prossime_uscite"
+                    tools:layout_editor_absoluteX="2dp"/>
 
-        <TextView
-            android:id="@+id/text_topRated"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="85dp"
-            android:layout_marginRight="85dp"
-            android:orientation="horizontal"
-            android:text=""
-            android:textColor="#FBF9F9"
-            android:textSize="24sp"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.071"
-            app:layout_constraintStart_toStartOf="parent"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@+id/recycler_view_popular" />
+                <TextView
+                    android:id="@+id/text_popular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="85dp"
+                    android:layout_marginRight="85dp"
+                    android:orientation="horizontal"
+                    android:text=""
+                    android:textColor="#FBF9F9"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.067"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/recycler_prossime_uscite" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_top_rated"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:orientation="horizontal"
-            android:visibility="visible"
-            app:layout_constraintTop_toBottomOf="@id/recycler_view_popular"
-            tools:layout_editor_absoluteX="2dp" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view_popular"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="visible"
+                    app:layout_constraintTop_toBottomOf="@id/text_popular"
+                    tools:layout_editor_absoluteX="52dp" />
+
+                <TextView
+                    android:id="@+id/text_topRated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="85dp"
+                    android:layout_marginRight="85dp"
+                    android:orientation="horizontal"
+                    android:text=""
+                    android:textColor="#FBF9F9"
+                    android:textSize="24sp"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.071"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toBottomOf="@+id/recycler_view_popular" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view_top_rated"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:orientation="horizontal"
+                    android:visibility="visible"
+                    app:layout_constraintTop_toBottomOf="@id/recycler_view_popular"
+                    tools:layout_editor_absoluteX="2dp" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.core.widget.NestedScrollView>
+

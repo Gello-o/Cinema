@@ -84,7 +84,6 @@ public class AddListFragment extends Fragment {
                     Log.d(TAG, "caricamento fallito");
                 initMovieRV(s);
 
-                refreshOperation.count();
                 currentList2.addAll(s);
                 Log.d(TAG, "CurrentListSize: "+currentList2.size());
 
@@ -95,7 +94,7 @@ public class AddListFragment extends Fragment {
                 else
                     Log.d(TAG, "FilterOperationNull");
 
-                if(refreshOperation != null && refreshOperation.getCount()==addListViewModel.getPage()-1) {
+                if(refreshOperation != null) {
                     refreshOperation.setMovie(currentList2);
                     Log.d(TAG, "RefreshSetMovie");
                 }
