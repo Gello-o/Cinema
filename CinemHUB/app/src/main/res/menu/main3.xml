@@ -17,4 +17,11 @@
         android:orderInCategory="100"
         app:showAsAction="ifRoom|collapseActionView"
         android:icon="@drawable/ic_filter_list_black_24dp" />
+
+    <item
+        android:id="@+id/refresh1"
+        android:title="@string/refresh1"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom|collapseActionView"
+        android:icon="@drawable/ic_refresh_black_24dp" />
 </menu>

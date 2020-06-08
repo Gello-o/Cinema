@@ -4,5 +4,6 @@
     <color name="colorPrimaryDark">#3B3B3C</color>
     <color name="colorAccent">#f1b814</color>
     <color name="warning">#FF0000</color>
-    <color name="editTextColor">#A5000000</color>
+    <color name="textColor">#A5000000</color>
+    <color name="editTextColor">#E0E0E0</color>
 </resources>

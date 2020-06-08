@@ -78,7 +78,7 @@ public class MostraCategoriaViewModel extends ViewModel {
             }
         };
 
-        timer.schedule(timerTask, 0, 3000);
+        timer.schedule(timerTask, 0, 900);
 
     }
 
