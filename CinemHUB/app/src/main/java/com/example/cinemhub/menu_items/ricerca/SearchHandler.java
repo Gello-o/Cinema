@@ -1,6 +1,5 @@
-package com.example.cinemhub.ricerca;
+package com.example.cinemhub.menu_items.ricerca;
 
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.os.Handler;
@@ -9,12 +8,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ProgressBar;
 import android.widget.SearchView;
 
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.example.cinemhub.R;
@@ -26,7 +23,6 @@ import com.example.cinemhub.ui.home.HomeFragment;
 import com.example.cinemhub.ui.home.HomeFragmentDirections;
 import com.example.cinemhub.ui.nuovi_arrivi.NuoviArriviFragment;
 import com.example.cinemhub.ui.nuovi_arrivi.NuoviArriviFragmentDirections;
-import com.example.cinemhub.ui.nuovi_arrivi.NuoviArriviViewModel;
 import com.example.cinemhub.ui.piu_visti.PiuVistiFragment;
 import com.example.cinemhub.ui.piu_visti.PiuVistiFragmentDirections;
 import com.example.cinemhub.ui.preferiti.PreferitiFragment;

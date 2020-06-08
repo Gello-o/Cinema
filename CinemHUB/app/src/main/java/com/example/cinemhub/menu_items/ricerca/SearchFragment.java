@@ -1,4 +1,4 @@
-package com.example.cinemhub.ricerca;
+package com.example.cinemhub.menu_items.ricerca;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
-import com.example.cinemhub.filtri.FilterHandler;
+import com.example.cinemhub.menu_items.filtri.FilterHandler;
 import com.example.cinemhub.model.Movie;
 
 

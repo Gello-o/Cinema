@@ -1,5 +1,8 @@
 package com.example.cinemhub.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Constants {
 
     public static final String BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
@@ -19,7 +22,7 @@ public class Constants {
     public static final Integer ADVENTURE = 12;
     public static final Integer COMEDY = 35;
     public static final Integer CRIME = 80;
-    public static final Integer DOCUMENERY = 99;
+    public static final Integer DOCUMENTARY = 99;
     public static final Integer DRAMA = 18;
     public static final Integer FAMILY = 10751;
     public static final Integer FANTASY = 14;
@@ -31,6 +34,32 @@ public class Constants {
     public static final Integer TVMOVIE = 10770;
     public static final Integer WAR = 10752;
     public static final Integer WESTERN = 37;
+
+    public static List<String> setGenre() {
+        List<String> listVote = new ArrayList<>();
+        listVote.add("");
+        listVote.add("Action");
+        listVote.add("Adventure");
+        listVote.add("Animation");
+        listVote.add("Comedy");
+        listVote.add("Crime");
+        listVote.add("Documentary");
+        listVote.add("Drama");
+        listVote.add("Family");
+        listVote.add("Fantasy");
+        listVote.add("History");
+        listVote.add("Horror");
+        listVote.add("Music");
+        listVote.add("Mystery");
+        listVote.add("Romance");
+        listVote.add("SciFi");
+        listVote.add("Thriller");
+        listVote.add("Tv-Movie");
+        listVote.add("War");
+        listVote.add("Western");
+
+        return listVote;
+    }
 
 
 
