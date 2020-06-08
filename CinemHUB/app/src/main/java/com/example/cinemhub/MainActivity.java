@@ -1,42 +1,23 @@
 package com.example.cinemhub;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.ConnectivityManager;
-import android.net.Network;
 import android.net.NetworkInfo;
-import android.net.NetworkRequest;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.Menu;
+
 import com.example.cinemhub.model.FavoriteDB;
-import com.example.cinemhub.ricerca.SearchFragment;
-import com.example.cinemhub.ricerca.SearchHandler;
-import com.example.cinemhub.ui.home.HomeFragmentDirections;
-import com.example.cinemhub.ui.preferiti.PreferitiFragmentDirections;
 import com.google.android.material.navigation.NavigationView;
 import androidx.annotation.NonNull;
 
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.SearchView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.RequiresApi;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -58,61 +39,11 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawer;
     private NavController navController;
 
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkRequest.Builder builder = new NetworkRequest.Builder();
-
-        connectivityManager.registerNetworkCallback(
-                builder.build(),
-                new ConnectivityManager.NetworkCallback() {
-
-                    @Override
-                    public void onUnavailable() {
-                        Log.d(TAG, "unavailableeeeee");
-                        // Network Not Available
-                        super.onUnavailable();
-                        new AlertDialog.Builder(MainActivity.this).setIcon(R.drawable.dialog_alert).setTitle("Internet Connection Problem")
-                                .setMessage("Please Check your internet connection").setPositiveButton("close", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        })
-                                .show();
-                    }
-
-                    @Override
-                    public void onAvailable(Network network) {
-                        // Network Available
-
-                        Toast.makeText(MainActivity.this, "Welcome in CinemHUB", Toast.LENGTH_LONG).show();
-
-                    }
-
-                    @Override
-                    public void onLost(Network network) {
-                        // Network Not Available
-                        Toast.makeText(MainActivity.this, "check connection", Toast.LENGTH_LONG).show();
-                        new AlertDialog.Builder(MainActivity.this).setIcon(R.drawable.dialog_alert).setTitle("Internet Connection Alert")
-                                .setMessage("Please Check your internet connection").setPositiveButton("close", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        })
-                                .show();
-                    }
-                }
-        );
-        /*
         // Test iniziale su connessione dispositivo (essenziale) per l'app
         if (!isConnected()) {
             new AlertDialog.Builder(this).setIcon(R.drawable.dialog_alert).setTitle("Internet Connection Alert")
@@ -126,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(MainActivity.this, "Welcome in CinemHUB", Toast.LENGTH_LONG).show();
 
-*/
+
             Toolbar toolbar = findViewById(R.id.toolbar_main);
             setSupportActionBar(toolbar);
 
@@ -149,7 +80,8 @@ public class MainActivity extends AppCompatActivity {
 
             Log.d(TAG, "creato il Db");
         }
-        
+
+    }
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -200,22 +132,10 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         DrawerLayout drawer;
         drawer = findViewById(R.id.drawer_layout);
-         /*
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        closeKeyboard() ; */
         if (drawer.isDrawerOpen(GravityCompat.START))
             drawer.closeDrawer(GravityCompat.START);
         else
             super.onBackPressed();
-    }
-
-
-    public void closeKeyboard (){
-        View view = this.getCurrentFocus();
-        if (view!=null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService( Context.INPUT_METHOD_SERVICE );
-            imm.hideSoftInputFromWindow(view.getWindowToken(),0 );
-        }
     }
 
     @Override
@@ -223,8 +143,6 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
-
-    /*
     private boolean isConnected() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService((Context.CONNECTIVITY_SERVICE));
 
@@ -232,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
         return networkInfo != null && networkInfo.isConnected();
     }
-
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);

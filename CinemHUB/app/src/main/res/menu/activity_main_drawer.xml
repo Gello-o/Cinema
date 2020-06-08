@@ -7,11 +7,11 @@
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_home"
-            android:title="HOME" />
+            android:title="@string/menu_home" />
         <item
             android:id="@+id/nav_preferiti"
             android:icon="@drawable/ic_menu_preferiti"
-            android:title="FAVORITES" />
+            android:title="Favorites" />
         <item
             android:id="@+id/nav_add_list"
             android:icon="@drawable/ic_menu_add_list"
@@ -19,18 +19,18 @@
         <item
             android:id="@+id/nav_categorie"
             android:icon="@drawable/ic_menu_categorie"
-            android:title="CATEGORIES" />
+            android:title="Categories" />
         <item
             android:id="@+id/nav_nuovi_arrivi"
             android:icon="@drawable/ic_menu_nuovi_arrivi"
-            android:title="NEW ARRIVALS" />
+            android:title="Now Playing" />
         <item
             android:id="@+id/nav_prossime_uscite"
             android:icon="@drawable/ic_menu_prossime_uscite"
-            android:title="UPCOMING" />
+            android:title="Upcoming" />
         <item
             android:id="@+id/nav_piu_visti"
             android:icon="@drawable/ic_menu_piu_visti"
-            android:title="MOST POPULAR" />
+            android:title="Most watched" />
     </group>
 </menu>
