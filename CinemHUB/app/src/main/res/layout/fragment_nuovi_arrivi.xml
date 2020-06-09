@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
-    android:orientation="vertical"
-    tools:context=".ui.nuovi_arrivi.NuoviArriviFragment">
+    android:id="@+id/nuovi_arrivi_fragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_nuovi_arrivi"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_width="match_parent" />
-</LinearLayout>
+        android:background="@color/colorPrimary"
+        tools:context=".ui.nuovi_arrivi.NuoviArriviFragment">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_nuovi_arrivi"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.cinemhub.R;
-import com.example.cinemhub.ricerca.SearchHandler;
+import com.example.cinemhub.menu_items.ricerca.SearchHandler;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Favorite;
 import com.example.cinemhub.model.FavoriteDB;
@@ -106,9 +106,9 @@ public class PreferitiFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.main3, menu);
+        inflater.inflate(R.menu.main, menu);
         SearchHandler searchOperation = new SearchHandler(menu, this);
-        searchOperation.implementSearch(2);
+        searchOperation.implementSearch(1);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

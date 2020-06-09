@@ -3,11 +3,11 @@ package com.example.cinemhub.model;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
+
+import com.bumptech.glide.load.engine.Resource;
 import com.example.cinemhub.api.Client;
 import com.example.cinemhub.api.Service;
 import com.example.cinemhub.utils.Constants;
-
-import java.io.IOException;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,6 +27,7 @@ public class MoviesRepository {
         return instance;
     }
 
+    /*
     public void getMoviesLL(String categoria, int pagina, MutableLiveData<Resource<List<Movie>>> moviesData) {
         Service apiService = Client.getClient().create(Service.class);
         Call<MoviesResponse> call;
@@ -44,11 +45,11 @@ public class MoviesRepository {
                     Resource<List<Movie>> resource = new Resource<>();
 
                     if (moviesData.getValue() != null && moviesData.getValue().getData() != null) {
-                        List<Movie> currentMovieList = moviesData.getValue().getData();
+                        List<Movie> currentArticleList = moviesData.getValue().getData();
 
-                        currentMovieList.remove(currentMovieList.size() - 1);
-                        currentMovieList.addAll(response.body().getResults());
-                        resource.setData(currentMovieList);
+                        currentArticleList.remove(currentArticleList.size() - 1);
+                        currentArticleList.addAll(response.body().getResults());
+                        resource.setData(currentArticleList);
                     } else {
                         resource.setData(response.body().getResults());
                     }
@@ -78,12 +79,13 @@ public class MoviesRepository {
                 moviesData.postValue(resource);
             }
         });
-
     }
+    */
 
     public void getMovies(String categoria, int pagina, MutableLiveData<List<Movie>> moviesData) {
         Service apiService = Client.getClient().create(Service.class);
         Call<MoviesResponse> call;
+
 
         Log.d(TAG, "CHIAMATA " + pagina);
         call = apiService.getTMDB(categoria, Constants.API_KEY, Constants.LINGUA, pagina);
@@ -245,7 +247,7 @@ public class MoviesRepository {
 
                 //Temporaneo
                 if (trailers == null || trailers.size() == 0) {
-                    key = "BdJKm16Co6M";
+                    key = "WECcGZLvcz0";
                 } else
                     key = trailers.get(0).getKey();
 
