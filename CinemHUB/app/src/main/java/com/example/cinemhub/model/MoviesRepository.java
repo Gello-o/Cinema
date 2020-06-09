@@ -3,11 +3,12 @@ package com.example.cinemhub.model;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
-
-import com.bumptech.glide.load.engine.Resource;
+import com.example.cinemhub.model.Resource;
 import com.example.cinemhub.api.Client;
 import com.example.cinemhub.api.Service;
 import com.example.cinemhub.utils.Constants;
+
+import java.io.IOException;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,7 +28,7 @@ public class MoviesRepository {
         return instance;
     }
 
-    /*
+
     public void getMoviesLL(String categoria, int pagina, MutableLiveData<Resource<List<Movie>>> moviesData) {
         Service apiService = Client.getClient().create(Service.class);
         Call<MoviesResponse> call;
@@ -80,7 +81,7 @@ public class MoviesRepository {
             }
         });
     }
-    */
+
 
     public void getMovies(String categoria, int pagina, MutableLiveData<List<Movie>> moviesData) {
         Service apiService = Client.getClient().create(Service.class);

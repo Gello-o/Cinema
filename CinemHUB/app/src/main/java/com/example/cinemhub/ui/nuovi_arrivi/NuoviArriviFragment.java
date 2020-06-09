@@ -12,66 +12,53 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cinemhub.model.Resource;
 import com.example.cinemhub.R;
-import com.example.cinemhub.menu_items.Refresh;
 import com.example.cinemhub.adapter.MoviesAdapter;
+import com.example.cinemhub.menu_items.Refresh;
 import com.example.cinemhub.menu_items.filtri.FilterHandler;
-import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.menu_items.ricerca.SearchHandler;
+import com.example.cinemhub.model.Movie;
 
 import java.util.HashSet;
 import java.util.List;
-
 
 public class NuoviArriviFragment extends Fragment {
     private static final String TAG = "NuoviArriviFragment";
     private NuoviArriviViewModel nuoviArriviViewModel;
     private MoviesAdapter moviesAdapter;
-    RecyclerView nuoviArriviRV;
-    int lastVisibleItem, totalItemCount, visibleItemCount;
-    int threshold = 1;
+    RecyclerView prossimeUsciteRV;
+    private int totalItemCount;
+    private int lastVisibleItem;
+    private int visibleItemCount;
+    private int threshold = 1;
     FilterHandler filterOperation;
     Refresh refreshOperation;
+    private boolean canLoad = true;
     private HashSet<Movie> currentList = new HashSet<>();
-    List<Movie> globalList;
+
+
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_nuovi_arrivi, container, false);
+        prossimeUsciteRV = root.findViewById(R.id.recycler_view_nuovi_arrivi);
+        setHasOptionsMenu(true);
+        return root;
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         nuoviArriviViewModel =
                 new ViewModelProvider(this).get(NuoviArriviViewModel.class);
-        nuoviArriviRV.setItemAnimator(new DefaultItemAnimator());
-
-        nuoviArriviViewModel.getNuoviArrivi().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> set) {
-                initMovieRV(set);
-
-                refreshOperation.count();
-                currentList.addAll(set);
-                Log.d(TAG, "CurrentListSize: "+currentList.size());
-
-                if (filterOperation != null) {
-                    filterOperation.setMovie(set);
-                    Log.d(TAG, "FilterSetMovie");
-                }
-                else
-                    Log.d(TAG, "FilterOperationNull");
-
-                if(refreshOperation != null && refreshOperation.getCount()==nuoviArriviViewModel.getPage()-1) {
-                    refreshOperation.setMovie(currentList);
-                    Log.d(TAG, "RefreshSetMovie");
-                }
-                else
-                    Log.d(TAG, "RefreshOperationNull");
-                //globalList = set;
-            }
-        });
 
         GridLayoutManager layoutManager;
 
@@ -80,9 +67,13 @@ public class NuoviArriviFragment extends Fragment {
         else
             layoutManager = new GridLayoutManager(getActivity(), 4);
 
-        nuoviArriviRV.setLayoutManager(layoutManager);
+        prossimeUsciteRV.setLayoutManager(layoutManager);
+        prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
 
-        nuoviArriviRV.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        moviesAdapter = new MoviesAdapter(getActivity(), getMovies());
+        prossimeUsciteRV.setAdapter(moviesAdapter);
+
+        prossimeUsciteRV.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -97,30 +88,77 @@ public class NuoviArriviFragment extends Fragment {
                 Log.d(TAG, "last visible item " + lastVisibleItem);
                 Log.d(TAG, "visible items " + visibleItemCount);
 
-                if(totalItemCount <= (lastVisibleItem + threshold) && dy > 0){
-                    Log.d(TAG, "entrato in lazy loading");
-                    int page = nuoviArriviViewModel.getPage() + 1;
-                    nuoviArriviViewModel.setPage(page);
-                    nuoviArriviViewModel.getMoreNuoviArrivi();
+                if (totalItemCount == visibleItemCount ||
+                        (totalItemCount <= (lastVisibleItem + threshold) && dy > 0  && !nuoviArriviViewModel.isLoading()) &&
+                                nuoviArriviViewModel.getMoviesLiveData().getValue() != null &&
+                                nuoviArriviViewModel.getCurrentResults() != nuoviArriviViewModel.getMoviesLiveData().getValue().getTotalResults()
+                                && canLoad
+                ) {
+                    Resource<List<Movie>> moviesResource = new Resource<>();
+
+                    MutableLiveData<Resource<List<Movie>>> moviesMutableLiveData = nuoviArriviViewModel.getMoviesLiveData();
+
+                    if (moviesMutableLiveData.getValue() != null) {
+
+                        nuoviArriviViewModel.setLoading(true);
+
+                        List<Movie> currentMovies = moviesMutableLiveData.getValue().getData();
+
+                        // It adds a null element to enable the visualization of the loading item (it is managed by the class NuoviArriviAdapter)
+                        currentMovies.add(null);
+                        moviesResource.setData(currentMovies);
+                        moviesResource.setStatusMessage(moviesMutableLiveData.getValue().getStatusMessage());
+                        moviesResource.setTotalResults(moviesMutableLiveData.getValue().getTotalResults());
+                        moviesResource.setStatusCode(moviesMutableLiveData.getValue().getStatusCode());
+                        Log.d(TAG, "STO CARICANDO");
+                        moviesResource.setLoading(true);
+                        moviesMutableLiveData.postValue(moviesResource);
+
+                        int page = nuoviArriviViewModel.getPage() + 1;
+                        nuoviArriviViewModel.setPage(page);
+
+                        nuoviArriviViewModel.getMoreProssimeUscite();
+                    }
                 }
             }
         });
 
-        super.onViewCreated(view, savedInstanceState);
-    }
+        nuoviArriviViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<Resource<List<Movie>>>() {
+            @Override
+            public void onChanged(@Nullable Resource<List<Movie>> resource) {
 
-    public void initMovieRV (List<Movie> lista) {
-        moviesAdapter = new MoviesAdapter(getActivity(), lista);
-        moviesAdapter.notifyDataSetChanged();
-        nuoviArriviRV.setAdapter(moviesAdapter);
-    }
+                moviesAdapter.setData(resource.getData());
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_nuovi_arrivi, container, false);
-        nuoviArriviRV = root.findViewById(R.id.recycler_view_nuovi_arrivi);
-        setHasOptionsMenu(true);
-        return root;
+                currentList.addAll(resource.getData());
+
+                Log.d(TAG, "CurrentListSize: "+currentList.size());
+
+                if (filterOperation != null) {
+                    filterOperation.setMovie(resource.getData());
+                    Log.d(TAG, "FilterSetMovie");
+                }
+                else
+                    Log.d(TAG, "FilterOperationNull");
+
+                if(refreshOperation != null) {
+                    refreshOperation.setMovie(currentList);
+                    Log.d(TAG, "RefreshSetMovie");
+                }
+
+                else
+                    Log.d(TAG, "RefreshOperationNull");
+
+                if (!resource.isLoading()) {
+                    Log.d(TAG, "STA CARICANDO");
+                    nuoviArriviViewModel.setLoading(false);
+                    if (resource.getData() != null) {
+                        nuoviArriviViewModel.setCurrentResults(resource.getData().size());
+                    }
+                }
+
+            }
+
+        });
     }
 
     @Override
@@ -135,4 +173,26 @@ public class NuoviArriviFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+
+    private List<Movie> getMovies() {
+
+        Resource<List<Movie>> moviesResource = nuoviArriviViewModel.getProssimeUscite().getValue();
+
+        if (moviesResource != null) {
+            return moviesResource.getData();
+        }
+
+        return null;
+    }
+
+    public void initMovieRV (List<Movie> lista) {
+        Log.d(TAG, "size " + lista.size());
+        moviesAdapter = new MoviesAdapter(getActivity(), lista);
+        prossimeUsciteRV.setAdapter(moviesAdapter);
+        moviesAdapter.notifyDataSetChanged();
+    }
+
+    public void setCanLoad(boolean canLoad) {
+        this.canLoad = canLoad;
+    }
 }

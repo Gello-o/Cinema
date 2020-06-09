@@ -12,6 +12,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.annotation.RawRes;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.cinemhub.ActivityDetail;
@@ -22,26 +25,20 @@ import com.example.cinemhub.utils.Constants;
 import java.util.List;
 
 public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
-    
 
     private Context context;
     private List<Movie> movieList;
     LayoutInflater layoutInflater;
+
     private static final int ARTICLE_VIEW_TYPE = 0;
     private static final int LOADING_VIEW_TYPE = 1;
+
     private static final String TAG = "MoviesAdapter";
 
-
     public MoviesAdapter(Context context, List<Movie> movieList) {
-        if(movieList != null)
-            Log.d(TAG, "costruito lista correttamente");
-
-        if(context != null)
-            Log.d(TAG, "costruito context correttamente");
         this.context = context;
         this.movieList = movieList;
         layoutInflater  = layoutInflater.from(context);
-
     }
 
     @Override
@@ -56,7 +53,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             View view = layoutInflater.inflate(R.layout.loading_item, viewGroup, false);
             return new LoadingMoviesViewHolder(view);
         }
-            
+
     }
 
     @Override
@@ -65,15 +62,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         if(movieList.isEmpty())
             Log.d(TAG, "movieList nulla");
+
         if(viewHolder instanceof MoviesViewHolder) {
-            if (movieList.get(i).getPosterPath() == null) {
-                ((MoviesViewHolder)viewHolder).thumbnail.setImageResource(R.drawable.image_not_found_card);
-            } else {
-                Glide.with(context)
-                        .load(Constants.BASE_IMAGE_URL + movieList.get(i).getPosterPath())
-                        .dontAnimate()
-                        .into(((MoviesViewHolder)viewHolder).thumbnail);
-            }
+            ((MoviesViewHolder) viewHolder).bind(movieList.get(i));
         }
         else if(viewHolder instanceof LoadingMoviesViewHolder){
             ((LoadingMoviesViewHolder) viewHolder).progressBarLoadingMovie.setIndeterminate(true);
@@ -97,11 +88,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public void setData(List<Movie> movies) {
-        if (movieList != null) {
-            this.movieList.addAll(movies);
-            notifyDataSetChanged();
-        }
-        else {
+        if (movies != null) {
             this.movieList = movies;
             notifyDataSetChanged();
         }
@@ -113,6 +100,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public class MoviesViewHolder extends RecyclerView.ViewHolder{
         ImageView thumbnail;
+
 
         public MoviesViewHolder(View view){
             super(view);
@@ -144,8 +132,19 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     }
                 }
             });
+
         }
 
+        public void bind(Movie m){
+            if (m.getPosterPath() == null) {
+                thumbnail.setImageResource(R.drawable.image_not_found);
+            } else {
+                Glide.with(context)
+                        .load(Constants.BASE_IMAGE_URL + m.getPosterPath())
+                        .dontAnimate()
+                        .into(thumbnail);
+            }
+        }
     }
 
     static class LoadingMoviesViewHolder extends RecyclerView.ViewHolder {
