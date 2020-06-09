@@ -117,14 +117,13 @@ public class FilterHandler {
                 if(viewGroup != null)
                     viewGroup.removeView(textEntryView);
 
-                ((NuoviArriviFragment) fragment).setCanLoad(false);
-
                 seekBarMove();
 
                 alert.setIcon(R.drawable.heart_on).setTitle(" Filter:").setView(textEntryView).setPositiveButton("Save",
                         new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int whichButton) {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+
+                                ((NuoviArriviFragment) fragment).setCanLoad(false);
 
                                 String stringSpinnerCategory = spinnerCategroy.getSelectedItem().toString();
                                 String stringSpinnerOrder = spinnerOrder.getSelectedItem().toString();
@@ -139,9 +138,6 @@ public class FilterHandler {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
                                                 int whichButton) {
-                                ((NuoviArriviFragment) fragment).setCanLoad(true);
-
-
                                 Log.d(TAG, "Cancel");
                             }
                         });
@@ -220,58 +216,67 @@ public class FilterHandler {
         }
 
         else {
-            this.moviesGlobal.addAll(moviesGlobal);
+            this.moviesGlobal = moviesGlobal;
             Log.d(TAG, "MoviesGlobalSize: "+moviesGlobal.size());
         }
     }
 
-    public void filterVote(String voteMin, String voteMax) {
+    public List<Movie> filterVote(String voteMin, String voteMax) {
         int intVoteMin = Integer.parseInt(voteMin);
         int intVoteMax = Integer.parseInt(voteMax);
+
+        List<Movie> tmp = new ArrayList<>();
 
         for(Movie m : moviesGlobal) {
             if(m!=null && m.getVoteAverage() != null && !m.getVoteAverage().equals("") && m.getVoteAverage() >= intVoteMin &&
                     m.getVoteAverage() <= intVoteMax) {
-                if(!movieFiltered.contains(m))
-                    movieFiltered.add(m);
+                if(!tmp.contains(m))
+                    tmp.add(m);
             }
             else
                 Log.d(TAG, "MovieNull");
         }
+
+        return tmp;
     }
 
-    public void filterGen(int genId) {
-        for(Movie m : moviesGlobal) {
+    public List<Movie> filterGen(int genId, List<Movie> tmp) {
+        List<Movie> tmp2 = new ArrayList<>();
+
+        for(Movie m : tmp) {
             if(m!=null && m.getGenreIds() != null) {
-                if(!movieFiltered.contains(m)) {
+                if(!tmp2.contains(m)) {
                     for (Integer id : m.getGenreIds()) {
                         if (id == genId)
-                            movieFiltered.add(m);
+                            tmp2.add(m);
                     }
                 }
             }
             else
                 Log.d(TAG, "MovieNull");
         }
+        return tmp2;
     }
 
-    public void filterYear(String yearMin, String yearMax) {
-        Boolean flag = false;
+    public List<Movie> filterYear(String yearMin, String yearMax, List<Movie> tmp) {
         int yearIntMin = Integer.parseInt(yearMin);
         int yearIntMax = Integer.parseInt(yearMax);
         int yearMovieInt = 0;
 
-        for(Movie m : moviesGlobal) {
+        List<Movie> tmp1 = new ArrayList<>();
+
+        for(Movie m : tmp) {
             if(m != null && m.getReleaseDate() != null && m.getReleaseDate().length()==10)
                 yearMovieInt = Integer.parseInt(m.getReleaseDate().substring(0,4));
             else
                 Log.d(TAG, "MovieNull");
 
             if(yearMovieInt >= yearIntMin && yearMovieInt <= yearIntMax) {
-                if(!movieFiltered.contains(m))
-                    movieFiltered.add(m);
+                if(!tmp1.contains(m))
+                    tmp1.add(m);
             }
         }
+        return tmp1;
     }
 
     public void filterOrder(String order) {
@@ -298,8 +303,7 @@ public class FilterHandler {
         movieFiltered.clear();
 
         if(category.equals("") && order.equals("")){
-            filterVote(votoMin, votoMax);
-            filterYear(annoMin, annoMax);
+            movieFiltered = filterYear(annoMin, annoMax, filterVote(votoMin, votoMax));
             Log.d(TAG, "Entrato0");
         }
 
@@ -308,23 +312,18 @@ public class FilterHandler {
 
             if(category.equals("") && !order.equals("")) {
                 Log.d(TAG, "Entrato1");
-                filterVote(votoMin, votoMax);
-                filterYear(annoMin, annoMax);
+                movieFiltered = filterYear(annoMin, annoMax, filterVote(votoMin, votoMax));
                 filterOrder(order);
             }
 
             else if(!category.equals("") && order.equals("")) {
                 Log.d(TAG, "Entrato2");
-                filterVote(votoMin, votoMax);
-                filterYear(annoMin, annoMax);
-                filterGen(genId);
+                movieFiltered = filterGen(genId, filterYear(annoMin, annoMax, filterVote(votoMin, votoMax)));
             }
 
             else if(!category.equals("") && !order.equals("")) {
                 Log.d(TAG, "Entrato3");
-                filterVote(votoMin, votoMax);
-                filterYear(annoMin, annoMax);
-                filterGen(genId);
+                movieFiltered = filterGen(genId, filterYear(annoMin, annoMax, filterVote(votoMin, votoMax)));
                 filterOrder(order);
             }
         }

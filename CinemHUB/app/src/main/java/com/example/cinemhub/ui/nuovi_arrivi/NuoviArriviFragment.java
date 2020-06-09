@@ -27,6 +27,7 @@ import com.example.cinemhub.menu_items.filtri.FilterHandler;
 import com.example.cinemhub.menu_items.ricerca.SearchHandler;
 import com.example.cinemhub.model.Movie;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -41,8 +42,8 @@ public class NuoviArriviFragment extends Fragment {
     private int threshold = 1;
     FilterHandler filterOperation;
     Refresh refreshOperation;
+    private List<Movie> currentMovies;
     private boolean canLoad = true;
-    private HashSet<Movie> currentList = new HashSet<>();
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -51,6 +52,13 @@ public class NuoviArriviFragment extends Fragment {
         prossimeUsciteRV = root.findViewById(R.id.recycler_view_nuovi_arrivi);
         setHasOptionsMenu(true);
         return root;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(!canLoad)
+            canLoad = true;
     }
 
     @Override
@@ -88,10 +96,10 @@ public class NuoviArriviFragment extends Fragment {
                 Log.d(TAG, "last visible item " + lastVisibleItem);
                 Log.d(TAG, "visible items " + visibleItemCount);
 
-                if (totalItemCount == visibleItemCount ||
+                if ((totalItemCount == visibleItemCount ||
                         (totalItemCount <= (lastVisibleItem + threshold) && dy > 0  && !nuoviArriviViewModel.isLoading()) &&
                                 nuoviArriviViewModel.getMoviesLiveData().getValue() != null &&
-                                nuoviArriviViewModel.getCurrentResults() != nuoviArriviViewModel.getMoviesLiveData().getValue().getTotalResults()
+                                nuoviArriviViewModel.getCurrentResults() != nuoviArriviViewModel.getMoviesLiveData().getValue().getTotalResults())
                                 && canLoad
                 ) {
                     Resource<List<Movie>> moviesResource = new Resource<>();
@@ -129,9 +137,9 @@ public class NuoviArriviFragment extends Fragment {
 
                 moviesAdapter.setData(resource.getData());
 
-                currentList.addAll(resource.getData());
+                currentMovies = resource.getData();
 
-                Log.d(TAG, "CurrentListSize: "+currentList.size());
+                Log.d(TAG, "CurrentListSize: "+resource.getData().size());
 
                 if (filterOperation != null) {
                     filterOperation.setMovie(resource.getData());
@@ -140,15 +148,7 @@ public class NuoviArriviFragment extends Fragment {
                 else
                     Log.d(TAG, "FilterOperationNull");
 
-                if(refreshOperation != null) {
-                    refreshOperation.setMovie(currentList);
-                    Log.d(TAG, "RefreshSetMovie");
-                }
-
-                else
-                    Log.d(TAG, "RefreshOperationNull");
-
-                if (!resource.isLoading()) {
+                if (!resource.isLoading() && canLoad) {
                     Log.d(TAG, "STA CARICANDO");
                     nuoviArriviViewModel.setLoading(false);
                     if (resource.getData() != null) {
@@ -166,7 +166,7 @@ public class NuoviArriviFragment extends Fragment {
         inflater.inflate(R.menu.main3, menu);
         SearchHandler searchOperation = new SearchHandler(menu, this);
         filterOperation = new FilterHandler(menu, this);
-        refreshOperation = new Refresh(menu, this, filterOperation);
+        refreshOperation = new Refresh(menu, this);
         searchOperation.implementSearch(2);
         filterOperation.implementFilter(2);
         refreshOperation.implementRefresh(2);
@@ -183,6 +183,11 @@ public class NuoviArriviFragment extends Fragment {
         }
 
         return null;
+    }
+
+
+    public List<Movie> getCurrentMovies() {
+        return currentMovies;
     }
 
     public void initMovieRV (List<Movie> lista) {

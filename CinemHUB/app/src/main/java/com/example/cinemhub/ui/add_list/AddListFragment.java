@@ -23,6 +23,7 @@ import com.example.cinemhub.menu_items.filtri.FilterHandler;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.menu_items.ricerca.SearchHandler;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class AddListFragment extends Fragment {
     private MoviesAdapter moviesAdapter;
     FilterHandler filterOperation;
     Refresh refreshOperation;
-    private HashSet<Movie> currentList2 = new HashSet<>();
+    private List<Movie> currentList2 = new ArrayList<>();
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -62,7 +63,7 @@ public class AddListFragment extends Fragment {
         searchOperation.implementSearch(2);
         filterOperation.implementFilter(2);
 
-        refreshOperation = new Refresh(menu, this, filterOperation);
+        refreshOperation = new Refresh(menu, this);
         refreshOperation.implementRefresh(2);
         Log.d(TAG, "onCreateOptionsMenu");
 
@@ -95,12 +96,6 @@ public class AddListFragment extends Fragment {
                 else
                     Log.d(TAG, "FilterOperationNull");
 
-                if(refreshOperation != null && refreshOperation.getCount()==addListViewModel.getPage()-1) {
-                    refreshOperation.setMovie(currentList2);
-                    Log.d(TAG, "RefreshSetMovie");
-                }
-                else
-                    Log.d(TAG, "RefreshOperationNull");
 
             }
         });
@@ -113,5 +108,10 @@ public class AddListFragment extends Fragment {
         actionMoviesRV.setLayoutManager(layoutManager);
 
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    private List<Movie> currentMovies;
+    public List<Movie> getCurrentMovies() {
+        return currentMovies;
     }
 }
