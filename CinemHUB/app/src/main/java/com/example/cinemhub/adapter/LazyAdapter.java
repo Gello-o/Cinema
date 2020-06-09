@@ -20,24 +20,25 @@ import com.bumptech.glide.Glide;
 import com.example.cinemhub.ActivityDetail;
 import com.example.cinemhub.R;
 import com.example.cinemhub.model.Movie;
+import com.example.cinemhub.ui.nuovi_arrivi.NuoviArriviViewModel;
 import com.example.cinemhub.utils.Constants;
 
 import java.util.List;
 
-public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public class LazyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private Context context;
     private List<Movie> movieList;
     LayoutInflater layoutInflater;
-
+    private ViewModel viewModel;
     private static final int ARTICLE_VIEW_TYPE = 0;
     private static final int LOADING_VIEW_TYPE = 1;
-
     private static final String TAG = "MoviesAdapter";
 
-    public MoviesAdapter(Context context, List<Movie> movieList) {
+    public LazyAdapter(Context context, List<Movie> movieList, ViewModel viewModel) {
         this.context = context;
         this.movieList = movieList;
+        this.viewModel = viewModel;
         layoutInflater  = layoutInflater.from(context);
     }
 
@@ -53,7 +54,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             View view = layoutInflater.inflate(R.layout.loading_item, viewGroup, false);
             return new LoadingMoviesViewHolder(view);
         }
-            
+
     }
 
     @Override
@@ -62,12 +63,22 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         if(movieList.isEmpty())
             Log.d(TAG, "movieList nulla");
-
         if(viewHolder instanceof MoviesViewHolder) {
             ((MoviesViewHolder) viewHolder).bind(movieList.get(i));
         }
         else if(viewHolder instanceof LoadingMoviesViewHolder){
             ((LoadingMoviesViewHolder) viewHolder).progressBarLoadingMovie.setIndeterminate(true);
+        }
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if ((getItemCount() - 1) == holder.getAdapterPosition()){
+            Log.d(TAG,"list done");
+            ((NuoviArriviViewModel) viewModel).getMoreProssimeUscite();
+        } else {
+            Log.d(TAG,"remain item : " + (getItemCount() - holder.getAdapterPosition() - 1));
         }
     }
 
@@ -88,7 +99,11 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public void setData(List<Movie> movies) {
-        if (movies != null) {
+        if (movieList != null) {
+            this.movieList.addAll(movies);
+            notifyDataSetChanged();
+        }
+        else {
             this.movieList = movies;
             notifyDataSetChanged();
         }
@@ -100,6 +115,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public class MoviesViewHolder extends RecyclerView.ViewHolder{
         ImageView thumbnail;
+        RecyclerView.OnScrollListener onScrollListener;
+        int totalScrolled = 0;
+        int treshold = 3;
 
 
         public MoviesViewHolder(View view){
@@ -132,6 +150,25 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     }
                 }
             });
+
+            onScrollListener = new RecyclerView.OnScrollListener() {
+                boolean loadEnable = false;
+
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    totalScrolled += dy;
+                    if((totalScrolled+treshold) > recyclerView.getHeight() && loadEnable){
+                        loadEnable = false;
+                        if(viewModel instanceof NuoviArriviViewModel){
+                            ( (NuoviArriviViewModel) viewModel ).getMoreProssimeUscite();
+                        }
+                    }
+                    else
+                        loadEnable = true;
+
+                }
+            };
 
         }
 

@@ -1,9 +1,13 @@
 package com.example.cinemhub.ui.categorie;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.text.style.CharacterStyle;
 import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,15 +24,23 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cinemhub.MainActivity;
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.menu_items.ricerca.SearchHandler;
+import com.example.cinemhub.model.Trailer;
+import com.example.cinemhub.ricerca.SearchHandler;
+import com.example.cinemhub.ui.home.HomeFragment;
+import com.example.cinemhub.ui.home.HomeViewModel;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Timer;
 
 public class CategorieFragment extends Fragment {
     private static final String TAG = "CategorieFragment";

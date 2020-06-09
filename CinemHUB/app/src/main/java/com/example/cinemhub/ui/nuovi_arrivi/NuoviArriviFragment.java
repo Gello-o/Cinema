@@ -8,29 +8,29 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
-import com.example.cinemhub.menu_items.Refresh;
-import com.example.cinemhub.menu_items.ricerca.SearchHandler;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.Resource;
-import com.example.cinemhub.menu_items.filtri.FilterHandler;
-import com.example.cinemhub.menu_items.ricerca.SearchHandler;
-import com.example.cinemhub.ui.nuovi_arrivi.NuoviArriviViewModel;
+import com.example.cinemhub.ricerca.FilterHandler;
+import com.example.cinemhub.ricerca.SearchHandler;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public class NuoviArriviFragment extends Fragment {
@@ -42,10 +42,6 @@ public class NuoviArriviFragment extends Fragment {
     private int lastVisibleItem;
     private int visibleItemCount;
     private int threshold = 1;
-    FilterHandler filterOperation;
-    Refresh refreshOperation;
-    private boolean canLoad = true;
-    private HashSet<Movie> currentList = new HashSet<>();
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -95,7 +91,7 @@ public class NuoviArriviFragment extends Fragment {
                         (totalItemCount <= (lastVisibleItem + threshold) && dy > 0  && !nuoviArriviViewModel.isLoading()) &&
                                 nuoviArriviViewModel.getMoviesLiveData().getValue() != null &&
                                 nuoviArriviViewModel.getCurrentResults() != nuoviArriviViewModel.getMoviesLiveData().getValue().getTotalResults()
-                                && canLoad
+
                 ) {
                     Resource<List<Movie>> moviesResource = new Resource<>();
 
@@ -129,27 +125,7 @@ public class NuoviArriviFragment extends Fragment {
         nuoviArriviViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<Resource<List<Movie>>>() {
             @Override
             public void onChanged(@Nullable Resource<List<Movie>> resource) {
-
                 moviesAdapter.setData(resource.getData());
-
-                currentList.addAll(resource.getData());
-
-                Log.d(TAG, "CurrentListSize: "+currentList.size());
-
-                if (filterOperation != null) {
-                    filterOperation.setMovie(resource.getData());
-                    Log.d(TAG, "FilterSetMovie");
-                }
-                else
-                    Log.d(TAG, "FilterOperationNull");
-
-                if(refreshOperation != null) {
-                    refreshOperation.setMovie(currentList);
-                    Log.d(TAG, "RefreshSetMovie");
-                }
-
-                else
-                    Log.d(TAG, "RefreshOperationNull");
 
                 if (!resource.isLoading()) {
                     Log.d(TAG, "STA CARICANDO");
@@ -159,20 +135,24 @@ public class NuoviArriviFragment extends Fragment {
                     }
                 }
 
+                if (resource.getData() != null) {
+                    Log.d(TAG, "Success - Total results: " + resource.getTotalResults() + " Status code: " +
+                            resource.getStatusCode() + "Status message: " + resource.getStatusMessage());
+                } else {
+                    Log.d(TAG, "Error - Status code: " + resource.getStatusCode() + " Status message: " + resource.getStatusMessage());
+                }
             }
 
         });
+
+
     }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.main3, menu);
         SearchHandler searchOperation = new SearchHandler(menu, this);
-        filterOperation = new FilterHandler(menu, this);
-        refreshOperation = new Refresh(menu, this, filterOperation);
         searchOperation.implementSearch(2);
-        filterOperation.implementFilter(2);
-        refreshOperation.implementRefresh(2);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -186,16 +166,5 @@ public class NuoviArriviFragment extends Fragment {
         }
 
         return null;
-    }
-
-    public void initMovieRV (List<Movie> lista) {
-        Log.d(TAG, "size " + lista.size());
-        moviesAdapter = new MoviesAdapter(getActivity(), lista);
-        prossimeUsciteRV.setAdapter(moviesAdapter);
-        moviesAdapter.notifyDataSetChanged();
-    }
-
-    public void setCanLoad(boolean canLoad) {
-        this.canLoad = canLoad;
     }
 }

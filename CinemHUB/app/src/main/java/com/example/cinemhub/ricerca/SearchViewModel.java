@@ -1,4 +1,4 @@
-package com.example.cinemhub.menu_items.ricerca;
+package com.example.cinemhub.ricerca;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;

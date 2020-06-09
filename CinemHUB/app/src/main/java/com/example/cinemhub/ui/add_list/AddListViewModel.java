@@ -11,24 +11,13 @@ public class AddListViewModel extends ViewModel {
 
     private MutableLiveData<List<Movie>> mText;
     MoviesRepository repo;
-    private int page;
 
     public LiveData<List<Movie>> getText() {
         if(mText == null){
             mText = new MutableLiveData<>();
             repo = MoviesRepository.getInstance();
-            int i;
-            for(i=1; i<5; i++) {
-                repo.searchMovie(i, "star+wars", mText);
-            }
-            page = i;
+            repo.searchMovie(1, "iron+man", mText);
         }
         return mText;
     }
-
-    public int getPage() {
-        return page;
-    }
-
-
 }

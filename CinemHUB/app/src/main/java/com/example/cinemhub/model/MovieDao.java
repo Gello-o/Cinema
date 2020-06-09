@@ -28,17 +28,14 @@ public interface MovieDao {
     public void changeDb(Favorite nextDb);
 
     @Insert
-    public void addUserRating(UserRatingDB userRatingDB);
+    public void addUserRating(UserInfo userRatingDB);
 
-    @Query("select * from UserRatingDB")
-    public List<UserRatingDB> getUserOverview();
+    @Query("select * from UserInfo")
+    public List<UserInfo> getUserOverview();
 
-    @Query("select * from UserRatingDB where movie_id = :id")
-    public UserRatingDB getUserInfo(int id);
+    @Query("select * from UserInfo where movie_id = :id")
+    public UserInfo getUserInfo(int id);
 
     @Update
-    public void updateUserRating(UserRatingDB nextDb);
-
-    @Delete
-    public void deleteUser(UserRatingDB dbToDelete);
+    public void updateUserRating(UserInfo nextDb);
 }

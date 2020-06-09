@@ -16,14 +16,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.cinemhub.R;
-import com.example.cinemhub.menu_items.Refresh;
-import com.example.cinemhub.adapter.MoviesAdapter;
-import com.example.cinemhub.menu_items.filtri.FilterHandler;
-import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.menu_items.ricerca.SearchHandler;
 
-import java.util.HashSet;
+import com.example.cinemhub.R;
+import com.example.cinemhub.adapter.MoviesAdapter;
+import com.example.cinemhub.model.Movie;
+import com.example.cinemhub.ricerca.FilterHandler;
+import com.example.cinemhub.ricerca.SearchHandler;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class AddListFragment extends Fragment {
@@ -32,86 +32,63 @@ public class AddListFragment extends Fragment {
     private AddListViewModel addListViewModel;
     private RecyclerView actionMoviesRV;
     private MoviesAdapter moviesAdapter;
-    FilterHandler filterOperation;
-    Refresh refreshOperation;
-    private HashSet<Movie> currentList2 = new HashSet<>();
-
+    private List<Movie> currentList = new ArrayList<>();
+    private FilterHandler filterHandler;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
         View root = inflater.inflate(R.layout.fragment_add_list, container, false);
-
         actionMoviesRV = root.findViewById(R.id.recycler_view_add_list);
-
         setHasOptionsMenu(true);
         return root;
     }
 
-    public void initMovieRV(List<Movie> movies) {
-        moviesAdapter = new MoviesAdapter(getActivity(), movies);
-        moviesAdapter.notifyDataSetChanged();
-        actionMoviesRV.setAdapter(moviesAdapter);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        addListViewModel =
+                new ViewModelProvider(this).get(AddListViewModel.class);
+
+        RecyclerView.LayoutManager layoutManager;
+
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+            layoutManager = new GridLayoutManager(getActivity(), 3);
+        else
+            layoutManager = new GridLayoutManager(getActivity(), 4);
+
+        actionMoviesRV.setLayoutManager(layoutManager);
+        actionMoviesRV.setItemAnimator(new DefaultItemAnimator());
+
+        addListViewModel.getText().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> s) {
+                if(s == null)
+                    Log.d(TAG, "caricamento fallito");
+                initMoviesRV(s);
+                if(filterHandler != null){
+                    filterHandler.setMovie(s);
+                    Log.d(TAG, "INIZIALIZZATO MOVIE HANDLER");
+                }
+                else
+                    Log.d(TAG, "INIZIALIZZAZIONE FALLITA");
+            }
+        });
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main3, menu);
         SearchHandler searchOperation = new SearchHandler(menu, this);
-        filterOperation = new FilterHandler(menu, this);
         searchOperation.implementSearch(2);
-        filterOperation.implementFilter(2);
-
-        refreshOperation = new Refresh(menu, this, filterOperation);
-        refreshOperation.implementRefresh(2);
-        Log.d(TAG, "onCreateOptionsMenu");
-
+        filterHandler = new FilterHandler(menu, this);
+        filterHandler.implementFilter(2);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        addListViewModel =
-                new ViewModelProvider(this).get(AddListViewModel.class);
-
-        actionMoviesRV.setItemAnimator(new DefaultItemAnimator());
-
-        addListViewModel.getText().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> s) {
-                Log.d(TAG, "OnChanged");
-                if (s == null)
-                    Log.d(TAG, "caricamento fallito");
-                initMovieRV(s);
-
-                refreshOperation.count();
-                currentList2.addAll(s);
-                Log.d(TAG, "CurrentListSize: "+currentList2.size());
-
-                if (filterOperation != null) {
-                    filterOperation.setMovie(s);
-                    Log.d(TAG, "FilterSetMovie");
-                }
-                else
-                    Log.d(TAG, "FilterOperationNull");
-
-                if(refreshOperation != null && refreshOperation.getCount()==addListViewModel.getPage()-1) {
-                    refreshOperation.setMovie(currentList2);
-                    Log.d(TAG, "RefreshSetMovie");
-                }
-                else
-                    Log.d(TAG, "RefreshOperationNull");
-
-            }
-        });
-
-        RecyclerView.LayoutManager layoutManager;
-        if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
-            layoutManager = new GridLayoutManager(getActivity(), 3);
-        else
-            layoutManager = new GridLayoutManager(getActivity(), 4);
-        actionMoviesRV.setLayoutManager(layoutManager);
-
-        super.onViewCreated(view, savedInstanceState);
+    public void initMoviesRV(List<Movie> lista) {
+        moviesAdapter = new MoviesAdapter(getActivity(), lista);
+        moviesAdapter.notifyDataSetChanged();
+        actionMoviesRV.setAdapter(moviesAdapter);
     }
 }

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,12 +25,10 @@ public class SliderPagerAdapter extends PagerAdapter {
     private Context mContext ;
     private List<Movie> mList ;
 
-
     public SliderPagerAdapter(Context mContext, List<Movie> mList) {
         this.mContext = mContext;
         this.mList = mList;
     }
-
 
     @NonNull
     @Override
@@ -40,17 +39,22 @@ public class SliderPagerAdapter extends PagerAdapter {
         View slideLayout = inflater.inflate(R.layout.slide_item,null);
 
         ImageView slideImg = slideLayout.findViewById(R.id.slide_img);
-       // TextView slideText = slideLayout.findViewById(R.id.slide_title);
+        TextView slideText = slideLayout.findViewById(R.id.slide_title);
 
-        if(mList.get(position) != null){
+        if(mList.get(position).getPosterPath() != null){
             Glide.with(mContext)
                     .load(Constants.BASE_IMAGE_URL+mList.get(position).getPosterPath())
-                    .placeholder(R.drawable.ic_launcher_background)
                     .into(slideImg);
-       //     slideText.setText(mList.get(position).getTitle());
         }
         else {
             slideImg.setImageResource(R.drawable.image_not_found);
+        }
+
+        if(mList.get(position).getTitle() != null ){
+            slideText.setText(mList.get(position).getTitle());
+        }
+        else{
+            slideText.setText("NO TITLE");
         }
 
         slideImg.setOnClickListener(new View.OnClickListener() {
@@ -78,7 +82,6 @@ public class SliderPagerAdapter extends PagerAdapter {
         });
 
         container.addView(slideLayout);
-
 
         return slideLayout;
 

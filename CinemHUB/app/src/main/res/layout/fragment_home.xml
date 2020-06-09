@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+<androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/home_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -41,7 +47,7 @@
             android:layout_marginEnd="85dp"
             android:layout_marginRight="85dp"
             android:orientation="horizontal"
-            android:text=""
+            android:text="Next exits"
             android:textStyle="bold"
             android:textColor="#FBF9F9"
             android:textSize="24sp"
@@ -68,7 +74,7 @@
             android:layout_marginEnd="85dp"
             android:layout_marginRight="85dp"
             android:orientation="horizontal"
-            android:text=""
+            android:text="Popular"
             android:textColor="#FBF9F9"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -94,7 +100,7 @@
             android:layout_marginEnd="85dp"
             android:layout_marginRight="85dp"
             android:orientation="horizontal"
-            android:text=""
+            android:text="Top rated"
             android:textColor="#FBF9F9"
             android:textSize="24sp"
             android:visibility="visible"
@@ -116,3 +122,5 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>
