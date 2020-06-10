@@ -46,18 +46,22 @@ public class Refresh {
             public boolean onMenuItemClick(MenuItem item) {
                 Log.d(TAG, "ClickedRefresh");
 
-                ((NuoviArriviFragment) fragment).setCanLoad(true);
-
-                if(fragment instanceof MostraCategoriaFragment)
-                    ((MostraCategoriaFragment) fragment).initMovieRV(( (MostraCategoriaFragment) fragment ).getCurrentMovies());
-                else if(fragment instanceof AddListFragment)
-                    ((AddListFragment) fragment).initMovieRV(((AddListFragment) fragment).getCurrentMovies());
-                else if(fragment instanceof PiuVistiFragment)
+                if(fragment instanceof MostraCategoriaFragment) {
+                    ((MostraCategoriaFragment) fragment).setCanLoad(true);
+                    ((MostraCategoriaFragment) fragment).initMovieRV(((MostraCategoriaFragment) fragment).getCurrentMovies());
+                }else if(fragment instanceof AddListFragment) {
+                    //((AddListFragment) fragment).setCanLoad(true);
+                    ( (AddListFragment) fragment ).initMovieRV(( (AddListFragment) fragment ).getCurrentMovies());
+                }else if(fragment instanceof PiuVistiFragment){
+                    ((PiuVistiFragment) fragment).setCanLoad(true);
                     ((PiuVistiFragment) fragment).initMovieRV(((PiuVistiFragment) fragment).getCurrentMovies());
-                else if(fragment instanceof ProssimeUsciteFragment)
-                    ((ProssimeUsciteFragment) fragment).initMovieRV(((ProssimeUsciteFragment) fragment).getCurrentMovies());
-                else if(fragment instanceof NuoviArriviFragment)
+                }else if(fragment instanceof ProssimeUsciteFragment) {
+                    ((ProssimeUsciteFragment) fragment).setCanLoad(true);
+                    ((ProssimeUsciteFragment) fragment ).initMovieRV(( (ProssimeUsciteFragment) fragment ).getCurrentMovies());
+                }else if(fragment instanceof NuoviArriviFragment){
+                    ((NuoviArriviFragment) fragment).setCanLoad(true);
                     ((NuoviArriviFragment) fragment).initMovieRV(((NuoviArriviFragment) fragment).getCurrentMovies());
+                }
 
                 return true;
             }

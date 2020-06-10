@@ -84,10 +84,8 @@ public class FilterHandler {
         textViewYearMax = textEntryView.findViewById(R.id.textViewMaxYear);
         textViewYearMin = textEntryView.findViewById(R.id.textViewMinYear);
 
-
         List<String> listVote = Constants.setGenre();
         spinnerList(spinnerCategroy, listVote);
-
 
         List<String> listYear = new ArrayList<>();
         listYear.add("");
@@ -123,7 +121,7 @@ public class FilterHandler {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
 
-                                ((NuoviArriviFragment) fragment).setCanLoad(false);
+                                setFragmentCanLoad();
 
                                 String stringSpinnerCategory = spinnerCategroy.getSelectedItem().toString();
                                 String stringSpinnerOrder = spinnerOrder.getSelectedItem().toString();
@@ -391,5 +389,20 @@ public class FilterHandler {
                 genId = Constants.WESTERN;
         }
         return genId;
+    }
+
+    public void setFragmentCanLoad(){
+
+        if(fragment instanceof MostraCategoriaFragment) {
+            ((MostraCategoriaFragment) fragment).setCanLoad(false);
+        }else if(fragment instanceof AddListFragment) {
+            //((AddListFragment) fragment).setCanLoad(true);
+        }else if(fragment instanceof PiuVistiFragment){
+            ((PiuVistiFragment) fragment).setCanLoad(false);
+        }else if(fragment instanceof ProssimeUsciteFragment) {
+            ((ProssimeUsciteFragment) fragment).setCanLoad(false);
+        }else if(fragment instanceof NuoviArriviFragment){
+            ((NuoviArriviFragment) fragment).setCanLoad(false);
+        }
     }
 }

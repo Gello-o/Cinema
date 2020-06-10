@@ -172,8 +172,6 @@ public class CategorieFragment extends Fragment {
                 Log.d(TAG, "cliccato");
                 action.setGenere(80);
                 Navigation.findNavController(widget).navigate(action);
-
-
             }
         };
 

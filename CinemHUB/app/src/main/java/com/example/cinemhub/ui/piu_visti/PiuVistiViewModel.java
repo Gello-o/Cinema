@@ -1,36 +1,35 @@
 package com.example.cinemhub.ui.piu_visti;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesRepository;
+import com.example.cinemhub.model.Resource;
 
 import java.util.List;
 
 public class PiuVistiViewModel extends ViewModel {
-    private MutableLiveData<List<Movie>> film;
-    int page = 4;
-    private MoviesRepository repo;
+    private static final String TAG = "NuoviArriviViewModel";
+    private MutableLiveData<Resource<List<Movie>>> film;
+    int page = 1;
     private int currentResults;
     private boolean isLoading;
 
-    public MutableLiveData<List<Movie>> getPiuVisti() {
+    public MutableLiveData<Resource<List<Movie>>> getPiuVisti() {
         if(film == null) {
             film = new MutableLiveData<>();
-            repo = MoviesRepository.getInstance();
-            for(int i=1; i<page; i++)
-                repo.getMovies("top_rated", i, film);
+            MoviesRepository.getInstance().getMoviesLL("top_rated", page, film);
         }
         return film;
     }
 
+    public MutableLiveData<Resource<List<Movie>>> getMorePiuVisti() {
+        MoviesRepository.getInstance().getMoviesLL("top_rated", page, film);
+        return film;
+    }
 
-    public LiveData<List<Movie>> getMorePiuVisti() {
-        repo = MoviesRepository.getInstance();
-        for(int i=1; i<page; i++)
-            repo.getMovies("top_rated", i, film);
+    public MutableLiveData<Resource<List<Movie>>> getMoviesLiveData() {
         return film;
     }
 
@@ -57,4 +56,5 @@ public class PiuVistiViewModel extends ViewModel {
     public void setLoading(boolean loading) {
         isLoading = loading;
     }
+
 }

@@ -26,9 +26,6 @@ import com.example.cinemhub.menu_items.Refresh;
 import com.example.cinemhub.menu_items.filtri.FilterHandler;
 import com.example.cinemhub.menu_items.ricerca.SearchHandler;
 import com.example.cinemhub.model.Movie;
-
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public class NuoviArriviFragment extends Fragment {
@@ -139,7 +136,7 @@ public class NuoviArriviFragment extends Fragment {
 
                 currentMovies = resource.getData();
 
-                Log.d(TAG, "CurrentListSize: "+resource.getData().size());
+                Log.d(TAG, "CurrentListSize: "+ resource.getData().size());
 
                 if (filterOperation != null) {
                     filterOperation.setMovie(resource.getData());

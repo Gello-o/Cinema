@@ -267,5 +267,57 @@ public class MoviesRepository {
     }
 
 
+    public void getGenresLL(int genere, int pagina, MutableLiveData<Resource<List<Movie>>> moviesData) {
+        Service apiService = Client.getClient().create(Service.class);
+        Call<MoviesResponse> call;
+
+
+        Log.d(TAG, "CHIAMATA " + pagina);
+        call = apiService.getGenres(Constants.API_KEY, "popularity.desc", Constants.LINGUA, genere, pagina);
+
+        call.enqueue(new Callback<MoviesResponse>() {
+
+            @Override
+            public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+
+                    Resource<List<Movie>> resource = new Resource<>();
+
+                    if (moviesData.getValue() != null && moviesData.getValue().getData() != null) {
+                        List<Movie> currentArticleList = moviesData.getValue().getData();
+
+                        currentArticleList.remove(currentArticleList.size() - 1);
+                        currentArticleList.addAll(response.body().getResults());
+                        resource.setData(currentArticleList);
+                    } else {
+                        resource.setData(response.body().getResults());
+                    }
+
+                    resource.setTotalResults(response.body().getTotalResults());
+                    resource.setStatusCode(response.code());
+                    resource.setStatusMessage(response.message());
+                    resource.setLoading(false);
+                    Log.d(TAG, "LOADING FALSE");
+                    moviesData.postValue(resource);
+                } else if (response.errorBody() != null) {
+                    Resource<List<Movie>> resource = new Resource<>();
+                    resource.setStatusCode(response.code());
+                    try {
+                        resource.setStatusMessage(response.errorBody().string() + "- " + response.message());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    moviesData.postValue(resource);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MoviesResponse> call, @NonNull Throwable t) {
+                Resource<List<Movie>> resource = new Resource<>();
+                resource.setStatusMessage(t.getMessage());
+                moviesData.postValue(resource);
+            }
+        });
+    }
 
 }
