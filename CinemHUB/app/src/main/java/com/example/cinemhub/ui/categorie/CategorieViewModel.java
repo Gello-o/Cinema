@@ -1,17 +1,10 @@
 package com.example.cinemhub.ui.categorie;
 
-import android.text.method.MovementMethod;
-import android.util.Log;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesRepository;
-import com.example.cinemhub.model.Trailer;
-
-import java.util.HashSet;
 import java.util.List;
 
 public class CategorieViewModel extends ViewModel {

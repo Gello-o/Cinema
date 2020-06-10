@@ -23,16 +23,12 @@ public class Refresh {
     private static final String TAG = "Refresh";
     private Fragment fragment;
     private Menu menu;
-    private FilterHandler filterOperation;
-    List<Movie> moviesGlobal;
     int c;
 
-    public Refresh(Menu menu, Fragment fragment, FilterHandler filterOperation){
+    public Refresh(Menu menu, Fragment fragment){
         this.fragment = fragment;
         this.menu = menu;
         c = 0;
-        moviesGlobal = new ArrayList<>();
-        this.filterOperation = filterOperation;
         Log.d(TAG, "RefreshConstructor");
     }
 
@@ -50,41 +46,22 @@ public class Refresh {
             public boolean onMenuItemClick(MenuItem item) {
                 Log.d(TAG, "ClickedRefresh");
 
-                //Qua stampa la lista attuale invece che quella iniziale (da fixare)
-                /*
-                for(Movie m : moviesGlobal)
-                    Log.d(TAG, "Film: "+m.getTitle());
-                */
-                Log.d(TAG, "#Film: "+moviesGlobal.size());
-
-                filterOperation.setMovie(moviesGlobal);
+                ((NuoviArriviFragment) fragment).setCanLoad(true);
 
                 if(fragment instanceof MostraCategoriaFragment)
-                    ((MostraCategoriaFragment) fragment).initMovieRV(moviesGlobal);
+                    ((MostraCategoriaFragment) fragment).initMovieRV(( (MostraCategoriaFragment) fragment ).getCurrentMovies());
                 else if(fragment instanceof AddListFragment)
-                    ((AddListFragment) fragment).initMovieRV(moviesGlobal);
+                    ((AddListFragment) fragment).initMovieRV(((AddListFragment) fragment).getCurrentMovies());
                 else if(fragment instanceof PiuVistiFragment)
-                    ((PiuVistiFragment) fragment).initMovieRV(moviesGlobal);
+                    ((PiuVistiFragment) fragment).initMovieRV(((PiuVistiFragment) fragment).getCurrentMovies());
                 else if(fragment instanceof ProssimeUsciteFragment)
-                    ((ProssimeUsciteFragment) fragment).initMovieRV(moviesGlobal);
+                    ((ProssimeUsciteFragment) fragment).initMovieRV(((ProssimeUsciteFragment) fragment).getCurrentMovies());
                 else if(fragment instanceof NuoviArriviFragment)
-                    ((NuoviArriviFragment) fragment).initMovieRV(moviesGlobal);
+                    ((NuoviArriviFragment) fragment).initMovieRV(((NuoviArriviFragment) fragment).getCurrentMovies());
 
                 return true;
             }
         });
-    }
-
-    public void setMovie(Set<Movie> moviesGlobal) {
-        Log.d(TAG, "setMovie ");
-        if(moviesGlobal==null) {
-            this.moviesGlobal = new ArrayList<>();
-            Log.d(TAG, "setMovieNull");
-        }
-        else {
-            this.moviesGlobal.addAll(moviesGlobal);
-            Log.d(TAG, "setMovieNotNull");
-        }
     }
 
     public void count() {

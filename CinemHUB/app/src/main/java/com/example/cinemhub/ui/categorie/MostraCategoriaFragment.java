@@ -57,9 +57,9 @@ public class MostraCategoriaFragment extends Fragment {
                     Log.d(TAG, ""+moviesSet.size());
                 initMovieRV(moviesSet);
                 //if(refreshOperation != null)
-                    //refreshOperation.setMovie(moviesSet);
+                //refreshOperation.setMovie(moviesSet);
                 //else
-                    //Log.d(TAG, "RefreshOperationNull");
+                //Log.d(TAG, "RefreshOperationNull");
                 if (filterOperation != null) {
                     filterOperation.setMovie(moviesSet);
                     //initFilterObserver();
@@ -115,10 +115,15 @@ public class MostraCategoriaFragment extends Fragment {
         filterOperation = new FilterHandler(menu, this);
         filterOperation.implementFilter(1);
 
-        refreshOperation = new Refresh(menu, this, filterOperation);
+        refreshOperation = new Refresh(menu, this);
         //refreshOperation.setIntegerMutableLiveData();
         refreshOperation.implementRefresh(1);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private List<Movie> currentMovies;
+    public List<Movie> getCurrentMovies() {
+        return currentMovies;
     }
 
 

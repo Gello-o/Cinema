@@ -115,7 +115,7 @@
     <fragment
         android:id="@+id/nav_genere"
         android:name="com.example.cinemhub.ui.categorie.MostraCategoriaFragment"
-        android:label="@string/menu_genere"
+        android:label="@string/menu_categorie"
         tools:layout="@layout/fragment_genere" >
         <action
             android:id="@+id/goToCategorieAction"
@@ -130,7 +130,7 @@
     <fragment
         android:id="@+id/nav_search"
         android:name="com.example.cinemhub.menu_items.ricerca.SearchFragment"
-        android:label="@string/menu_genere"
+        android:label="@string/menu_ricerca"
         tools:layout="@layout/search" >
         <action
             android:id="@+id/goToHomeAction"

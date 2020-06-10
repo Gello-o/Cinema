@@ -24,6 +24,7 @@ import com.example.cinemhub.menu_items.filtri.FilterHandler;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.menu_items.ricerca.SearchHandler;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -36,8 +37,8 @@ public class PiuVistiFragment extends Fragment {
     int threshold = 1;
     FilterHandler filterOperation;
     Refresh refreshOperation;
-    private HashSet<Movie> currentList2 = new HashSet<>();
-    List<Movie> globalList;
+    private List<Movie> currentList2 = new ArrayList<>();
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -63,13 +64,7 @@ public class PiuVistiFragment extends Fragment {
                 else
                     Log.d(TAG, "FilterOperationNull");
 
-                if(refreshOperation != null && refreshOperation.getCount()==piuVistiViewModel.getPage()-1) {
-                    refreshOperation.setMovie(currentList2);
-                    Log.d(TAG, "RefreshSetMovie");
-                }
-                else
-                    Log.d(TAG, "RefreshOperationNull");
-                //globalList = set;
+
             }
         });
 
@@ -129,10 +124,16 @@ public class PiuVistiFragment extends Fragment {
         inflater.inflate(R.menu.main3, menu);
         SearchHandler searchOperation = new SearchHandler(menu, this);
         filterOperation = new FilterHandler(menu, this);
-        refreshOperation = new Refresh(menu, this, filterOperation);
+        refreshOperation = new Refresh(menu, this);
         searchOperation.implementSearch(2);
         filterOperation.implementFilter(2);
         refreshOperation.implementRefresh(2);
         super.onCreateOptionsMenu(menu, inflater);
     }
+
+    private List<Movie> currentMovies;
+    public List<Movie> getCurrentMovies() {
+        return currentMovies;
+    }
+
 }
