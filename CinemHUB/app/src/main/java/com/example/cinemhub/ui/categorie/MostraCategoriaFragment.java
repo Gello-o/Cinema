@@ -56,13 +56,13 @@ public class MostraCategoriaFragment extends Fragment {
                 else
                     Log.d(TAG, ""+moviesSet.size());
                 initMovieRV(moviesSet);
-                //if(refreshOperation != null)
-                    //refreshOperation.setMovie(moviesSet);
-                //else
-                    //Log.d(TAG, "RefreshOperationNull");
+//if(refreshOperation != null)
+//refreshOperation.setMovie(moviesSet);
+//else
+//Log.d(TAG, "RefreshOperationNull");
                 if (filterOperation != null) {
                     filterOperation.setMovie(moviesSet);
-                    //initFilterObserver();
+//initFilterObserver();
                 } else
                     Log.d(TAG, "FilterOperationNull");
                 genereAdapter.notifyDataSetChanged();
@@ -116,7 +116,7 @@ public class MostraCategoriaFragment extends Fragment {
         filterOperation.implementFilter(1);
 
         refreshOperation = new Refresh(menu, this, filterOperation);
-        //refreshOperation.setIntegerMutableLiveData();
+//refreshOperation.setIntegerMutableLiveData();
         refreshOperation.implementRefresh(1);
         super.onCreateOptionsMenu(menu, inflater);
     }

@@ -3,9 +3,7 @@ package com.example.cinemhub.menu_items;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import androidx.fragment.app.Fragment;
-
 import com.example.cinemhub.R;
 import com.example.cinemhub.menu_items.filtri.FilterHandler;
 import com.example.cinemhub.model.Movie;
@@ -14,7 +12,6 @@ import com.example.cinemhub.ui.categorie.MostraCategoriaFragment;
 import com.example.cinemhub.ui.nuovi_arrivi.NuoviArriviFragment;
 import com.example.cinemhub.ui.piu_visti.PiuVistiFragment;
 import com.example.cinemhub.ui.prossime_uscite.ProssimeUsciteFragment;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

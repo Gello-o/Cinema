@@ -9,11 +9,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
-
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-
 import com.example.cinemhub.R;
 import com.example.cinemhub.ui.add_list.AddListFragment;
 import com.example.cinemhub.ui.add_list.AddListFragmentDirections;

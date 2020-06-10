@@ -40,14 +40,14 @@ public class SliderPagerAdapter extends PagerAdapter {
         View slideLayout = inflater.inflate(R.layout.slide_item,null);
 
         ImageView slideImg = slideLayout.findViewById(R.id.slide_img);
-       // TextView slideText = slideLayout.findViewById(R.id.slide_title);
+// TextView slideText = slideLayout.findViewById(R.id.slide_title);
 
         if(mList.get(position) != null){
             Glide.with(mContext)
-                    .load(Constants.BASE_IMAGE_URL+mList.get(position).getPosterPath())
+                    .load(Constants.BASE_IMAGE_URL+mList.get(position).getBackDropPath())
                     .placeholder(R.drawable.ic_launcher_background)
                     .into(slideImg);
-       //     slideText.setText(mList.get(position).getTitle());
+// slideText.setText(mList.get(position).getTitle());
         }
         else {
             slideImg.setImageResource(R.drawable.image_not_found);
@@ -66,6 +66,7 @@ public class SliderPagerAdapter extends PagerAdapter {
                     intent.putExtra("original_title", mList.get(position).getOriginalTitle());
                     intent.putExtra("title", mList.get(position).getTitle());
                     intent.putExtra("poster_path", mList.get(position).getPosterPath());
+                    intent.putExtra("backdrop_path", mList.get(position).getBackDropPath());
                     intent.putExtra("overview", mList.get(position).getOverview());
                     intent.putExtra("release_date", mList.get(position).getReleaseDate());
                     intent.putExtra("id", Integer.toString(mList.get(position).getId()));

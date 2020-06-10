@@ -12,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarChangeListener;
 import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarFinalValueListener;
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
@@ -25,9 +24,7 @@ import com.example.cinemhub.ui.nuovi_arrivi.NuoviArriviFragment;
 import com.example.cinemhub.ui.piu_visti.PiuVistiFragment;
 import com.example.cinemhub.ui.prossime_uscite.ProssimeUsciteFragment;
 import com.example.cinemhub.utils.Constants;
-
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,7 +60,7 @@ public class FilterHandler {
     public void implementFilter(int tipo) {
         LayoutInflater factory = LayoutInflater.from(fragment.getActivity());
         //final View textEntryView = factory.inflate(R.layout.filter_dialog, null);
-        final View textEntryView = factory.inflate(R.layout.filter_dialog_2, null);
+        final View textEntryView = factory.inflate(R.layout.filter_dialog, null);
 
 
         MenuItem filterMenuItem;
@@ -118,7 +115,7 @@ public class FilterHandler {
                                 String stringSpinnerCategory = spinnerCategroy.getSelectedItem().toString();
                                 String stringSpinnerOrder = spinnerOrder.getSelectedItem().toString();
 
-                                filter2(textViewVoteMin.getText().toString(), textViewVoteMax.getText().toString(),
+                                filter(textViewVoteMin.getText().toString(), textViewVoteMax.getText().toString(),
                                         textViewYearMin.getText().toString(), textViewYearMax.getText().toString(),
                                         stringSpinnerCategory, stringSpinnerOrder);
 
@@ -303,7 +300,7 @@ public class FilterHandler {
         movieFiltered.clear();
     }
 
-    public void filter2(String votoMin, String votoMax, String annoMin, String annoMax, String category, String order) {
+    public void filter(String votoMin, String votoMax, String annoMin, String annoMax, String category, String order) {
         movieWork.clear();
         movieWork.addAll(moviesGlobal);
 

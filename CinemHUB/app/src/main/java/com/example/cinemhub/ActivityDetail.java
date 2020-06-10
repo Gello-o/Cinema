@@ -105,7 +105,7 @@ public class ActivityDetail extends YouTubeBaseActivity {
             playerView.initialize(Constants.YT_API_KEY, initializedListener);
 
             if (thumbnail == null) {
-                imageView.setImageResource(R.drawable.image_not_found);
+                imageView.setImageResource(R.drawable.image_not_found_detail);
             } else {
                 Glide.with(this)
                         .load(Constants.BASE_IMAGE_URL + thumbnail)

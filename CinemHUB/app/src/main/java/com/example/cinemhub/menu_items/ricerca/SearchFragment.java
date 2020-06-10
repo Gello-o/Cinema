@@ -20,8 +20,6 @@ import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.menu_items.filtri.FilterHandler;
 import com.example.cinemhub.model.Movie;
-
-
 import java.util.List;
 
 
@@ -96,7 +94,6 @@ public class SearchFragment extends Fragment {
         inflater.inflate(R.menu.main2, menu);
         filterOperation = new FilterHandler(menu, this);
         filterOperation.implementFilter(1);
-        //qua ci sono solo i filtri
         super.onCreateOptionsMenu(menu, inflater);
     }
 
