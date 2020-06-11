@@ -2,6 +2,7 @@ package com.example.cinemhub.menu_items.filtri;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,18 +13,20 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarChangeListener;
 import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarFinalValueListener;
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
 import com.example.cinemhub.R;
-import com.example.cinemhub.model.Movie;
+
 import com.example.cinemhub.menu_items.ricerca.SearchFragment;
-import com.example.cinemhub.ui.add_list.AddListFragment;
+import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.ui.categorie.MostraCategoriaFragment;
 import com.example.cinemhub.ui.nuovi_arrivi.NuoviArriviFragment;
 import com.example.cinemhub.ui.piu_visti.PiuVistiFragment;
 import com.example.cinemhub.ui.prossime_uscite.ProssimeUsciteFragment;
 import com.example.cinemhub.utils.Constants;
+
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
@@ -39,7 +42,6 @@ public class FilterHandler {
     private static final Pattern DIGIT_PATTERN_COMPILED = Pattern.compile(DIGIT_PATTERN);
     List<Movie> moviesGlobal;
     List<Movie> movieFiltered = new ArrayList<>();
-    List<Movie> movieWork;
     private TextView textViewVoteMax;
     private TextView textViewVoteMin;
     private TextView textViewYearMax;
@@ -53,14 +55,13 @@ public class FilterHandler {
     public FilterHandler(Menu menu, Fragment fragment){
         this.fragment = fragment;
         this.menu = menu;
-        this.movieWork = new ArrayList<>();
         this.moviesGlobal = new ArrayList<>();
     }
 
     public void implementFilter(int tipo) {
         LayoutInflater factory = LayoutInflater.from(fragment.getActivity());
         //final View textEntryView = factory.inflate(R.layout.filter_dialog, null);
-        final View textEntryView = factory.inflate(R.layout.filter_dialog, null);
+        final View textEntryView = factory.inflate(R.layout.filter_dialog_2, null);
 
 
         MenuItem filterMenuItem;
@@ -78,10 +79,8 @@ public class FilterHandler {
         textViewYearMax = textEntryView.findViewById(R.id.textViewMaxYear);
         textViewYearMin = textEntryView.findViewById(R.id.textViewMinYear);
 
-
         List<String> listVote = Constants.setGenre();
         spinnerList(spinnerCategroy, listVote);
-
 
         List<String> listYear = new ArrayList<>();
         listYear.add("");
@@ -100,38 +99,42 @@ public class FilterHandler {
         Log.d(TAG, "FilterOpt: "+filterOpt);
 
         final AlertDialog.Builder alert = new AlertDialog.Builder(fragment.getActivity()).setView(textEntryView).setTitle(" Filter:");
+
         filterMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 Log.d(TAG, "onClick");
 
+                ViewGroup viewGroup = (ViewGroup) textEntryView.getParent();
+
+                if(viewGroup != null)
+                    viewGroup.removeView(textEntryView);
+
                 seekBarMove();
 
                 alert.setIcon(R.drawable.heart_on).setTitle(" Filter:").setView(textEntryView).setPositiveButton("Save",
                         new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int whichButton) {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+
+                                setFragmentCanLoad();
 
                                 String stringSpinnerCategory = spinnerCategroy.getSelectedItem().toString();
                                 String stringSpinnerOrder = spinnerOrder.getSelectedItem().toString();
 
-                                filter(textViewVoteMin.getText().toString(), textViewVoteMax.getText().toString(),
+                                filter2(textViewVoteMin.getText().toString(), textViewVoteMax.getText().toString(),
                                         textViewYearMin.getText().toString(), textViewYearMax.getText().toString(),
                                         stringSpinnerCategory, stringSpinnerOrder);
 
-                                ViewGroup viewGroup = (ViewGroup) textEntryView.getParent();
-                                viewGroup.removeView(textEntryView);
                             }
 
                         }).setNegativeButton("Cancel",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
                                                 int whichButton) {
-                                ViewGroup viewGroup = (ViewGroup) textEntryView.getParent();
-                                viewGroup.removeView(textEntryView);
                                 Log.d(TAG, "Cancel");
                             }
                         });
+
                 alert.show();
                 return true;
             }
@@ -203,7 +206,6 @@ public class FilterHandler {
         if(moviesGlobal==null || moviesGlobal.size()==0) {
             Log.d(TAG, "Lista null");
             this.moviesGlobal = new ArrayList<>();
-            this.movieWork = new ArrayList<>();
         }
 
         else {
@@ -212,107 +214,90 @@ public class FilterHandler {
         }
     }
 
-    public void filterVote(String voteMin, String voteMax) {
-        Boolean flag = false;
+    public List<Movie> filterVote(String voteMin, String voteMax) {
         int intVoteMin = Integer.parseInt(voteMin);
         int intVoteMax = Integer.parseInt(voteMax);
 
-        for(Movie m : movieWork) {
-            if(m.getVoteAverage() >= intVoteMin &&
+        List<Movie> tmp = new ArrayList<>();
+
+        for(Movie m : moviesGlobal) {
+            if(m!=null && m.getVoteAverage() != null && !m.getVoteAverage().equals("") && m.getVoteAverage() >= intVoteMin &&
                     m.getVoteAverage() <= intVoteMax) {
-                for(Movie m2 : movieFiltered) {
-                    if (m2.getId().equals(m.getId())) {
-                        flag = true;
-                    }
-                }
-                if (!flag) {
-                    movieFiltered.add(m);
-                }
+                if(!tmp.contains(m))
+                    tmp.add(m);
             }
+            else
+                Log.d(TAG, "MovieNull");
         }
-        movieWork.clear();
-        movieWork.addAll(movieFiltered);
-        movieFiltered.clear();
+
+        return tmp;
     }
 
-    public void filterGen(int genId) {
-        Boolean flag = false;
-        for(Movie m : movieWork) {
-            for(Integer genM : m.getGenreIds()) {
-                if(genM.equals(genId)) {
-                    for(Movie m2 : movieFiltered) {
-                        if (m2.getId().equals(m.getId())) {
-                            flag = true;
-                        }
+    public List<Movie> filterGen(int genId, List<Movie> tmp) {
+        List<Movie> tmp2 = new ArrayList<>();
+
+        for(Movie m : tmp) {
+            if(m!=null && m.getGenreIds() != null) {
+                if(!tmp2.contains(m)) {
+                    for (Integer id : m.getGenreIds()) {
+                        if (id == genId)
+                            tmp2.add(m);
                     }
-                    if(!flag)
-                        movieFiltered.add(m);
                 }
             }
+            else
+                Log.d(TAG, "MovieNull");
         }
-        movieWork.clear();
-        movieWork.addAll(movieFiltered);
-        movieFiltered.clear();
+        return tmp2;
+    }
+
+    public List<Movie> filterYear(String yearMin, String yearMax, List<Movie> tmp) {
+        int yearIntMin = Integer.parseInt(yearMin);
+        int yearIntMax = Integer.parseInt(yearMax);
+        int yearMovieInt = 0;
+
+        List<Movie> tmp1 = new ArrayList<>();
+
+        for(Movie m : tmp) {
+            if(m != null && m.getReleaseDate() != null && m.getReleaseDate().length()==10)
+                yearMovieInt = Integer.parseInt(m.getReleaseDate().substring(0,4));
+            else
+                Log.d(TAG, "MovieNull");
+
+            if(yearMovieInt >= yearIntMin && yearMovieInt <= yearIntMax) {
+                if(!tmp1.contains(m))
+                    tmp1.add(m);
+            }
+        }
+        return tmp1;
     }
 
     public void filterOrder(String order) {
         if(order.equals("Name ASC"))
-            Collections.sort(movieWork, new NameFunctor("A"));
+            Collections.sort(movieFiltered, new NameFunctor("A"));
         else if(order.equals("Name DESC"))
-            Collections.sort(movieWork, new NameFunctor("D"));
+            Collections.sort(movieFiltered, new NameFunctor("D"));
         else if(order.equals("Vote ASC"))
-            Collections.sort(movieWork, new NameFunctor("A"));
+            Collections.sort(movieFiltered, new NameFunctor("A"));
         else if(order.equals("Vote DESC"))
-            Collections.sort(movieWork, new VoteFunctor("D"));
+            Collections.sort(movieFiltered, new VoteFunctor("D"));
         else if(order.equals("Popularity ASC"))
-            Collections.sort(movieWork, new PopularityFunctor("A"));
+            Collections.sort(movieFiltered, new PopularityFunctor("A"));
         else if(order.equals("Popularity DESC"))
-            Collections.sort(movieWork, new PopularityFunctor("D"));
+            Collections.sort(movieFiltered, new PopularityFunctor("D"));
         else if(order.equals("Year ASC"))
-            Collections.sort(movieWork, new YearFunctor("A"));
+            Collections.sort(movieFiltered, new YearFunctor("A"));
         else if(order.equals("Year DESC"))
-            Collections.sort(movieWork, new YearFunctor("D"));
+            Collections.sort(movieFiltered, new YearFunctor("D"));
     }
 
-    public void filterYear(String yearMin, String yearMax) {
-        Boolean flag = false;
-        int yearIntMin = Integer.parseInt(yearMin);
-        int yearIntMax = Integer.parseInt(yearMax);
-        int yearMovieInt;
-        //String s;
-        for(Movie m : movieWork) {
-            yearMovieInt = 0;
-            if(m.getReleaseDate().length()==10)
-                yearMovieInt = Integer.parseInt(m.getReleaseDate().substring(0,4));
-            if(yearMovieInt >= yearIntMin && yearMovieInt <= yearIntMax) {
-                for(Movie m2 : movieFiltered) {
-                    if (m2.getId().equals(m.getId())) {
-                        flag = true;
-                    }
-                }
-                if (!flag) {
-                    movieFiltered.add(m);
-                }
-            }
-        }
-        movieWork.clear();
-        movieWork.addAll(movieFiltered);
+
+    public void filter2(String votoMin, String votoMax, String annoMin, String annoMax, String category, String order) {
         movieFiltered.clear();
-    }
-
-    public void filter(String votoMin, String votoMax, String annoMin, String annoMax, String category, String order) {
-        movieWork.clear();
-        movieWork.addAll(moviesGlobal);
-
-        for(Movie m : movieWork)
-            Log.d(TAG, "Work0. Name: "+m.getTitle()+", Year: "+m.getReleaseDate());
 
         if(category.equals("") && order.equals("")){
-            filterVote(votoMin, votoMax);
-            filterYear(annoMin, annoMax);
+            movieFiltered = filterYear(annoMin, annoMax, filterVote(votoMin, votoMax));
             Log.d(TAG, "Entrato0");
-            for(Movie m : movieWork)
-                Log.d(TAG, "Work1. Name: "+m.getTitle()+", Year: "+m.getReleaseDate());
         }
 
         else {
@@ -320,39 +305,37 @@ public class FilterHandler {
 
             if(category.equals("") && !order.equals("")) {
                 Log.d(TAG, "Entrato1");
-                filterVote(votoMin, votoMax);
-                filterYear(annoMin, annoMax);
+                movieFiltered = filterYear(annoMin, annoMax, filterVote(votoMin, votoMax));
                 filterOrder(order);
             }
 
             else if(!category.equals("") && order.equals("")) {
                 Log.d(TAG, "Entrato2");
-                filterVote(votoMin, votoMax);
-                filterYear(annoMin, annoMax);
-                filterGen(genId);
+                movieFiltered = filterGen(genId, filterYear(annoMin, annoMax, filterVote(votoMin, votoMax)));
             }
 
             else if(!category.equals("") && !order.equals("")) {
                 Log.d(TAG, "Entrato3");
-                filterVote(votoMin, votoMax);
-                filterYear(annoMin, annoMax);
-                filterGen(genId);
+                movieFiltered = filterGen(genId, filterYear(annoMin, annoMax, filterVote(votoMin, votoMax)));
                 filterOrder(order);
             }
         }
 
-        if(fragment instanceof AddListFragment)
-            ((AddListFragment) fragment).initMovieRV(movieWork);
         if(fragment instanceof NuoviArriviFragment)
-            ((NuoviArriviFragment) fragment).initMovieRV(movieWork);
+            ((NuoviArriviFragment) fragment).initMovieRV(movieFiltered);
         if(fragment instanceof SearchFragment)
-            ((SearchFragment) fragment).initMovieRV(movieWork);
+            ((SearchFragment) fragment).initMovieRV(movieFiltered);
         if(fragment instanceof ProssimeUsciteFragment)
-            ((ProssimeUsciteFragment) fragment).initMovieRV(movieWork);;
+            ((ProssimeUsciteFragment) fragment).initMovieRV(movieFiltered);;
         if(fragment instanceof PiuVistiFragment)
-            ((PiuVistiFragment) fragment).initMovieRV(movieWork);
+            ((PiuVistiFragment) fragment).initMovieRV(movieFiltered);
         if(fragment instanceof MostraCategoriaFragment)
-            ((MostraCategoriaFragment) fragment).initMovieRV(movieWork);
+            ((MostraCategoriaFragment) fragment).initMovieRV(movieFiltered);
+
+        for(int i=0; i< movieFiltered.size(); i++){
+            if(movieFiltered.get(i) != null)
+                Log.d(TAG, "film " + movieFiltered.get(i).getTitle());
+        }
 
     }
 
@@ -399,5 +382,20 @@ public class FilterHandler {
                 genId = Constants.WESTERN;
         }
         return genId;
+    }
+
+    public void setFragmentCanLoad(){
+
+        if(fragment instanceof MostraCategoriaFragment) {
+            ((MostraCategoriaFragment) fragment).setCanLoad(false);
+        }else if(fragment instanceof PiuVistiFragment){
+            ((PiuVistiFragment) fragment).setCanLoad(false);
+        }else if(fragment instanceof ProssimeUsciteFragment) {
+            ((ProssimeUsciteFragment) fragment).setCanLoad(false);
+        }else if(fragment instanceof NuoviArriviFragment){
+            ((NuoviArriviFragment) fragment).setCanLoad(false);
+        }else if(fragment instanceof SearchFragment){
+            ((SearchFragment) fragment).setCanLoad(false);
+        }
     }
 }

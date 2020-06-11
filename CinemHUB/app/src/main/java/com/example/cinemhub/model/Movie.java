@@ -140,8 +140,4 @@ public class Movie {
         this.vote_average = vote_average;
     }
 
-    public String getBackDropPath() {
-        return backdrop_path;
-    }
-
 }

@@ -6,6 +6,8 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.example.cinemhub.model.Favorite;
+
 import java.util.List;
 
 @Dao
@@ -18,6 +20,7 @@ public interface MovieDao {
     @Query("select * from Favorite")
     public List<Favorite> getFavorite();
 
+    //cancella una riga tramite Fvaorite.setID()
     @Delete
     public void deleteFavorite(Favorite dbToDelete);
 

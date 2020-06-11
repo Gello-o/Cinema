@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.Network;
-import android.net.NetworkInfo;
 import android.net.NetworkRequest;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,11 +14,6 @@ import android.view.MenuItem;
 import com.example.cinemhub.model.FavoriteDB;
 import com.google.android.material.navigation.NavigationView;
 import androidx.annotation.NonNull;
-
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -32,9 +26,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,11 +37,11 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkRequest.Builder builder = new NetworkRequest.Builder();
@@ -67,12 +58,11 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
-                    @Override
                     public void onUnavailable() {
                         // Network Not Available
-                        Toast.makeText(MainActivity.this, "check connection", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "No connection", Toast.LENGTH_LONG).show();
                         new AlertDialog.Builder(MainActivity.this).setIcon(R.drawable.dialog_alert).setTitle("Internet Connection Alert")
-                                .setMessage("Please Check your internet connection").setPositiveButton("close", new DialogInterface.OnClickListener() {
+                                .setMessage("Please connect your phone").setPositiveButton("close", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 finish();
@@ -83,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onLost(Network network) {
-                        // Network Not Available
+                        // Network lost
                         Toast.makeText(MainActivity.this, "check connection", Toast.LENGTH_LONG).show();
                         new AlertDialog.Builder(MainActivity.this).setIcon(R.drawable.dialog_alert).setTitle("Internet Connection Alert")
                                 .setMessage("Please Check your internet connection").setPositiveButton("close", new DialogInterface.OnClickListener() {
@@ -108,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
             // menu should be considered as top level destinations.
             mAppBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.nav_home, R.id.nav_preferiti, R.id.nav_add_list, R.id.nav_categorie, R.id.nav_nuovi_arrivi, R.id.nav_prossime_uscite, R.id.nav_piu_visti)
+                    R.id.nav_home, R.id.nav_preferiti, R.id.nav_categorie, R.id.nav_nuovi_arrivi, R.id.nav_prossime_uscite, R.id.nav_piu_visti)
                     .setDrawerLayout(drawer)
                     .build();
             navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -121,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "creato il Db");
         }
 
-
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -131,10 +120,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.filter:
-
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -154,8 +139,3 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
-
-
-
-
-
