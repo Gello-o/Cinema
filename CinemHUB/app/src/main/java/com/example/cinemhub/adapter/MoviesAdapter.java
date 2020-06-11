@@ -6,15 +6,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
-import androidx.annotation.RawRes;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.cinemhub.ActivityDetail;
@@ -28,7 +23,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private Context context;
     private List<Movie> movieList;
-    LayoutInflater layoutInflater;
+    private LayoutInflater layoutInflater;
 
     private static final int ARTICLE_VIEW_TYPE = 0;
     private static final int LOADING_VIEW_TYPE = 1;
@@ -38,7 +33,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public MoviesAdapter(Context context, List<Movie> movieList) {
         this.context = context;
         this.movieList = movieList;
-        layoutInflater  = layoutInflater.from(context);
+        layoutInflater  = LayoutInflater.from(context);
     }
 
     @Override
@@ -57,7 +52,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i){
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i){
         Log.d(TAG, "onBindViewHolder called");
 
         if(movieList.isEmpty())
@@ -102,34 +97,30 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         ImageView thumbnail;
 
 
-        public MoviesViewHolder(View view){
+        MoviesViewHolder(View view){
             super(view);
             Log.d(TAG, "creating viewHolder for recyclerView");
             thumbnail = view.findViewById(R.id.card_view_thumbnail);
 
-            view.setOnClickListener(new View.OnClickListener() {
+            view.setOnClickListener(v -> {
+                Movie clickedDataItem;
 
-                @Override
-                public void onClick(View v) {
-                    Movie clickedDataItem;
-
-                    Log.d(TAG, "Clicked");
-                    int pos = getAdapterPosition();
-                    if(pos != RecyclerView.NO_POSITION){
-                        clickedDataItem = movieList.get(pos);
-                        Intent intent = new Intent(context, ActivityDetail.class);
-                        intent.putExtra("original_title", movieList.get(pos).getOriginalTitle());
-                        intent.putExtra("poster_path", movieList.get(pos).getPosterPath());
-                        intent.putExtra("overview", movieList.get(pos).getOverview());
-                        intent.putExtra("release_date", movieList.get(pos).getReleaseDate());
-                        intent.putExtra("id", Integer.toString(movieList.get(pos).getId()));
-                        intent.putExtra("vote_average", Double.toString(movieList.get(pos).getVoteAverage()));
-                        intent.putExtra("title", movieList.get(pos).getTitle());
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        System.out.println("Lintento" + intent);
-                        context.startActivity(intent);
-                        Toast.makeText(v.getContext(), "you clicked " + clickedDataItem.getTitle(), Toast.LENGTH_SHORT).show();
-                    }
+                Log.d(TAG, "Clicked");
+                int pos = getAdapterPosition();
+                if(pos != RecyclerView.NO_POSITION){
+                    clickedDataItem = movieList.get(pos);
+                    Intent intent = new Intent(context, ActivityDetail.class);
+                    intent.putExtra("original_title", movieList.get(pos).getOriginalTitle());
+                    intent.putExtra("poster_path", movieList.get(pos).getPosterPath());
+                    intent.putExtra("overview", movieList.get(pos).getOverview());
+                    intent.putExtra("release_date", movieList.get(pos).getReleaseDate());
+                    intent.putExtra("id", Integer.toString(movieList.get(pos).getId()));
+                    intent.putExtra("vote_average", Double.toString(movieList.get(pos).getVoteAverage()));
+                    intent.putExtra("title", movieList.get(pos).getTitle());
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    System.out.println("Lintento" + intent);
+                    context.startActivity(intent);
+                    Toast.makeText(v.getContext(), "you clicked " + clickedDataItem.getTitle(), Toast.LENGTH_SHORT).show();
                 }
             });
 

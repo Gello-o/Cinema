@@ -134,6 +134,11 @@ public class NuoviArriviFragment extends Fragment {
                     moviesAdapter.setData(resource.getData());
                     currentMovies = resource.getData();
 
+                    if(resource.getData().size() < 20)
+                        setCanLoad(false);
+                    else
+                        setCanLoad(true);
+
                     Log.d(TAG, "CurrentListSize: " + resource.getData().size());
 
                     if (filterOperation != null) {

@@ -133,28 +133,32 @@ public class ProssimeUsciteFragment extends Fragment {
         prossimeUsciteViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<Resource<List<Movie>>>() {
             @Override
             public void onChanged(@Nullable Resource<List<Movie>> resource) {
+                if(resource!=null && resource.getData()!=null){
+                    moviesAdapter.setData(resource.getData());
+                    currentMovies = resource.getData();
 
-                moviesAdapter.setData(resource.getData());
+                    if(resource.getData().size() < 20)
+                        setCanLoad(false);
+                    else
+                        setCanLoad(true);
 
-                currentMovies = resource.getData();
+                    Log.d(TAG, "CurrentListSize: "+resource.getData().size());
 
-                Log.d(TAG, "CurrentListSize: "+resource.getData().size());
+                    if (filterOperation != null) {
+                        filterOperation.setMovie(resource.getData());
+                        Log.d(TAG, "FilterSetMovie");
+                    }
+                    else
+                        Log.d(TAG, "FilterOperationNull");
 
-                if (filterOperation != null) {
-                    filterOperation.setMovie(resource.getData());
-                    Log.d(TAG, "FilterSetMovie");
-                }
-                else
-                    Log.d(TAG, "FilterOperationNull");
-
-                if (!resource.isLoading() && canLoad) {
-                    Log.d(TAG, "STA CARICANDO");
-                    prossimeUsciteViewModel.setLoading(false);
-                    if (resource.getData() != null) {
-                        prossimeUsciteViewModel.setCurrentResults(resource.getData().size());
+                    if (!resource.isLoading() && canLoad) {
+                        Log.d(TAG, "STA CARICANDO");
+                        prossimeUsciteViewModel.setLoading(false);
+                        if (resource.getData() != null) {
+                            prossimeUsciteViewModel.setCurrentResults(resource.getData().size());
+                        }
                     }
                 }
-
             }
 
         });

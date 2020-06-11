@@ -14,8 +14,8 @@ import java.util.List;
 public class SearchViewModel extends ViewModel {
     private MutableLiveData<Resource<List<Movie>>> film;
     private static final String TAG = "SearchViewModel";
-    int page = 1;
-    String query;
+    private int page = 1;
+    private String query;
     private int currentResults;
     private boolean isLoading;
 

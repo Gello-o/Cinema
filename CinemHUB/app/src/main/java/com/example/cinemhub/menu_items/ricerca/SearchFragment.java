@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -24,7 +23,6 @@ import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.menu_items.Refresh;
 import com.example.cinemhub.menu_items.filtri.FilterHandler;
-import com.example.cinemhub.menu_items.ricerca.SearchHandler;
 import com.example.cinemhub.model.Movie;
 
 
@@ -34,32 +32,30 @@ public class SearchFragment extends Fragment {
     private static final String TAG = "SearchFragment";
     private SearchViewModel ricercaViewModel;
     private MoviesAdapter moviesAdapter;
-    RecyclerView ricercaRV;
-    String query;
+    private RecyclerView ricercaRV;
+    private String query;
     private int totalItemCount;
     private int lastVisibleItem;
     private int visibleItemCount;
     private int threshold = 1;
     private FilterHandler filterOperation;
-    private Refresh refreshOperation;
     private List<Movie> currentMovies;
     private boolean canLoad = true;
-
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.search, container, false);
         ricercaRV = root.findViewById(R.id.recycler_view_ricerca);
-        query = SearchFragmentArgs.fromBundle(getArguments()).getQuery();
+        query = SearchFragmentArgs.fromBundle(requireArguments()).getQuery();
         Log.d(TAG, "QUERY " + query);
         setHasOptionsMenu(true);
         return root;
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        if(!canLoad)
+    public void onResume() {
+        super.onResume();
+        if (!canLoad)
             canLoad = true;
     }
 
@@ -133,34 +129,32 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        ricercaViewModel.doSearch(query).observe(getViewLifecycleOwner(), new Observer<Resource<List<Movie>>>() {
-            @Override
-            public void onChanged(@Nullable Resource<List<Movie>> resource) {
+        ricercaViewModel.doSearch(query).observe(getViewLifecycleOwner(), resource -> {
 
-                if(resource != null && resource.getData() != null){
-                    moviesAdapter.setData(resource.getData());
+            if(resource != null && resource.getData() != null){
+                moviesAdapter.setData(resource.getData());
+                currentMovies = resource.getData();
 
-                    currentMovies = resource.getData();
+                if(currentMovies.size() < 20)
+                    setCanLoad(false);
+                else
+                    setCanLoad(true);
 
-                    Log.d(TAG, "CurrentListSize: "+resource.getData().size());
+                Log.d(TAG, "CurrentListSize: "+resource.getData().size());
 
-                    if (filterOperation != null) {
-                        filterOperation.setMovie(currentMovies);
-                        Log.d(TAG, "FilterSetMovie");
-                    }
-                    else
-                        Log.d(TAG, "FilterOperationNull");
-
-                    if (!resource.isLoading() && canLoad) {
-                        Log.d(TAG, "STA CARICANDO");
-                        ricercaViewModel.setLoading(false);
-                        if (resource.getData() != null) {
-                            ricercaViewModel.setCurrentResults(resource.getData().size());
-                        }
-                    }
+                if (filterOperation != null) {
+                    filterOperation.setMovie(currentMovies);
+                    Log.d(TAG, "FilterSetMovie");
                 }
-                else{
-                    Log.d(TAG, resource.getStatusMessage() + " " + resource.getStatusCode());
+                else
+                    Log.d(TAG, "FilterOperationNull");
+
+                if (!resource.isLoading() && canLoad) {
+                    Log.d(TAG, "STA CARICANDO");
+                    ricercaViewModel.setLoading(false);
+                    if (resource.getData() != null) {
+                        ricercaViewModel.setCurrentResults(resource.getData().size());
+                    }
                 }
             }
 
@@ -168,10 +162,10 @@ public class SearchFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.main2, menu);
         filterOperation = new FilterHandler(menu, this);
-        refreshOperation = new Refresh(menu, this);
+        Refresh refreshOperation = new Refresh(menu, this);
         filterOperation.implementFilter(1);
         refreshOperation.implementRefresh(1);
         super.onCreateOptionsMenu(menu, inflater);

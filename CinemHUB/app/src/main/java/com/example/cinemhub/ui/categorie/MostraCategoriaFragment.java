@@ -134,9 +134,14 @@ public class MostraCategoriaFragment extends Fragment {
             @Override
             public void onChanged(@Nullable Resource<List<Movie>> resource) {
                 if(resource!=null) {
+
                     moviesAdapter.setData(resource.getData());
                     currentMovies = resource.getData();
 
+                    if(currentMovies.size() < 20)
+                        setCanLoad(false);
+                    else
+                        setCanLoad(true);
                     Log.d(TAG, "CurrentListSize: "+resource.getData().size());
 
                     if (filterOperation != null) {

@@ -17,12 +17,10 @@ public class Refresh {
     private static final String TAG = "Refresh";
     private Fragment fragment;
     private Menu menu;
-    int c;
 
     public Refresh(Menu menu, Fragment fragment){
         this.fragment = fragment;
         this.menu = menu;
-        c = 0;
         Log.d(TAG, "RefreshConstructor");
     }
 
@@ -33,7 +31,7 @@ public class Refresh {
         if(tipo==1)
             refreshMenuItem = menu.findItem(R.id.refresh);
         else
-            refreshMenuItem = menu.findItem(R.id.refresh1); //1
+            refreshMenuItem = menu.findItem(R.id.refresh1);
 
         refreshMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -60,16 +58,6 @@ public class Refresh {
                 return true;
             }
         });
-    }
-
-    public void count() {
-        c++;
-        Log.d(TAG, "count() -> "+c);
-    }
-
-    public int getCount() {
-        Log.d(TAG, "getCount() -> "+c);
-        return c;
     }
 
 }
