@@ -19,13 +19,19 @@ import com.example.cinemhub.utils.Constants;
 
 import java.util.List;
 
+/*
+Adapter per oggetti di tipo Movie: il suo ruolo è quello di gestire la visualizzazione dei film
+all'interno della RecyclerView. Ha un onClickListener con un intent che avvia ActivityDetail,
+che è la classe che contiene tutte le informazioni sul film cliccato
+*/
+
 public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private Context context;
     private List<Movie> movieList;
     private LayoutInflater layoutInflater;
 
-    private static final int ARTICLE_VIEW_TYPE = 0;
+    private static final int MOVIE_VIEW_TYPE = 0;
     private static final int LOADING_VIEW_TYPE = 1;
 
     private static final String TAG = "MoviesAdapter";
@@ -36,11 +42,14 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         layoutInflater  = LayoutInflater.from(context);
     }
 
+    /*Adatta due differenti viewHolder: uno per i film che stanno per essere caricati (LoadingMoviesViewHolder) e uno per i
+    film che sono già stati caricati*/
+
     @Override
     @NonNull
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i){
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType){
         Log.d(TAG, "onCreateViewHolder called");
-        if(i == ARTICLE_VIEW_TYPE) {
+        if(viewType == MOVIE_VIEW_TYPE) {
             View view = layoutInflater.inflate(R.layout.movie_card, viewGroup, false);
             return new MoviesViewHolder(view);
         }
@@ -51,18 +60,17 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     }
 
+    /*Lega il viewHolder al rispettivo layout*/
+
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i){
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int pos){
         Log.d(TAG, "onBindViewHolder called");
 
-        if(movieList.isEmpty())
-            Log.d(TAG, "movieList nulla");
-
         if(viewHolder instanceof MoviesViewHolder) {
-            ((MoviesViewHolder) viewHolder).bind(movieList.get(i));
+            ((MoviesViewHolder)viewHolder).bind(movieList.get(pos));
         }
         else if(viewHolder instanceof LoadingMoviesViewHolder){
-            ((LoadingMoviesViewHolder) viewHolder).progressBarLoadingMovie.setIndeterminate(true);
+            ((LoadingMoviesViewHolder)viewHolder).progressBarLoadingMovie.setIndeterminate(true);
         }
     }
 
@@ -74,12 +82,15 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             return 0;
     }
 
+    /*Ci dice se il film è già stato caricato o meno: se non è stato caricato ritorna LOADING_VIEW_TYPE;
+    ritorna MOVIE_VIEW_TYPE altrimenti.*/
+
     @Override
     public int getItemViewType(int position) {
         if(movieList.get(position) == null)
             return LOADING_VIEW_TYPE;
         else
-            return ARTICLE_VIEW_TYPE;
+            return MOVIE_VIEW_TYPE;
     }
 
     public void setData(List<Movie> movies) {
@@ -89,9 +100,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    public List<Movie> getData() {
-        return movieList;
-    }
+    /*definizione del viewHolder per gli oggetti Movie di cui abbiamo le informazioni => diversi da null*/
 
     public class MoviesViewHolder extends RecyclerView.ViewHolder{
         ImageView thumbnail;
@@ -137,6 +146,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             }
         }
     }
+
+    /*definizione del viewHolder per gli oggetti Movie di cui non abbiamo le informazioni => uguali null*/
 
     static class LoadingMoviesViewHolder extends RecyclerView.ViewHolder {
 

@@ -28,6 +28,9 @@ public class MoviesRepository {
         return instance;
     }
 
+    /*chiamata asincrona a TMDB per i fragment che fanno uso del lazy loading. Recupera i film
+        di una tra le categorie principali: top_rated, upcoming, now_playing e popular*/
+
     public void getMoviesLL(String categoria, int pagina, MutableLiveData<Resource<List<Movie>>> moviesData) {
         Service apiService = Client.getClient().create(Service.class);
         Call<MoviesResponse> call;
@@ -81,6 +84,8 @@ public class MoviesRepository {
         });
     }
 
+    /*chiamata asincrona a TMDB per i fragment che NON fanno uso del lazy loading. Recupera i film
+        di una tra le categorie principali: top_rated, upcoming, now_playing e popular*/
 
     public void getMovies(String categoria, int pagina, MutableLiveData<List<Movie>> moviesData) {
         Service apiService = Client.getClient().create(Service.class);
@@ -109,6 +114,9 @@ public class MoviesRepository {
         });
 
     }
+
+    /*chiamata asincrona a TMDB per i fragment che NON fanno uso del lazy loading. Recupera i film
+        di uno tra i generi principali: azione, avventura, crimine etc...*/
 
     public void getGenres(int genere, int pagina, MutableLiveData<List<Movie>> moviesData){
         Service apiService = Client.getClient().create(Service.class);
@@ -139,6 +147,8 @@ public class MoviesRepository {
         });
 
     }
+
+    /*chiamata asincrona a TMDB per la ricerca di una film. Implementa il lazy loading*/
 
     public void searchMovie(String query, int pagina, MutableLiveData<Resource<List<Movie>>> moviesData) {
         Service apiService = Client.getClient().create(Service.class);
@@ -197,6 +207,9 @@ public class MoviesRepository {
             }
         });
     }
+
+    /*chiamata asincrona a TMDB per il trailer dei film. Viene utilizzata in ActivityDetail, nel momento
+    in cui l'utente accede ai dettagli di un film*/
 
     public void getTrailer(String id, MutableLiveData<String> keyDatum) {
         Service apiService = Client.getClient().create(Service.class);
