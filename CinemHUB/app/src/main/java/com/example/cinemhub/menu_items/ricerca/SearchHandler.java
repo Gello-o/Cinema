@@ -15,8 +15,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.cinemhub.R;
-import com.example.cinemhub.ui.add_list.AddListFragment;
-import com.example.cinemhub.ui.add_list.AddListFragmentDirections;
 import com.example.cinemhub.ui.categorie.CategorieFragment;
 import com.example.cinemhub.ui.categorie.CategorieFragmentDirections;
 import com.example.cinemhub.ui.home.HomeFragment;
@@ -112,11 +110,6 @@ public class SearchHandler {
                         PiuVistiFragmentDirections.GoToSearchAction action =
                                 PiuVistiFragmentDirections.goToSearchAction(queryFinal);
                         navController.navigate(action);
-                    }else if(fragment instanceof AddListFragment){
-                        Log.d(TAG, "addlist");
-                        AddListFragmentDirections.GoToSearchAction action =
-                                AddListFragmentDirections.goToSearchAction(queryFinal);
-                        navController.navigate(action);
                     }else if(fragment instanceof ProssimeUsciteFragment) {
                         Log.d(TAG, "prossime uscite");
                         ProssimeUsciteFragmentDirections.GoToSearchAction action =
@@ -138,14 +131,6 @@ public class SearchHandler {
                                 CategorieFragmentDirections.goToSearchAction(queryFinal);
                         navController.navigate(action);
                     }
-                    else{
-                   /*gestione casi in cui non devo lanciare la ricerca:
-                   A) NON MOSTRO IL BOTTONE
-                   B) QUANDO CLICCA SU SUBMIT MOSTRO ALERT
-                   */Log.d(TAG, "altro mannaggia");
-
-                    }
-
                     return false;
                 }
             });

@@ -187,7 +187,6 @@ public class CategorieFragment extends Fragment {
         avventuraTxt.setMovementMethod(LinkMovementMethod.getInstance());
         crimineTxt.setMovementMethod(LinkMovementMethod.getInstance());
 
-
     }
 
     @Override

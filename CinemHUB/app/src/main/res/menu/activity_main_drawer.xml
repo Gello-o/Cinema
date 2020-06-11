@@ -12,10 +12,7 @@
             android:id="@+id/nav_preferiti"
             android:icon="@drawable/ic_menu_preferiti"
             android:title="Favorites" />
-        <item
-            android:id="@+id/nav_add_list"
-            android:icon="@drawable/ic_menu_add_list"
-            android:title="Add to list" />
+
         <item
             android:id="@+id/nav_categorie"
             android:icon="@drawable/ic_menu_categorie"

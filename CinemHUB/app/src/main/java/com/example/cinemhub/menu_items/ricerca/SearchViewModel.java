@@ -2,22 +2,61 @@ package com.example.cinemhub.menu_items.ricerca;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesRepository;
+import com.example.cinemhub.model.Resource;
+
 import java.util.List;
 
 public class SearchViewModel extends ViewModel {
+    private MutableLiveData<Resource<List<Movie>>> film;
+    private static final String TAG = "MostraCategorieFragment";
+    int page = 1;
+    String query;
+    private int currentResults;
+    private boolean isLoading;
 
-    private static final String TAG = "SearchViewModel";
-    private MutableLiveData<List<Movie>> mText;
-    MoviesRepository repo;
-
-    public MutableLiveData<List<Movie>> doSearch(String query) {
-        if(mText == null){
-            mText = new MutableLiveData<>();
-            repo = MoviesRepository.getInstance();
-            repo.searchMovie(1, query, mText);
+    public MutableLiveData<Resource<List<Movie>>> getSearch(String query) {
+        this.query = query;
+        if(film == null) {
+            film = new MutableLiveData<>();
+            MoviesRepository.getInstance().searchMovie(query, page, film);
         }
-        return mText;
+        return film;
     }
+
+    public MutableLiveData<Resource<List<Movie>>> getMoreSearch() {
+        MoviesRepository.getInstance().searchMovie(query, page, film);
+        return film;
+    }
+
+    public MutableLiveData<Resource<List<Movie>>> getMoviesLiveData() {
+        return film;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public int getCurrentResults() {
+        return currentResults;
+    }
+
+    public void setCurrentResults(int currentResults) {
+        this.currentResults = currentResults;
+    }
+
+    public boolean isLoading() {
+        return isLoading;
+    }
+
+    public void setLoading(boolean loading) {
+        isLoading = loading;
+    }
+
 }

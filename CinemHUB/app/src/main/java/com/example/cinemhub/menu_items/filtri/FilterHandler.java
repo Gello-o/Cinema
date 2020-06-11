@@ -7,10 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -23,16 +21,13 @@ import com.example.cinemhub.R;
 
 import com.example.cinemhub.menu_items.ricerca.SearchFragment;
 import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.ui.add_list.AddListFragment;
 import com.example.cinemhub.ui.categorie.MostraCategoriaFragment;
 import com.example.cinemhub.ui.nuovi_arrivi.NuoviArriviFragment;
-import com.example.cinemhub.ui.nuovi_arrivi.NuoviArriviViewModel;
 import com.example.cinemhub.ui.piu_visti.PiuVistiFragment;
 import com.example.cinemhub.ui.prossime_uscite.ProssimeUsciteFragment;
 import com.example.cinemhub.utils.Constants;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -326,8 +321,6 @@ public class FilterHandler {
             }
         }
 
-        if(fragment instanceof AddListFragment)
-            ((AddListFragment) fragment).initMovieRV(movieFiltered);
         if(fragment instanceof NuoviArriviFragment)
             ((NuoviArriviFragment) fragment).initMovieRV(movieFiltered);
         if(fragment instanceof SearchFragment)
@@ -395,14 +388,14 @@ public class FilterHandler {
 
         if(fragment instanceof MostraCategoriaFragment) {
             ((MostraCategoriaFragment) fragment).setCanLoad(false);
-        }else if(fragment instanceof AddListFragment) {
-            //((AddListFragment) fragment).setCanLoad(true);
         }else if(fragment instanceof PiuVistiFragment){
             ((PiuVistiFragment) fragment).setCanLoad(false);
         }else if(fragment instanceof ProssimeUsciteFragment) {
             ((ProssimeUsciteFragment) fragment).setCanLoad(false);
         }else if(fragment instanceof NuoviArriviFragment){
             ((NuoviArriviFragment) fragment).setCanLoad(false);
+        }else if(fragment instanceof SearchFragment){
+            ((SearchFragment) fragment).setCanLoad(false);
         }
     }
 }
