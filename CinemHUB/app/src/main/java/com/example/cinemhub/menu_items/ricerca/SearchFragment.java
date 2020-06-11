@@ -35,13 +35,13 @@ public class SearchFragment extends Fragment {
     private SearchViewModel ricercaViewModel;
     private MoviesAdapter moviesAdapter;
     RecyclerView ricercaRV;
-    String query ="";
+    String query;
     private int totalItemCount;
     private int lastVisibleItem;
     private int visibleItemCount;
     private int threshold = 1;
-    FilterHandler filterOperation;
-    Refresh refreshOperation;
+    private FilterHandler filterOperation;
+    private Refresh refreshOperation;
     private List<Movie> currentMovies;
     private boolean canLoad = true;
 
@@ -51,6 +51,7 @@ public class SearchFragment extends Fragment {
         View root = inflater.inflate(R.layout.search, container, false);
         ricercaRV = root.findViewById(R.id.recycler_view_ricerca);
         query = SearchFragmentArgs.fromBundle(getArguments()).getQuery();
+        Log.d(TAG, "QUERY " + query);
         setHasOptionsMenu(true);
         return root;
     }
@@ -126,58 +127,60 @@ public class SearchFragment extends Fragment {
                         int page = ricercaViewModel.getPage() + 1;
                         ricercaViewModel.setPage(page);
 
-                        ricercaViewModel.getMoreSearch();
+                        ricercaViewModel.searchMore();
                     }
                 }
             }
         });
 
-        ricercaViewModel.getSearch(query).observe(getViewLifecycleOwner(), new Observer<Resource<List<Movie>>>() {
+        ricercaViewModel.doSearch(query).observe(getViewLifecycleOwner(), new Observer<Resource<List<Movie>>>() {
             @Override
             public void onChanged(@Nullable Resource<List<Movie>> resource) {
 
-                moviesAdapter.setData(resource.getData());
+                if(resource != null && resource.getData() != null){
+                    moviesAdapter.setData(resource.getData());
 
-                currentMovies = resource.getData();
+                    currentMovies = resource.getData();
 
-                Log.d(TAG, "CurrentListSize: "+resource.getData().size());
+                    Log.d(TAG, "CurrentListSize: "+resource.getData().size());
 
-                if (filterOperation != null) {
-                    filterOperation.setMovie(resource.getData());
-                    Log.d(TAG, "FilterSetMovie");
-                }
-                else
-                    Log.d(TAG, "FilterOperationNull");
+                    if (filterOperation != null) {
+                        filterOperation.setMovie(currentMovies);
+                        Log.d(TAG, "FilterSetMovie");
+                    }
+                    else
+                        Log.d(TAG, "FilterOperationNull");
 
-                if (!resource.isLoading() && canLoad) {
-                    Log.d(TAG, "STA CARICANDO");
-                    ricercaViewModel.setLoading(false);
-                    if (resource.getData() != null) {
-                        ricercaViewModel.setCurrentResults(resource.getData().size());
+                    if (!resource.isLoading() && canLoad) {
+                        Log.d(TAG, "STA CARICANDO");
+                        ricercaViewModel.setLoading(false);
+                        if (resource.getData() != null) {
+                            ricercaViewModel.setCurrentResults(resource.getData().size());
+                        }
                     }
                 }
-
+                else{
+                    Log.d(TAG, resource.getStatusMessage() + " " + resource.getStatusCode());
+                }
             }
 
         });
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.main2, menu);
-        SearchHandler searchOperation = new SearchHandler(menu, this);
         filterOperation = new FilterHandler(menu, this);
         refreshOperation = new Refresh(menu, this);
-        searchOperation.implementSearch(2);
-        filterOperation.implementFilter(2);
-        refreshOperation.implementRefresh(2);
+        filterOperation.implementFilter(1);
+        refreshOperation.implementRefresh(1);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
 
     private List<Movie> getMovies() {
 
-        Resource<List<Movie>> moviesResource = ricercaViewModel.getSearch(query).getValue();
+        Resource<List<Movie>> moviesResource = ricercaViewModel.doSearch(query).getValue();
 
         if (moviesResource != null) {
             return moviesResource.getData();

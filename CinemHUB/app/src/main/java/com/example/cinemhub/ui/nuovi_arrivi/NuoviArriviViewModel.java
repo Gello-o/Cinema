@@ -10,7 +10,7 @@ import com.example.cinemhub.model.Resource;
 import java.util.List;
 
 public class NuoviArriviViewModel extends ViewModel {
-    private static final String TAG = "NuoviArriviViewModel";
+    //private static final String TAG = "NuoviArriviViewModel";
     private MutableLiveData<Resource<List<Movie>>> film;
     int page = 1;
     private int currentResults;

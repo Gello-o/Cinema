@@ -41,13 +41,4 @@ public interface Service {
             @Query("include_adult") boolean adult
     );
 
-    @GET("/3/search/movie")
-    Call<MoviesResponse> search2(
-            @Query("api_key") String apiKey,
-            @Query("language") String language,
-            @Query("page") int page,
-            @Query("query") String query,
-            @Query("include_adult") boolean adult,
-            @Query("year") int year
-    );
 }

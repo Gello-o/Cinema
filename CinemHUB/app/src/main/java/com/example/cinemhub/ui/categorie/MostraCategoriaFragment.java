@@ -26,22 +26,20 @@ import com.example.cinemhub.menu_items.Refresh;
 import com.example.cinemhub.menu_items.filtri.FilterHandler;
 import com.example.cinemhub.menu_items.ricerca.SearchHandler;
 import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.ui.categorie.MostraCategoriaViewModel;
-
 import java.util.List;
+
 
 public class MostraCategoriaFragment extends Fragment {
     private static final String TAG = "MostraCategoriaFragment";
     private MostraCategoriaViewModel mostraCategoriaViewModel;
     private MoviesAdapter moviesAdapter;
-    RecyclerView mostraCategoriaRV;
-    int genere;
+    private RecyclerView mostraCategoriaRV;
+    private int genere;
     private int totalItemCount;
     private int lastVisibleItem;
     private int visibleItemCount;
     private int threshold = 1;
-    FilterHandler filterOperation;
-    Refresh refreshOperation;
+    private FilterHandler filterOperation;
     private List<Movie> currentMovies;
     private boolean canLoad = true;
 
@@ -50,7 +48,7 @@ public class MostraCategoriaFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_genere, container, false);
         mostraCategoriaRV = root.findViewById(R.id.recycler_genere);
-        genere = MostraCategoriaFragmentArgs.fromBundle(getArguments()).getGenere();
+        genere = MostraCategoriaFragmentArgs.fromBundle(requireArguments()).getGenere();
         setHasOptionsMenu(true);
         return root;
     }
@@ -135,28 +133,27 @@ public class MostraCategoriaFragment extends Fragment {
         mostraCategoriaViewModel.getGenere(genere).observe(getViewLifecycleOwner(), new Observer<Resource<List<Movie>>>() {
             @Override
             public void onChanged(@Nullable Resource<List<Movie>> resource) {
+                if(resource!=null) {
+                    moviesAdapter.setData(resource.getData());
+                    currentMovies = resource.getData();
 
-                moviesAdapter.setData(resource.getData());
+                    Log.d(TAG, "CurrentListSize: "+resource.getData().size());
 
-                currentMovies = resource.getData();
+                    if (filterOperation != null) {
+                        filterOperation.setMovie(currentMovies);
+                        Log.d(TAG, "FilterSetMovie");
+                    }
+                    else
+                        Log.d(TAG, "FilterOperationNull");
 
-                Log.d(TAG, "CurrentListSize: "+resource.getData().size());
-
-                if (filterOperation != null) {
-                    filterOperation.setMovie(resource.getData());
-                    Log.d(TAG, "FilterSetMovie");
-                }
-                else
-                    Log.d(TAG, "FilterOperationNull");
-
-                if (!resource.isLoading() && canLoad) {
-                    Log.d(TAG, "STA CARICANDO");
-                    mostraCategoriaViewModel.setLoading(false);
-                    if (resource.getData() != null) {
-                        mostraCategoriaViewModel.setCurrentResults(resource.getData().size());
+                    if (!resource.isLoading() && canLoad) {
+                        Log.d(TAG, "STA CARICANDO");
+                        mostraCategoriaViewModel.setLoading(false);
+                        if (resource.getData() != null) {
+                            mostraCategoriaViewModel.setCurrentResults(resource.getData().size());
+                        }
                     }
                 }
-
             }
 
         });
@@ -167,7 +164,7 @@ public class MostraCategoriaFragment extends Fragment {
         inflater.inflate(R.menu.main3, menu);
         SearchHandler searchOperation = new SearchHandler(menu, this);
         filterOperation = new FilterHandler(menu, this);
-        refreshOperation = new Refresh(menu, this);
+        Refresh refreshOperation = new Refresh(menu, this);
         searchOperation.implementSearch(2);
         filterOperation.implementFilter(2);
         refreshOperation.implementRefresh(2);

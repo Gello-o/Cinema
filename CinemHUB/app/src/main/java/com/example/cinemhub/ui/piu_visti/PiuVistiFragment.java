@@ -33,13 +33,13 @@ public class PiuVistiFragment extends Fragment {
     private static final String TAG = "PiuVistiFragment";
     private PiuVistiViewModel piuVistiViewModel;
     private MoviesAdapter moviesAdapter;
-    RecyclerView piuVistiRV;
+    private RecyclerView piuVistiRV;
     private int totalItemCount;
     private int lastVisibleItem;
     private int visibleItemCount;
     private int threshold = 1;
-    FilterHandler filterOperation;
-    Refresh refreshOperation;
+    private FilterHandler filterOperation;
+    private Refresh refreshOperation;
     private List<Movie> currentMovies;
     private boolean canLoad = true;
 

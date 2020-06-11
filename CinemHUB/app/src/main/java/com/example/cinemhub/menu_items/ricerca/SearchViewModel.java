@@ -1,5 +1,7 @@
 package com.example.cinemhub.menu_items.ricerca;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -11,22 +13,24 @@ import java.util.List;
 
 public class SearchViewModel extends ViewModel {
     private MutableLiveData<Resource<List<Movie>>> film;
-    private static final String TAG = "MostraCategorieFragment";
+    private static final String TAG = "SearchViewModel";
     int page = 1;
     String query;
     private int currentResults;
     private boolean isLoading;
 
-    public MutableLiveData<Resource<List<Movie>>> getSearch(String query) {
+    public MutableLiveData<Resource<List<Movie>>> doSearch(String query) {
         this.query = query;
+        Log.d(TAG, "query VM " + query);
         if(film == null) {
+            Log.d(TAG, "film = null");
             film = new MutableLiveData<>();
             MoviesRepository.getInstance().searchMovie(query, page, film);
         }
         return film;
     }
 
-    public MutableLiveData<Resource<List<Movie>>> getMoreSearch() {
+    public MutableLiveData<Resource<List<Movie>>> searchMore() {
         MoviesRepository.getInstance().searchMovie(query, page, film);
         return film;
     }

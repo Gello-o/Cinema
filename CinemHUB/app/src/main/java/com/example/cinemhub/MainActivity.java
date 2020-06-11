@@ -2,7 +2,6 @@ package com.example.cinemhub;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -13,10 +12,6 @@ import com.example.cinemhub.model.FavoriteDB;
 import com.google.android.material.navigation.NavigationView;
 import androidx.annotation.NonNull;
 
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.Toast;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
@@ -27,17 +22,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private static final String TAG = "MainActivity";
-    private final Context mContext = this;
-    private DrawerLayout drawer;
-    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +37,7 @@ public class MainActivity extends AppCompatActivity {
         // Test iniziale su connessione dispositivo (essenziale) per l'app
         if (!isConnected()) {
             new AlertDialog.Builder(this).setIcon(R.drawable.dialog_alert).setTitle("Internet Connection Alert")
-                    .setMessage("Please Check your internet connection").setPositiveButton("close", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            })
+                    .setMessage("Please Check your internet connection").setPositiveButton("close", (dialog, which) -> finish())
                     .show();
         } else {
             Toast.makeText(MainActivity.this, "Welcome in CinemHUB", Toast.LENGTH_LONG).show();
@@ -62,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
             setSupportActionBar(toolbar);
 
 
-            drawer = findViewById(R.id.drawer_layout);
+            DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
             NavigationView navigationView = findViewById(R.id.nav_view);
 
@@ -71,15 +56,14 @@ public class MainActivity extends AppCompatActivity {
                     R.id.nav_home, R.id.nav_preferiti, R.id.nav_categorie, R.id.nav_nuovi_arrivi, R.id.nav_prossime_uscite, R.id.nav_piu_visti)
                     .setDrawerLayout(drawer)
                     .build();
-            navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
             NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
             NavigationUI.setupWithNavController(navigationView, navController);
 
-            FavoriteDB.getInstance(getApplicationContext());
-            FavoriteDB.getInstanceUser();
-
             Log.d(TAG, "creato il Db");
         }
+        FavoriteDB.getInstance(getApplicationContext());
+        FavoriteDB.getInstanceUser();
 
     }
 
@@ -91,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         return super.onOptionsItemSelected(item);
     }
 

@@ -3,12 +3,12 @@ package com.example.cinemhub.model;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
-import com.example.cinemhub.model.Resource;
 import com.example.cinemhub.api.Client;
 import com.example.cinemhub.api.Service;
 import com.example.cinemhub.utils.Constants;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -86,7 +86,6 @@ public class MoviesRepository {
         Service apiService = Client.getClient().create(Service.class);
         Call<MoviesResponse> call;
 
-
         Log.d(TAG, "CHIAMATA " + pagina);
         call = apiService.getTMDB(categoria, Constants.API_KEY, Constants.LINGUA, pagina);
 
@@ -94,38 +93,18 @@ public class MoviesRepository {
 
             @Override
             public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
-                MoviesResponse moviesResponse = response.body();
-                List<Movie> movies = moviesResponse.getResults();
-
-                if(moviesResponse == null){
-                    Log.d(TAG, "response null");
-                    //gestione risposta nulla
-                }
-                else if(movies == null){
-                    Log.d(TAG, "movies null");
-                }
-
-                if(moviesData.getValue() == null) {
-                    moviesData.setValue(movies);
-                    Log.d(TAG, "null ");
-                    Log.d(TAG, "Pagina: " + pagina);
-                }
-
-                else {
-                    List<Movie> a = moviesData.getValue();
-                    a.addAll(movies);
-                    moviesData.setValue(a); //setValue
-
-                    Log.d(TAG, "not null ");
+                if(response.isSuccessful() && response.body() != null){
+                    List<Movie> movies = response.body().getResults();
+                    if(movies != null)
+                        moviesData.setValue(movies);
+                    else
+                        moviesData.setValue(new ArrayList<>());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<MoviesResponse> call, @NonNull Throwable t) {
-                if (t.getMessage() != null)
-                    Log.d("Error", t.getMessage());
-                else
-                    Log.d("Error", "qualcosa è andato storto");
+                moviesData.setValue(new ArrayList<>());
             }
         });
 
@@ -143,39 +122,19 @@ public class MoviesRepository {
 
             @Override
             public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
-                MoviesResponse moviesResponse = response.body();
-                List<Movie> movies = moviesResponse.getResults();
-
-                if(moviesResponse == null){
-                    Log.d(TAG, "response null");
-                    //gestione risposta nulla
-                }
-                else if(movies == null){
-                    Log.d(TAG, "movies null");
-                }
-
-                if(moviesData.getValue() == null) {
-                    moviesData.setValue(movies);
-                    Log.d(TAG, "null ");
-                    Log.d(TAG, "Pagina: " + pagina);
-                }
-
-                else {
-                    List<Movie> a = moviesData.getValue();
-                    a.addAll(movies);
-                    moviesData.setValue(a); //setValue
-
-                    Log.d(TAG, "not null ");
+                if(response.isSuccessful() && response.body() != null){
+                    List<Movie> movies = response.body().getResults();
+                    if(movies != null)
+                        moviesData.setValue(movies);
+                    else
+                        moviesData.setValue(new ArrayList<>());
                 }
             }
 
 
             @Override
             public void onFailure(@NonNull Call<MoviesResponse> call, @NonNull Throwable t) {
-                if (t.getMessage() != null)
-                    Log.d("Error", t.getMessage());
-                else
-                    Log.d("Error", "qualcosa è andato storto");
+                moviesData.setValue(new ArrayList<>());
             }
         });
 
@@ -187,7 +146,7 @@ public class MoviesRepository {
 
 
         Log.d(TAG, "CHIAMATA " + pagina);
-        call = apiService.getTMDB(query, Constants.API_KEY, Constants.LINGUA, pagina);
+        call = apiService.search(Constants.API_KEY, Constants.LINGUA, pagina, query, true);
 
         call.enqueue(new Callback<MoviesResponse>() {
 
@@ -196,14 +155,17 @@ public class MoviesRepository {
                 if (response.isSuccessful() && response.body() != null) {
 
                     Resource<List<Movie>> resource = new Resource<>();
-
+                    Log.d(TAG, "RESPONSE SUCCESFUL");
                     if (moviesData.getValue() != null && moviesData.getValue().getData() != null) {
+
+                        Log.d(TAG, "dato già popolato");
                         List<Movie> currentArticleList = moviesData.getValue().getData();
 
                         currentArticleList.remove(currentArticleList.size() - 1);
                         currentArticleList.addAll(response.body().getResults());
                         resource.setData(currentArticleList);
                     } else {
+                        Log.d(TAG, "dato non ancora popolato");
                         resource.setData(response.body().getResults());
                     }
 
@@ -214,6 +176,7 @@ public class MoviesRepository {
                     Log.d(TAG, "LOADING FALSE");
                     moviesData.postValue(resource);
                 } else if (response.errorBody() != null) {
+                    Log.d(TAG, "RESPONSE NOT SUCCESFUL");
                     Resource<List<Movie>> resource = new Resource<>();
                     resource.setStatusCode(response.code());
                     try {
@@ -223,6 +186,7 @@ public class MoviesRepository {
                     }
                     moviesData.postValue(resource);
                 }
+
             }
 
             @Override
@@ -234,7 +198,6 @@ public class MoviesRepository {
         });
     }
 
-
     public void getTrailer(String id, MutableLiveData<String> keyDatum) {
         Service apiService = Client.getClient().create(Service.class);
         Call<TrailerResponse> call;
@@ -243,27 +206,21 @@ public class MoviesRepository {
         call.enqueue(new Callback<TrailerResponse>() {
             @Override
             public void onResponse(@NonNull Call<TrailerResponse> call, @NonNull Response<TrailerResponse> response) {
-                List<Trailer> trailers = null;
-                if(response.body() != null)
-                    trailers = response.body().getTrailers();
-                //Gli diamo il primo trailer.
-                String key = "";
 
-                //Temporaneo
-                if (trailers == null || trailers.size() == 0) {
-                    key = "WECcGZLvcz0";
-                } else
-                    key = trailers.get(0).getKey();
+                if(response.isSuccessful() && response.body() != null){
+                    List<Trailer> trailers = response.body().getTrailers();
+                    if(trailers != null && !trailers.isEmpty() && trailers.get(0)!=null && trailers.get(0).getKey() != null) {
+                        keyDatum.setValue(trailers.get(0).getKey());
+                    }
+                    else
+                        keyDatum.setValue("668nUCeBHyY");
+                }
 
-                keyDatum.setValue(key);
             }
 
             @Override
             public void onFailure(@NonNull Call<TrailerResponse> call, @NonNull Throwable t) {
-                if (t.getMessage() != null)
-                    Log.d("Error", t.getMessage());
-                else
-                    Log.d("Error", "qualcosa è andato storto");
+                keyDatum.setValue("668nUCeBHyY");
             }
         });
 

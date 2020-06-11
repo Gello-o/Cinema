@@ -94,10 +94,6 @@ public class FilterHandler {
         listYear.add("Year DESC");
         spinnerList(spinnerOrder, listYear);
 
-        View filterOpt = filterMenuItem.getActionView();
-        Log.d(TAG, "FilterMenuItem: "+filterMenuItem);
-        Log.d(TAG, "FilterOpt: "+filterOpt);
-
         final AlertDialog.Builder alert = new AlertDialog.Builder(fragment.getActivity()).setView(textEntryView).setTitle(" Filter:");
 
         filterMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -397,5 +393,6 @@ public class FilterHandler {
         }else if(fragment instanceof SearchFragment){
             ((SearchFragment) fragment).setCanLoad(false);
         }
+
     }
 }

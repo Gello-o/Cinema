@@ -3,11 +3,9 @@ package com.example.cinemhub;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.cinemhub.model.Favorite;
 import com.example.cinemhub.model.FavoriteDB;
-import com.example.cinemhub.model.UserRatingDB;
 import com.google.android.material.snackbar.Snackbar;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
@@ -17,19 +15,16 @@ import java.util.List;
 public class FavoriteOperation {
     private static final String TAG = "FavoriteOperation";
     public Activity activity;
-    private Context context;
 
     private Favorite favorite;
     private List<Favorite> line;
-    private LikeButton likeButtonFavorite;
 
-    String thumbnail, movieName, synopsis, rating, release, id, originalMovieName, voteCount, genre;
+    private String thumbnail, movieName, synopsis, rating, release, id, originalMovieName, voteCount, genre;
 
 
     //costructor allow findview and Toast
     public FavoriteOperation(Activity activity, Context context){
         this.activity = activity;
-        this.context = context;
     }
 
     public void eseguiPreferiti(String id, String movieName, String thumbnail,String rating,String synopsis,
@@ -44,7 +39,7 @@ public class FavoriteOperation {
         this.originalMovieName = originalMovieName;
         this.voteCount = voteCount;
 
-        likeButtonFavorite = this.activity.findViewById(R.id.favorite_button);
+        LikeButton likeButtonFavorite = this.activity.findViewById(R.id.favorite_button);
 
         if(checkFilm()) {
             likeButtonFavorite.setLiked(true);

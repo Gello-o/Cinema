@@ -14,9 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -32,7 +30,6 @@ import java.util.List;
 
 public class CategorieFragment extends Fragment {
     private static final String TAG = "CategorieFragment";
-    private CategorieViewModel categorieViewModel;
     private RecyclerView azioneRV;
     private RecyclerView avventuraRV;
     private RecyclerView crimineRV;
@@ -55,52 +52,30 @@ public class CategorieFragment extends Fragment {
         avventuraTxt = root.findViewById(R.id.avventura_txt);
         crimineTxt = root.findViewById(R.id.crimine_txt);
 
-        categorieViewModel =
+        CategorieViewModel categorieViewModel =
                 new ViewModelProvider(this).get(CategorieViewModel.class);
 
-        categorieViewModel.getAzione().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> moviesSet) {
-                if(moviesSet == null)
-                    Log.d(TAG, "moviesSet nullo");
-                else
-                    Log.d(TAG, ""+moviesSet.size());
-                initPopularRV(moviesSet);
-                azioneAdapter.notifyDataSetChanged();
-            }
+        categorieViewModel.getAzione().observe(getViewLifecycleOwner(), moviesSet -> {
+            initAzioneRV(moviesSet);
+            azioneAdapter.notifyDataSetChanged();
         });
 
-        categorieViewModel.getAvventura().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> moviesSet) {
-                if(moviesSet == null)
-                    Log.d(TAG, "moviesSet nullo");
-                else
-                    Log.d(TAG, ""+moviesSet.size());
-                initTopRatedRV(moviesSet);
-                avventuraAdapter.notifyDataSetChanged();
-            }
+        categorieViewModel.getAvventura().observe(getViewLifecycleOwner(), moviesSet -> {
+            initAvventuraRV(moviesSet);
+            avventuraAdapter.notifyDataSetChanged();
         });
 
-        categorieViewModel.getCrime().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> moviesSet) {
-                if(moviesSet == null)
-                    Log.d(TAG, "moviesSet nullo");
-                else
-                    Log.d(TAG, ""+moviesSet.size());
-                initProssimeUscite(moviesSet);
-                crimineAdapter.notifyDataSetChanged();
-            }
+        categorieViewModel.getCrime().observe(getViewLifecycleOwner(), moviesSet -> {
+            initCrimineRV(moviesSet);
+            crimineAdapter.notifyDataSetChanged();
         });
 
         initTexts();
         setHasOptionsMenu(true);
-
         return root;
     }
 
-    public void initPopularRV (List<Movie>set){
+    private void initAzioneRV(List<Movie> set){
         if(set == null)
             Log.d(TAG, "SET POPOLARI NULL");
         else if(set.isEmpty())
@@ -112,7 +87,7 @@ public class CategorieFragment extends Fragment {
         azioneRV.setItemAnimator(new DefaultItemAnimator());
     }
 
-    public void initTopRatedRV (List<Movie>set){
+    private void initAvventuraRV(List<Movie> set){
         if(set == null)
             Log.d(TAG, "SET top NULL");
         else if(set.isEmpty())
@@ -124,7 +99,7 @@ public class CategorieFragment extends Fragment {
         avventuraRV.setItemAnimator(new DefaultItemAnimator());
     }
 
-    public void initProssimeUscite (List<Movie>set){
+    private void initCrimineRV(List<Movie> set){
         if(set == null)
             Log.d(TAG, "SET Prossime NULL");
         else if(set.isEmpty())
@@ -136,7 +111,7 @@ public class CategorieFragment extends Fragment {
         crimineRV.setItemAnimator(new DefaultItemAnimator());
     }
 
-    public void initTexts(){
+    private void initTexts(){
         SpannableString ss1 = new SpannableString(azioneTxt.getText());
         SpannableString ss2 = new SpannableString(avventuraTxt.getText());
         SpannableString ss3 = new SpannableString(crimineTxt.getText());
@@ -190,7 +165,7 @@ public class CategorieFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main, menu);
         SearchHandler searchOperation = new SearchHandler(menu, this);
         searchOperation.implementSearch(1);

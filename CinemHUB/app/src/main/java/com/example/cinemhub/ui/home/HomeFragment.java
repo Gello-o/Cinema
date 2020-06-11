@@ -34,8 +34,7 @@ import java.util.TimerTask;
 
 public class HomeFragment extends Fragment {
 
-    private static final String TAG = "HomeFragment";
-    private HomeViewModel homeViewModel;
+    //private static final String TAG = "HomeFragment";
     private RecyclerView popularRV;
     private MoviesAdapter popularAdapter;
     private TextView popularTV;
@@ -47,8 +46,8 @@ public class HomeFragment extends Fragment {
     private TextView prossimeUsciteTV;
     private ViewPager sliderpager;
     private TabLayout indicator;
-    List<Movie> slides;
-    SliderPagerAdapter slideAdapter;
+    private List<Movie> slides;
+    private SliderPagerAdapter slideAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -64,43 +63,22 @@ public class HomeFragment extends Fragment {
         sliderpager = root.findViewById(R.id.slider_pager);
         indicator = root.findViewById(R.id.indicator);
 
-        homeViewModel =
+        HomeViewModel homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
 
-        homeViewModel.getPopolari().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> moviesSet) {
-                if(moviesSet == null)
-                    Log.d(TAG, "moviesSet nullo");
-                else
-                    Log.d(TAG, ""+moviesSet.size());
-                initPopularRV(moviesSet);
-                popularAdapter.notifyDataSetChanged();
-            }
+        homeViewModel.getPopolari().observe(getViewLifecycleOwner(), moviesSet -> {
+            initPopularRV(moviesSet);
+            popularAdapter.notifyDataSetChanged();
         });
 
-        homeViewModel.getTopRated().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> moviesSet) {
-                if(moviesSet == null)
-                    Log.d(TAG, "moviesSet nullo");
-                else
-                    Log.d(TAG, ""+moviesSet.size());
-                initTopRatedRV(moviesSet);
-                topRatedAdapter.notifyDataSetChanged();
-            }
+        homeViewModel.getTopRated().observe(getViewLifecycleOwner(), moviesSet -> {
+            initTopRatedRV(moviesSet);
+            topRatedAdapter.notifyDataSetChanged();
         });
 
-        homeViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> moviesSet) {
-                if(moviesSet == null)
-                    Log.d(TAG, "moviesSet nullo");
-                else
-                    Log.d(TAG, ""+moviesSet.size());
-                initProssimeUscite(moviesSet);
-                prossimeUsciteAdapter.notifyDataSetChanged();
-            }
+        homeViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), moviesSet -> {
+            initProssimeUscite(moviesSet);
+            prossimeUsciteAdapter.notifyDataSetChanged();
         });
 
 
@@ -108,8 +86,12 @@ public class HomeFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<Movie> moviesSet) {
                 slides = new ArrayList<>();
-                for(int i=0; i<4; i++){
-                    slides.add(moviesSet.get(i));
+                if(moviesSet!= null && !moviesSet.isEmpty()) {
+                    for (int i = 0; i < 8; i++) {
+                        slides.add(moviesSet.get(i));
+                    }
+                }else{
+                    //pensiamo a mostrare qualcosa di carino se non ci sono film
                 }
                 initSlider();
                 messageHandler = new Handler(Looper.getMainLooper());
@@ -126,50 +108,34 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-    public void initPopularRV (List<Movie>set){
-        if(set == null)
-            Log.d(TAG, "SET POPOLARI NULL");
-        else if(set.isEmpty())
-            Log.d(TAG, "SET POPOLARI vuoto");
-        popularAdapter = new MoviesAdapter(getContext(), set);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+    private void initPopularRV (List<Movie>set){
+        popularAdapter = new MoviesAdapter(getActivity(), set);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         popularRV.setLayoutManager(layoutManager);
         popularRV.setAdapter(popularAdapter);
         popularRV.setItemAnimator(new DefaultItemAnimator());
-        popularTV.setText("Popular");
+        popularTV.setText(R.string.popolari);
     }
 
-    public void initTopRatedRV (List<Movie>set){
-        if(set == null)
-            Log.d(TAG, "SET top NULL");
-        else if(set.isEmpty())
-            Log.d(TAG, "SET top vuoto");
-        topRatedAdapter = new MoviesAdapter(getContext(), set);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+    private void initTopRatedRV (List<Movie>set){
+        topRatedAdapter = new MoviesAdapter(getActivity(), set);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         topRatedRV.setLayoutManager(layoutManager);
         topRatedRV.setAdapter(topRatedAdapter);
         topRatedRV.setItemAnimator(new DefaultItemAnimator());
-        topRatedTV.setText("Top Rated");
+        topRatedTV.setText(R.string.top_rated);
     }
 
-    public void initProssimeUscite (List<Movie>set){
-        if(set == null)
-            Log.d(TAG, "SET Prossime NULL");
-        else if(set.isEmpty())
-            Log.d(TAG, "SET Prossime vuoto");
-        prossimeUsciteAdapter = new MoviesAdapter(getContext(), set);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+    private void initProssimeUscite (List<Movie>set){
+        prossimeUsciteAdapter = new MoviesAdapter(getActivity(), set);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         prossimeUsciteRV.setLayoutManager(layoutManager);
         prossimeUsciteRV.setAdapter(prossimeUsciteAdapter);
         prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
-        prossimeUsciteTV.setText("Upcoming");
+        prossimeUsciteTV.setText(R.string.upcoming);
     }
 
-    public void initSlider(){
-        if(slides == null)
-            Log.d(TAG, "Slider null");
-        else if(slides.isEmpty())
-            Log.d(TAG, "Slider vuoto");
+    private void initSlider(){
         slideAdapter = new SliderPagerAdapter(getActivity(), slides);
         sliderpager.setAdapter(slideAdapter);
     }
@@ -181,16 +147,13 @@ public class HomeFragment extends Fragment {
         @Override
         public void run() {
 
-            HomeFragment.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+            HomeFragment.this.runOnUiThread(() -> {
 
-                    if(slides != null) {
-                        if (sliderpager.getCurrentItem() < slides.size() - 1) {
-                            sliderpager.setCurrentItem(sliderpager.getCurrentItem() + 1);
-                        } else
-                            sliderpager.setCurrentItem(0);
-                    }
+                if(slides != null) {
+                    if (sliderpager.getCurrentItem() < slides.size() - 1) {
+                        sliderpager.setCurrentItem(sliderpager.getCurrentItem() + 1);
+                    } else
+                        sliderpager.setCurrentItem(0);
                 }
             });
 
@@ -199,12 +162,13 @@ public class HomeFragment extends Fragment {
     }
 
     private Handler messageHandler;
-    protected void runOnUiThread(Runnable action) {
+    
+    private void runOnUiThread(Runnable action) {
         messageHandler.post(action);
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main, menu);
         SearchHandler searchOperation = new SearchHandler(menu, this);
         searchOperation.implementSearch(1);

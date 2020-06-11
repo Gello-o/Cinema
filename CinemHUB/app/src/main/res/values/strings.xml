@@ -46,5 +46,9 @@
     <string name="refresh" />
     <string name="refresh1" />
 
+    <string name="popolari">Popular</string>
+    <string name="top_rated">Top Rated</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="now_playing">Now Playing</string>
 
 </resources>
