@@ -14,7 +14,7 @@
     <string name="menu_prossime_uscite">UPCOMING</string>
     <string name="menu_piu_visti">MOST WATCHED</string>
     <string name="home_second">Home Second</string>
-    <string name="menu_genere">NomeCategoria</string>
+    <string name="menu_genere"></string>
 
     <string name="movie_name">Movie Title</string>
     <string name="movie_details">Movie Details</string>
@@ -44,6 +44,7 @@
     <string name="user_rating">0 / 10</string>
     <string name="refresh" />
     <string name="refresh1" />
+    <string name="textview">TextView</string>
 
 
 </resources>
