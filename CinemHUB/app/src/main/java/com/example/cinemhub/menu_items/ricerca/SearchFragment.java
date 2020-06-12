@@ -24,9 +24,13 @@ import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.menu_items.Refresh;
 import com.example.cinemhub.menu_items.filtri.FilterHandler;
 import com.example.cinemhub.model.Movie;
-
-
 import java.util.List;
+
+/*
+fragment adibito alla ricerca: mostra gli oggetti di tipo Movie
+restituiti dalla ricerca in un layout a griglia. Implementa il lazy loading
+Dà la possibilità all'utente di filtrare i film all'interno della griglia
+*/
 
 public class SearchFragment extends Fragment {
     private static final String TAG = "SearchFragment";
@@ -50,13 +54,6 @@ public class SearchFragment extends Fragment {
         Log.d(TAG, "QUERY " + query);
         setHasOptionsMenu(true);
         return root;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!canLoad)
-            canLoad = true;
     }
 
     @Override

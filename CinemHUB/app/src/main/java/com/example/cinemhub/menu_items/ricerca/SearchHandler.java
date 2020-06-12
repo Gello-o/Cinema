@@ -28,6 +28,15 @@ import com.example.cinemhub.ui.preferiti.PreferitiFragmentDirections;
 import com.example.cinemhub.ui.prossime_uscite.ProssimeUsciteFragment;
 import com.example.cinemhub.ui.prossime_uscite.ProssimeUsciteFragmentDirections;
 
+/*
+oggetto che ha la responsabilità di gestire la logica della ricerca:
+associa l'item di ricerca al suo menu; Inizializza la searchView su
+cui imposta un listener.
+
+Utilizza la navigazione per passare la query dal
+fragment da cui si sta ricercando al fragment di ricerca
+ */
+
 public class SearchHandler {
     private static final String TAG = "SearchHandler";
     private Fragment fragment;

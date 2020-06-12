@@ -14,6 +14,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/*
+MoviesRepository è l'oggetto che effettua le chiamate REST a TMDB.
+Ha il compito di inserire il dato restituito dalla chiamata all'interno di
+un MutableLiveData che verrà sfruttato nei ViewModel dei vari Fragment
+ */
+
 public class MoviesRepository {
 
     private static MoviesRepository instance;
@@ -239,6 +245,8 @@ public class MoviesRepository {
 
     }
 
+    /*chiamata asincrona a TMDB per i fragment che fanno uso del lazy loading. Recupera i film
+        di uno tra i generi principali: azione, avventura, crimine etc...*/
 
     public void getGenresLL(int genere, int pagina, MutableLiveData<Resource<List<Movie>>> moviesData) {
         Service apiService = Client.getClient().create(Service.class);

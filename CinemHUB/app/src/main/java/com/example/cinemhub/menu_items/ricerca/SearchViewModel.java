@@ -11,6 +11,11 @@ import com.example.cinemhub.model.Resource;
 
 import java.util.List;
 
+/*
+viewModel che interagisce con l'oggetto SearchFragment: conserva i dati del fragment e
+sfrutta l'oggetto MoviesRepository per effeuttuare chiamate a TMDB
+*/
+
 public class SearchViewModel extends ViewModel {
     private MutableLiveData<Resource<List<Movie>>> film;
     private static final String TAG = "SearchViewModel";

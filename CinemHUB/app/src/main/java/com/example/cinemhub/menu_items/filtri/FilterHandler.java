@@ -31,6 +31,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+/*
+l'oggetto FilterHandler ha la responsabilità di filtrare la lista di Movie. Mostra
+un AlertDialog in cui l'utente ha la possibilità di scegliere delle combinazioni tra i seguenti filtri:
+ordinamento, genere, per voto e/o per anno di uscita
+
+Quando l'utente decide di filtrare, l'oggetto FilterHandler disabilita il lazy loading
+ */
+
 public class FilterHandler {
     private static final String TAG = "FilterHandler";
     private Fragment fragment;

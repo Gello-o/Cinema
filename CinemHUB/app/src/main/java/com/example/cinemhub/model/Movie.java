@@ -6,6 +6,10 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
+
+//oggetto Movie, con i suoi attributi deserializzati
+
+
 public class Movie {
     @SerializedName("poster_path")
     @Expose
@@ -42,8 +46,6 @@ public class Movie {
     @SerializedName("vote_average")
     @Expose
     private Double vote_average;
-
-
 
     public Movie(){}
 

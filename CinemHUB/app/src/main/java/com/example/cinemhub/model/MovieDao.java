@@ -5,9 +5,9 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
-
-
 import java.util.List;
+
+//interfaccia per l'interazione dell'applicazione con le due istanze di Database
 
 @Dao
 public interface MovieDao {
@@ -19,7 +19,6 @@ public interface MovieDao {
     @Query("select * from Favorite")
     List<Favorite> getFavorite();
 
-    //cancella una riga tramite Fvaorite.setID()
     @Delete
     void deleteFavorite(Favorite dbToDelete);
 

@@ -8,6 +8,11 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+/*
+oggetto database che ha due istanze: la prima per memorizzare oggetti Favorite,
+la seconda per memorizzare il rating dell'utente
+ */
+
 @Database(entities = {Favorite.class, UserInfo.class}, version = 3)
 public abstract class FavoriteDB extends RoomDatabase {
     public final String TAG = "DbStructure";
