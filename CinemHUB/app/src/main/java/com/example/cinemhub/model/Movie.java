@@ -6,6 +6,10 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
+
+//oggetto Movie, con i suoi attributi deserializzati
+
+
 public class Movie {
     @SerializedName("poster_path")
     @Expose
@@ -13,9 +17,7 @@ public class Movie {
     @SerializedName("overview")
     @Expose
     private String overview;
-    @SerializedName("adult")
-    @Expose
-    private boolean adult;
+
     @SerializedName("genre_ids")
     @Expose
     private List<Integer> genre_ids;
@@ -28,15 +30,13 @@ public class Movie {
     @SerializedName("original_title")
     @Expose
     private String original_title;
-    @SerializedName("original_language")
-    @Expose
-    private String original_language;
+
     @SerializedName("title")
     @Expose
     private String title;
     @SerializedName("backdrop_path")
     @Expose
-    private String backdrop_path;
+    private String backdropPath;
     @SerializedName("popularity")
     @Expose
     private Double popularity;
@@ -46,10 +46,6 @@ public class Movie {
     @SerializedName("vote_average")
     @Expose
     private Double vote_average;
-    @SerializedName("video")
-    @Expose
-    private boolean video;
-
 
     public Movie(){}
 
@@ -70,10 +66,6 @@ public class Movie {
         return posterPath;
     }
 
-    public void setPosterPath(String posterPath) {
-        this.posterPath = posterPath;
-    }
-
     public String getOverview() {
         return overview;
     }
@@ -87,16 +79,8 @@ public class Movie {
         return genre_ids;
     }
 
-    public void setGenreIds(List<Integer> genre_ids) {
-        this.genre_ids = genre_ids;
-    }
-
     public String getReleaseDate() {
         return release_date;
-    }
-
-    public void setReleaseDate(String release_date) {
-        this.release_date = release_date;
     }
 
     public Integer getId() {
@@ -111,11 +95,6 @@ public class Movie {
         return original_title;
     }
 
-    public void setOriginaltitle(String original_title) {
-        this.original_title = original_title;
-    }
-
-
     public String getTitle() {
         return title;
     }
@@ -124,24 +103,16 @@ public class Movie {
         this.title = title;
     }
 
+    public String getBackDropPath() {
+        return backdropPath;
+    }
+
     public Integer getVoteCount() {
         return vote_count;
     }
 
-    public void setVoteCount(Integer vote_count) {
-        this.vote_count = vote_count;
-    }
-
     public Double getVoteAverage() {
         return vote_average;
-    }
-
-    public void setVoteAverage(Double vote_average) {
-        this.vote_average = vote_average;
-    }
-
-    public String getBackDropPath() {
-        return backdrop_path;
     }
 
 }

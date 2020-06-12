@@ -26,20 +26,18 @@ import com.example.cinemhub.menu_items.Refresh;
 import com.example.cinemhub.menu_items.filtri.FilterHandler;
 import com.example.cinemhub.menu_items.ricerca.SearchHandler;
 import com.example.cinemhub.model.Movie;
-
 import java.util.List;
 
 public class NuoviArriviFragment extends Fragment {
     private static final String TAG = "NuoviArriviFragment";
     private NuoviArriviViewModel nuoviArriviViewModel;
     private MoviesAdapter moviesAdapter;
-    RecyclerView prossimeUsciteRV;
+    private RecyclerView prossimeUsciteRV;
     private int totalItemCount;
     private int lastVisibleItem;
     private int visibleItemCount;
     private int threshold = 1;
-    FilterHandler filterOperation;
-    Refresh refreshOperation;
+    private FilterHandler filterOperation;
     private List<Movie> currentMovies;
     private boolean canLoad = true;
 
@@ -98,7 +96,7 @@ public class NuoviArriviFragment extends Fragment {
                         (totalItemCount <= (lastVisibleItem + threshold) && dy > 0  && !nuoviArriviViewModel.isLoading()) &&
                                 nuoviArriviViewModel.getMoviesLiveData().getValue() != null &&
                                 nuoviArriviViewModel.getCurrentResults() != nuoviArriviViewModel.getMoviesLiveData().getValue().getTotalResults())
-                        && canLoad
+                                && canLoad
                 ) {
                     Resource<List<Movie>> moviesResource = new Resource<>();
 
@@ -132,28 +130,31 @@ public class NuoviArriviFragment extends Fragment {
         nuoviArriviViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<Resource<List<Movie>>>() {
             @Override
             public void onChanged(@Nullable Resource<List<Movie>> resource) {
+                if(resource != null) {
+                    moviesAdapter.setData(resource.getData());
+                    currentMovies = resource.getData();
 
-                moviesAdapter.setData(resource.getData());
+                    if(resource.getData().size() < 20)
+                        setCanLoad(false);
+                    else
+                        setCanLoad(true);
 
-                currentMovies = resource.getData();
+                    Log.d(TAG, "CurrentListSize: " + resource.getData().size());
 
-                Log.d(TAG, "CurrentListSize: "+resource.getData().size());
+                    if (filterOperation != null) {
+                        filterOperation.setMovie(currentMovies);
+                        Log.d(TAG, "FilterSetMovie");
+                    } else
+                        Log.d(TAG, "FilterOperationNull");
 
-                if (filterOperation != null) {
-                    filterOperation.setMovie(resource.getData());
-                    Log.d(TAG, "FilterSetMovie");
-                }
-                else
-                    Log.d(TAG, "FilterOperationNull");
-
-                if (!resource.isLoading() && canLoad) {
-                    Log.d(TAG, "STA CARICANDO");
-                    nuoviArriviViewModel.setLoading(false);
-                    if (resource.getData() != null) {
-                        nuoviArriviViewModel.setCurrentResults(resource.getData().size());
+                    if (!resource.isLoading() && canLoad) {
+                        Log.d(TAG, "STA CARICANDO");
+                        nuoviArriviViewModel.setLoading(false);
+                        if (resource.getData() != null) {
+                            nuoviArriviViewModel.setCurrentResults(resource.getData().size());
+                        }
                     }
                 }
-
             }
 
         });
@@ -164,7 +165,7 @@ public class NuoviArriviFragment extends Fragment {
         inflater.inflate(R.menu.main3, menu);
         SearchHandler searchOperation = new SearchHandler(menu, this);
         filterOperation = new FilterHandler(menu, this);
-        refreshOperation = new Refresh(menu, this);
+        Refresh refreshOperation = new Refresh(menu, this);
         searchOperation.implementSearch(2);
         filterOperation.implementFilter(2);
         refreshOperation.implementRefresh(2);

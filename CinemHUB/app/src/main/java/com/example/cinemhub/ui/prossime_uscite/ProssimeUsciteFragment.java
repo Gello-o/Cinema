@@ -12,33 +12,51 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cinemhub.model.Resource;
 import com.example.cinemhub.R;
-import com.example.cinemhub.menu_items.Refresh;
 import com.example.cinemhub.adapter.MoviesAdapter;
+import com.example.cinemhub.menu_items.Refresh;
 import com.example.cinemhub.menu_items.filtri.FilterHandler;
-import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.menu_items.ricerca.SearchHandler;
+import com.example.cinemhub.model.Movie;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+
 import java.util.List;
 
 public class ProssimeUsciteFragment extends Fragment {
-    private static final String TAG = "ProssimeUsciteFragment";
+    private static final String TAG = "ProssimeUscite";
     private ProssimeUsciteViewModel prossimeUsciteViewModel;
     private MoviesAdapter moviesAdapter;
-    RecyclerView prossimeUsciteRV;
-    int lastVisibleItem, totalItemCount, visibleItemCount;
-    int threshold = 1;
-    FilterHandler filterOperation;
-    Refresh refreshOperation;
-    private List<Movie> currentList2 = new ArrayList<>();
+    private RecyclerView prossimeUsciteRV;
+    private int totalItemCount;
+    private int lastVisibleItem;
+    private int visibleItemCount;
+    private int threshold = 1;
+    private FilterHandler filterOperation;
+    private List<Movie> currentMovies;
+    private boolean canLoad = true;
+
+
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_prossime_uscite, container, false);
+        prossimeUsciteRV = root.findViewById(R.id.recycler_view_prossime_uscite);
+        setHasOptionsMenu(true);
+        return root;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(!canLoad)
+            canLoad = true;
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -46,26 +64,6 @@ public class ProssimeUsciteFragment extends Fragment {
 
         prossimeUsciteViewModel =
                 new ViewModelProvider(this).get(ProssimeUsciteViewModel.class);
-
-        prossimeUsciteViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> set) {
-                initMovieRV(set);
-
-                refreshOperation.count();
-                currentList2.addAll(set);
-                Log.d(TAG, "CurrentListSize: "+currentList2.size());
-
-                if (filterOperation != null) {
-                    filterOperation.setMovie(set);
-                    Log.d(TAG, "FilterSetMovie");
-                }
-                else
-                    Log.d(TAG, "FilterOperationNull");
-
-
-            }
-        });
 
         GridLayoutManager layoutManager;
 
@@ -76,6 +74,9 @@ public class ProssimeUsciteFragment extends Fragment {
 
         prossimeUsciteRV.setLayoutManager(layoutManager);
         prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
+
+        moviesAdapter = new MoviesAdapter(getActivity(), getMovies());
+        prossimeUsciteRV.setAdapter(moviesAdapter);
 
         prossimeUsciteRV.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
@@ -92,28 +93,69 @@ public class ProssimeUsciteFragment extends Fragment {
                 Log.d(TAG, "last visible item " + lastVisibleItem);
                 Log.d(TAG, "visible items " + visibleItemCount);
 
-                if(totalItemCount <= (lastVisibleItem + threshold) && dy > 0){
-                    Log.d(TAG, "entrato in lazy loading");
-                    int page = prossimeUsciteViewModel.getPage() + 1;
-                    prossimeUsciteViewModel.setPage(page);
-                    prossimeUsciteViewModel.getMoreProssimeUscite();
+                if ((totalItemCount == visibleItemCount ||
+                        (totalItemCount <= (lastVisibleItem + threshold) && dy > 0  && !prossimeUsciteViewModel.isLoading()) &&
+                                prossimeUsciteViewModel.getMoviesLiveData().getValue() != null &&
+                                prossimeUsciteViewModel.getCurrentResults() != prossimeUsciteViewModel.getMoviesLiveData().getValue().getTotalResults())
+                        && canLoad
+                ) {
+                    Resource<List<Movie>> moviesResource = new Resource<>();
+
+                    MutableLiveData<Resource<List<Movie>>> moviesMutableLiveData = prossimeUsciteViewModel.getMoviesLiveData();
+
+                    if (moviesMutableLiveData.getValue() != null) {
+
+                        prossimeUsciteViewModel.setLoading(true);
+
+                        List<Movie> currentMovies = moviesMutableLiveData.getValue().getData();
+
+                        // It adds a null element to enable the visualization of the loading item (it is managed by the class NuoviArriviAdapter)
+                        currentMovies.add(null);
+                        moviesResource.setData(currentMovies);
+                        moviesResource.setStatusMessage(moviesMutableLiveData.getValue().getStatusMessage());
+                        moviesResource.setTotalResults(moviesMutableLiveData.getValue().getTotalResults());
+                        moviesResource.setStatusCode(moviesMutableLiveData.getValue().getStatusCode());
+                        Log.d(TAG, "STO CARICANDO");
+                        moviesResource.setLoading(true);
+                        moviesMutableLiveData.postValue(moviesResource);
+
+                        int page = prossimeUsciteViewModel.getPage() + 1;
+                        prossimeUsciteViewModel.setPage(page);
+
+                        prossimeUsciteViewModel.getMoreProssimeUscite();
+                    }
                 }
             }
         });
-    }
 
-    public void initMovieRV (List<Movie> lista){
-        moviesAdapter = new MoviesAdapter(getActivity(), lista);
-        moviesAdapter.notifyDataSetChanged();
-        prossimeUsciteRV.setAdapter(moviesAdapter);
-    }
+        prossimeUsciteViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), resource -> {
+            if(resource!=null && resource.getData()!=null){
+                moviesAdapter.setData(resource.getData());
+                currentMovies = resource.getData();
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_nuovi_arrivi, container, false);
-        prossimeUsciteRV = root.findViewById(R.id.recycler_view_nuovi_arrivi);
-        setHasOptionsMenu(true);
-        return root;
+                if(resource.getData().size() < 20)
+                    setCanLoad(false);
+                else
+                    setCanLoad(true);
+
+                Log.d(TAG, "CurrentListSize: "+resource.getData().size());
+
+                if (filterOperation != null) {
+                    filterOperation.setMovie(resource.getData());
+                    Log.d(TAG, "FilterSetMovie");
+                }
+                else
+                    Log.d(TAG, "FilterOperationNull");
+
+                if (!resource.isLoading() && canLoad) {
+                    Log.d(TAG, "STA CARICANDO");
+                    prossimeUsciteViewModel.setLoading(false);
+                    if (resource.getData() != null) {
+                        prossimeUsciteViewModel.setCurrentResults(resource.getData().size());
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -121,15 +163,38 @@ public class ProssimeUsciteFragment extends Fragment {
         inflater.inflate(R.menu.main3, menu);
         SearchHandler searchOperation = new SearchHandler(menu, this);
         filterOperation = new FilterHandler(menu, this);
-        refreshOperation = new Refresh(menu, this);
+        Refresh refreshOperation = new Refresh(menu, this);
         searchOperation.implementSearch(2);
         filterOperation.implementFilter(2);
         refreshOperation.implementRefresh(2);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private List<Movie> currentMovies;
+
+    private List<Movie> getMovies() {
+
+        Resource<List<Movie>> moviesResource = prossimeUsciteViewModel.getProssimeUscite().getValue();
+
+        if (moviesResource != null) {
+            return moviesResource.getData();
+        }
+
+        return null;
+    }
+
+
     public List<Movie> getCurrentMovies() {
         return currentMovies;
+    }
+
+    public void initMovieRV (List<Movie> lista) {
+        Log.d(TAG, "size " + lista.size());
+        moviesAdapter = new MoviesAdapter(getActivity(), lista);
+        prossimeUsciteRV.setAdapter(moviesAdapter);
+        moviesAdapter.notifyDataSetChanged();
+    }
+
+    public void setCanLoad(boolean canLoad) {
+        this.canLoad = canLoad;
     }
 }

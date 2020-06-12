@@ -34,14 +34,20 @@ public class CategorieFragment extends Fragment {
     private static final String TAG = "CategorieFragment";
     private CategorieViewModel categorieViewModel;
     private RecyclerView azioneRV;
-    private RecyclerView avventuraRV;
-    private RecyclerView crimineRV;
+    private RecyclerView fantasyRV;
+    private RecyclerView animationRV;
+    private RecyclerView commedieRV;
+    private RecyclerView romanceRV;
     private MoviesAdapter azioneAdapter;
-    private MoviesAdapter avventuraAdapter;
-    private MoviesAdapter crimineAdapter;
+    private MoviesAdapter fantasyAdapter;
+    private MoviesAdapter animationAdapter;
+    private MoviesAdapter commedieAdapter;
+    private MoviesAdapter romanceAdapter;
     private TextView azioneTxt;
-    private TextView avventuraTxt;
-    private TextView crimineTxt;
+    private TextView fantasyTxt;
+    private TextView animationTxt;
+    private TextView commedieTxt;
+    private TextView romanceTxt;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -49,11 +55,15 @@ public class CategorieFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_categorie, container, false);
 
         azioneRV = root.findViewById(R.id.recycler_azione);
-        avventuraRV = root.findViewById(R.id.recycler_avventura);
-        crimineRV = root.findViewById(R.id.recycler_crimine);
+        fantasyRV = root.findViewById(R.id.recycler_fantasy);
+        animationRV = root.findViewById(R.id.recycler_animation);
+        commedieRV = root.findViewById(R.id.recycler_commedie);
+        romanceRV = root.findViewById(R.id.recycler_romance);
         azioneTxt = root.findViewById(R.id.azione_txt);
-        avventuraTxt = root.findViewById(R.id.avventura_txt);
-        crimineTxt = root.findViewById(R.id.crimine_txt);
+        fantasyTxt = root.findViewById(R.id.fantasy_txt);
+        animationTxt = root.findViewById(R.id.animation_txt);
+        commedieTxt = root.findViewById(R.id.commedie_txt);
+        romanceTxt = root.findViewById(R.id.romance_txt);
 
         categorieViewModel =
                 new ViewModelProvider(this).get(CategorieViewModel.class);
@@ -65,32 +75,56 @@ public class CategorieFragment extends Fragment {
                     Log.d(TAG, "moviesSet nullo");
                 else
                     Log.d(TAG, ""+moviesSet.size());
-                initPopularRV(moviesSet);
+                initAction(moviesSet);
                 azioneAdapter.notifyDataSetChanged();
             }
         });
 
-        categorieViewModel.getAvventura().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+        categorieViewModel.getFantasy().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> moviesSet) {
                 if(moviesSet == null)
                     Log.d(TAG, "moviesSet nullo");
                 else
                     Log.d(TAG, ""+moviesSet.size());
-                initTopRatedRV(moviesSet);
-                avventuraAdapter.notifyDataSetChanged();
+                initFantasy(moviesSet);
+                fantasyAdapter.notifyDataSetChanged();
             }
         });
 
-        categorieViewModel.getCrime().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+        categorieViewModel.getAnimation().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> moviesSet) {
                 if(moviesSet == null)
                     Log.d(TAG, "moviesSet nullo");
                 else
                     Log.d(TAG, ""+moviesSet.size());
-                initProssimeUscite(moviesSet);
-                crimineAdapter.notifyDataSetChanged();
+                initAnimation(moviesSet);
+                animationAdapter.notifyDataSetChanged();
+            }
+        });
+
+        categorieViewModel.getCommedie().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> moviesSet) {
+                if(moviesSet == null)
+                    Log.d(TAG, "moviesSet nullo");
+                else
+                    Log.d(TAG, ""+moviesSet.size());
+                initCommedie(moviesSet);
+                commedieAdapter.notifyDataSetChanged();
+            }
+        });
+
+        categorieViewModel.getRomance().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> moviesSet) {
+                if(moviesSet == null)
+                    Log.d(TAG, "moviesSet nullo");
+                else
+                    Log.d(TAG, ""+moviesSet.size());
+                initRomance(moviesSet);
+                romanceAdapter.notifyDataSetChanged();
             }
         });
 
@@ -100,7 +134,7 @@ public class CategorieFragment extends Fragment {
         return root;
     }
 
-    public void initPopularRV (List<Movie>set){
+    public void initAction(List<Movie>set){
         if(set == null)
             Log.d(TAG, "SET POPOLARI NULL");
         else if(set.isEmpty())
@@ -112,83 +146,134 @@ public class CategorieFragment extends Fragment {
         azioneRV.setItemAnimator(new DefaultItemAnimator());
     }
 
-    public void initTopRatedRV (List<Movie>set){
+    public void initFantasy (List<Movie>set){
         if(set == null)
             Log.d(TAG, "SET top NULL");
         else if(set.isEmpty())
             Log.d(TAG, "SET top vuoto");
-        avventuraAdapter = new MoviesAdapter(getContext(), set);
+        fantasyAdapter = new MoviesAdapter(getContext(), set);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        avventuraRV.setLayoutManager(layoutManager);
-        avventuraRV.setAdapter(avventuraAdapter);
-        avventuraRV.setItemAnimator(new DefaultItemAnimator());
+        fantasyRV.setLayoutManager(layoutManager);
+        fantasyRV.setAdapter(fantasyAdapter);
+        fantasyRV.setItemAnimator(new DefaultItemAnimator());
     }
 
-    public void initProssimeUscite (List<Movie>set){
+    public void initAnimation (List<Movie>set){
         if(set == null)
             Log.d(TAG, "SET Prossime NULL");
         else if(set.isEmpty())
             Log.d(TAG, "SET Prossime vuoto");
-        crimineAdapter = new MoviesAdapter(getContext(), set);
+        animationAdapter = new MoviesAdapter(getContext(), set);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        crimineRV.setLayoutManager(layoutManager);
-        crimineRV.setAdapter(crimineAdapter);
-        crimineRV.setItemAnimator(new DefaultItemAnimator());
+        animationRV.setLayoutManager(layoutManager);
+        animationRV.setAdapter(animationAdapter);
+        animationRV.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    public void initCommedie (List<Movie>set){
+        if(set == null)
+            Log.d(TAG, "SET Prossime NULL");
+        else if(set.isEmpty())
+            Log.d(TAG, "SET Prossime vuoto");
+        commedieAdapter = new MoviesAdapter(getContext(), set);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        commedieRV.setLayoutManager(layoutManager);
+        commedieRV.setAdapter(commedieAdapter);
+        commedieRV.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    public void initRomance (List<Movie>set){
+        if(set == null)
+            Log.d(TAG, "SET Prossime NULL");
+        else if(set.isEmpty())
+            Log.d(TAG, "SET Prossime vuoto");
+        romanceAdapter = new MoviesAdapter(getContext(), set);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        romanceRV.setLayoutManager(layoutManager);
+        romanceRV.setAdapter(romanceAdapter);
+        romanceRV.setItemAnimator(new DefaultItemAnimator());
     }
 
     public void initTexts(){
         SpannableString ss1 = new SpannableString(azioneTxt.getText());
-        SpannableString ss2 = new SpannableString(avventuraTxt.getText());
-        SpannableString ss3 = new SpannableString(crimineTxt.getText());
+        SpannableString ss2 = new SpannableString(fantasyTxt.getText());
+        SpannableString ss3 = new SpannableString(animationTxt.getText());
+        SpannableString ss4 = new SpannableString(commedieTxt.getText());
+        SpannableString ss5 = new SpannableString(romanceTxt.getText());
 
-       CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
+        CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
 
         ClickableSpan azioneClickableSpan = new ClickableSpan(){
 
             @Override
             public void onClick(@NonNull View widget) {
                 Log.d(TAG, "cliccato");
-               action.setGenere(28);
-               Navigation.findNavController(widget).navigate(action);
-            }
-        };
-
-
-        ClickableSpan avventuraClickableSpan = new ClickableSpan(){
-
-            @Override
-            public void onClick(@NonNull View widget) {
-                Log.d(TAG, "cliccato");
-                action.setGenere(12);
+                action.setGenere(28);
                 Navigation.findNavController(widget).navigate(action);
             }
         };
 
-        ClickableSpan crimineClickableSpan = new ClickableSpan(){
+
+        ClickableSpan fantasyClickableSpan = new ClickableSpan(){
+
+            @Override
+            public void onClick(@NonNull View widget) {
+                Log.d(TAG, "cliccato");
+                action.setGenere(14);
+                Navigation.findNavController(widget).navigate(action);
+            }
+        };
+
+        ClickableSpan animationClickableSpan = new ClickableSpan(){
 
 
             @Override
             public void onClick(@NonNull View widget) {
                 Log.d(TAG, "cliccato");
-                action.setGenere(80);
+                action.setGenere(16);
                 Navigation.findNavController(widget).navigate(action);
+            }
+        };
+
+        ClickableSpan commedieClickableSpan = new ClickableSpan(){
 
 
+            @Override
+            public void onClick(@NonNull View widget) {
+                Log.d(TAG, "cliccato");
+                action.setGenere(35);
+                Navigation.findNavController(widget).navigate(action);
+            }
+        };
+
+        ClickableSpan romanceClickableSpan = new ClickableSpan(){
+
+
+            @Override
+            public void onClick(@NonNull View widget) {
+                Log.d(TAG, "cliccato");
+                action.setGenere(10749);
+                Navigation.findNavController(widget).navigate(action);
             }
         };
 
         ss1.setSpan(azioneClickableSpan, 0, 6, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        ss2.setSpan(avventuraClickableSpan, 0, 8, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        ss3.setSpan(crimineClickableSpan, 0, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss2.setSpan(fantasyClickableSpan, 0, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss3.setSpan(animationClickableSpan, 0, 9, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss4.setSpan(commedieClickableSpan, 0, 6, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss5.setSpan(romanceClickableSpan, 0, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         azioneTxt.setText(ss1);
-        avventuraTxt.setText(ss2);
-        crimineTxt.setText(ss3);
+        fantasyTxt.setText(ss2);
+        animationTxt.setText(ss3);
+        commedieTxt.setText(ss4);
+        romanceTxt.setText(ss5);
 
         azioneTxt.setMovementMethod(LinkMovementMethod.getInstance());
-        avventuraTxt.setMovementMethod(LinkMovementMethod.getInstance());
-        crimineTxt.setMovementMethod(LinkMovementMethod.getInstance());
-
+        fantasyTxt.setMovementMethod(LinkMovementMethod.getInstance());
+        animationTxt.setMovementMethod(LinkMovementMethod.getInstance());
+        commedieTxt.setMovementMethod(LinkMovementMethod.getInstance());
+        romanceTxt.setMovementMethod(LinkMovementMethod.getInstance());
 
     }
 

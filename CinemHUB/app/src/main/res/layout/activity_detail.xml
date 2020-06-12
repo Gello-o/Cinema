@@ -24,6 +24,7 @@
             app:expandedTitleMarginStart="48dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
+            <!--app:expandedTitleTextAppearance="@color-->
 
             <RelativeLayout
                 android:layout_width="wrap_content"

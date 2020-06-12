@@ -9,18 +9,12 @@
 
     <string name="menu_home">HOME</string>
     <string name="menu_preferiti">FAVORITES</string>
-    <string name="menu_add_list">ADD TO LIST</string>
     <string name="menu_categorie">CATEGORIES</string>
     <string name="menu_nuovi_arrivi">NOW PLAYING</string>
     <string name="menu_prossime_uscite">UPCOMING</string>
     <string name="menu_piu_visti">MOST WATCHED</string>
     <string name="home_second">Home Second</string>
-    <string name="menu_genere">NomeCategoria</string>
-    <string name="menu_azione">ACTION</string>
-    <string name="menu_avventura">ADVENTURE</string>
-    <string name="menu_crimine">CRIME</string>
-
-
+    <string name="menu_genere"></string>
 
     <string name="movie_name">Movie Title</string>
     <string name="movie_details">Movie Details</string>
@@ -31,11 +25,10 @@
     <string name="pref_sort_order_key">SortOrder</string>
     <string name="pref_most_popular">Most Popular</string>
     <string name="pref_highest_rated">Highest Rated</string>
-    <string name="a_description">a description</string>
+    <string name="no_title">No Title</string>
     <string name="fullscreen_tutorial" />
     <string name="error_player" />
     <string name="search" />
-    <string name="menu_ricerca">Search</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -52,6 +45,11 @@
     <string name="refresh" />
     <string name="refresh1" />
 
+    <string name="popolari">Popular</string>
+    <string name="top_rated">Top Rated</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="now_playing">Now Playing</string>
 
+    <string name="a_description">A Description</string>
 
 </resources>

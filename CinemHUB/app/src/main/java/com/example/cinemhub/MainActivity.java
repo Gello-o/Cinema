@@ -16,10 +16,6 @@ import com.example.cinemhub.model.FavoriteDB;
 import com.google.android.material.navigation.NavigationView;
 import androidx.annotation.NonNull;
 
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -32,21 +28,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private static final String TAG = "MainActivity";
-    private final Context mContext = this;
-    private DrawerLayout drawer;
-    private NavController navController;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,30 +49,8 @@ public class MainActivity extends AppCompatActivity {
                 new ConnectivityManager.NetworkCallback() {
 
                     @Override
-                    public void onAvailable(Network network) {
-                        // Network Available
-
-                        Toast.makeText(MainActivity.this, "Welcome in CinemHUB", Toast.LENGTH_LONG).show();
-
-                    }
-
-                    @Override
-                    public void onUnavailable() {
-                        // Network Not Available
-                        Toast.makeText(MainActivity.this, "check connection", Toast.LENGTH_LONG).show();
-                        new AlertDialog.Builder(MainActivity.this).setIcon(R.drawable.dialog_alert).setTitle("Internet Connection Alert")
-                                .setMessage("Please Check your internet connection").setPositiveButton("close", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        })
-                                .show();
-                    }
-
-                    @Override
                     public void onLost(Network network) {
-                        // Network Not Available
+                        // Network lost
                         Toast.makeText(MainActivity.this, "check connection", Toast.LENGTH_LONG).show();
                         new AlertDialog.Builder(MainActivity.this).setIcon(R.drawable.dialog_alert).setTitle("Internet Connection Alert")
                                 .setMessage("Please Check your internet connection").setPositiveButton("close", new DialogInterface.OnClickListener() {
@@ -98,28 +65,36 @@ public class MainActivity extends AppCompatActivity {
         );
 
 
+        // Test iniziale su connessione dispositivo (essenziale) per l'app
+        if (!isConnected()) {
+            new AlertDialog.Builder(this).setIcon(R.drawable.dialog_alert).setTitle("Internet Connection Alert")
+                    .setMessage("Please Check your internet connection").setPositiveButton("close", (dialog, which) -> finish())
+                    .show();
+        } else {
+            //Toast.makeText(MainActivity.this, "Welcome in CinemHUB", Toast.LENGTH_LONG).show();
+
             Toolbar toolbar = findViewById(R.id.toolbar_main);
             setSupportActionBar(toolbar);
 
 
-            drawer = findViewById(R.id.drawer_layout);
+            DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
             NavigationView navigationView = findViewById(R.id.nav_view);
 
             // menu should be considered as top level destinations.
             mAppBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.nav_home, R.id.nav_preferiti, R.id.nav_add_list, R.id.nav_categorie, R.id.nav_nuovi_arrivi, R.id.nav_prossime_uscite, R.id.nav_piu_visti)
+                    R.id.nav_home, R.id.nav_preferiti, R.id.nav_categorie, R.id.nav_nuovi_arrivi, R.id.nav_prossime_uscite, R.id.nav_piu_visti)
                     .setDrawerLayout(drawer)
                     .build();
-            navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
             NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
             NavigationUI.setupWithNavController(navigationView, navController);
 
-            FavoriteDB.getInstance(getApplicationContext());
-            FavoriteDB.getInstanceUser();
-
             Log.d(TAG, "creato il Db");
         }
+        FavoriteDB.getInstance(getApplicationContext());
+        FavoriteDB.getInstanceUser();
+    }
 
 
     @Override
@@ -130,11 +105,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.filter:
-
-        }
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         return super.onOptionsItemSelected(item);
     }
 
@@ -151,6 +122,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+    }
+
+    private boolean isConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService((Context.CONNECTIVITY_SERVICE));
+
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnected();
     }
 
 }
