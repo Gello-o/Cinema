@@ -152,7 +152,6 @@ public class FilterHandler {
 
     private void seekBarMove() {
 
-
         // set listener
         rangeSeekbarVote.setOnRangeSeekbarChangeListener((minValue, maxValue) -> {
             Log.d(TAG, "ChangedVote: "+minValue+", "+maxValue);
@@ -189,6 +188,9 @@ public class FilterHandler {
     private List<Movie> filterVote(String voteMin, String voteMax) {
         int intVoteMin = Integer.parseInt(voteMin);
         int intVoteMax = Integer.parseInt(voteMax);
+
+        if(intVoteMin == 0 && intVoteMax == 10)
+            return moviesGlobal;
 
         List<Movie> tmp = new ArrayList<>();
 
@@ -227,6 +229,9 @@ public class FilterHandler {
         int yearIntMin = Integer.parseInt(yearMin);
         int yearIntMax = Integer.parseInt(yearMax);
         int yearMovieInt = 0;
+
+        if(yearIntMin == 1929 && yearIntMax == 2027)
+            return tmp;
 
         List<Movie> tmp1 = new ArrayList<>();
 
