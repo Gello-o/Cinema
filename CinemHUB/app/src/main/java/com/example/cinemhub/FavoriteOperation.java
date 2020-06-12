@@ -110,7 +110,5 @@ public class FavoriteOperation {
         return false;
     }
 
-
-
 }
 

@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -130,37 +129,33 @@ public class MostraCategoriaFragment extends Fragment {
             }
         });
 
-        mostraCategoriaViewModel.getGenere(genere).observe(getViewLifecycleOwner(), new Observer<Resource<List<Movie>>>() {
-            @Override
-            public void onChanged(@Nullable Resource<List<Movie>> resource) {
-                if(resource!=null) {
+        mostraCategoriaViewModel.getGenere(genere).observe(getViewLifecycleOwner(), resource -> {
+            if(resource!=null) {
 
-                    moviesAdapter.setData(resource.getData());
-                    currentMovies = resource.getData();
+                moviesAdapter.setData(resource.getData());
+                currentMovies = resource.getData();
 
-                    if(currentMovies.size() < 20)
-                        setCanLoad(false);
-                    else
-                        setCanLoad(true);
-                    Log.d(TAG, "CurrentListSize: "+resource.getData().size());
+                if(currentMovies.size() < 20)
+                    setCanLoad(false);
+                else
+                    setCanLoad(true);
+                Log.d(TAG, "CurrentListSize: "+resource.getData().size());
 
-                    if (filterOperation != null) {
-                        filterOperation.setMovie(currentMovies);
-                        Log.d(TAG, "FilterSetMovie");
-                    }
-                    else
-                        Log.d(TAG, "FilterOperationNull");
+                if (filterOperation != null) {
+                    filterOperation.setMovie(currentMovies);
+                    Log.d(TAG, "FilterSetMovie");
+                }
+                else
+                    Log.d(TAG, "FilterOperationNull");
 
-                    if (!resource.isLoading() && canLoad) {
-                        Log.d(TAG, "STA CARICANDO");
-                        mostraCategoriaViewModel.setLoading(false);
-                        if (resource.getData() != null) {
-                            mostraCategoriaViewModel.setCurrentResults(resource.getData().size());
-                        }
+                if (!resource.isLoading() && canLoad) {
+                    Log.d(TAG, "STA CARICANDO");
+                    mostraCategoriaViewModel.setLoading(false);
+                    if (resource.getData() != null) {
+                        mostraCategoriaViewModel.setCurrentResults(resource.getData().size());
                     }
                 }
             }
-
         });
     }
 

@@ -2,7 +2,6 @@ package com.example.cinemhub.ui.home;
 
 import android.os.Bundle;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -82,25 +81,23 @@ public class HomeFragment extends Fragment {
         });
 
 
-        homeViewModel.getAlCinema().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> moviesSet) {
-                slides = new ArrayList<>();
-                if(moviesSet!= null && !moviesSet.isEmpty()) {
-                    for (int i = 0; i < 8; i++) {
+        homeViewModel.getAlCinema().observe(getViewLifecycleOwner(), moviesSet -> {
+            slides = new ArrayList<>();
+            if(moviesSet != null && !moviesSet.isEmpty()) {
+                for (int i = 0; i < moviesSet.size(); i++) {
+                    if(moviesSet.get(i) != null && moviesSet.get(i).getVoteAverage() > 7)
                         slides.add(moviesSet.get(i));
-                    }
-                }else{
-                    //pensiamo a mostrare qualcosa di carino se non ci sono film
                 }
-                initSlider();
-                messageHandler = new Handler(Looper.getMainLooper());
-                indicator.setupWithViewPager(sliderpager,true);
-                Timer timer = new Timer();
-                timer.scheduleAtFixedRate(new HomeFragment.SliderTimer(),4000,4000);
+            }else{
 
-                slideAdapter.notifyDataSetChanged();
             }
+            initSlider();
+            messageHandler = new Handler(Looper.getMainLooper());
+            indicator.setupWithViewPager(sliderpager,true);
+            Timer timer = new Timer();
+            timer.scheduleAtFixedRate(new SliderTimer(),4000,4000);
+
+            slideAdapter.notifyDataSetChanged();
         });
 
         setHasOptionsMenu(true);
@@ -136,6 +133,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void initSlider(){
+        //se slides è vuoto dobbiamo pensare ad una soluzione
         slideAdapter = new SliderPagerAdapter(getActivity(), slides);
         sliderpager.setAdapter(slideAdapter);
     }
