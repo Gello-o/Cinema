@@ -1,7 +1,8 @@
 package com.example.cinemhub.menu_items.filtri;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,14 +13,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarChangeListener;
-import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarFinalValueListener;
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
 import com.example.cinemhub.R;
-import com.example.cinemhub.model.Movie;
+
 import com.example.cinemhub.menu_items.ricerca.SearchFragment;
-import com.example.cinemhub.ui.add_list.AddListFragment;
+import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.ui.categorie.MostraCategoriaFragment;
 import com.example.cinemhub.ui.nuovi_arrivi.NuoviArriviFragment;
 import com.example.cinemhub.ui.piu_visti.PiuVistiFragment;
@@ -27,12 +25,19 @@ import com.example.cinemhub.ui.prossime_uscite.ProssimeUsciteFragment;
 import com.example.cinemhub.utils.Constants;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
+
+/*
+l'oggetto FilterHandler ha la responsabilità di filtrare la lista di Movie. Mostra
+un AlertDialog in cui l'utente ha la possibilità di scegliere delle combinazioni tra i seguenti filtri:
+ordinamento, genere, per voto e/o per anno di uscita
+
+Quando l'utente decide di filtrare, l'oggetto FilterHandler disabilita il lazy loading
+ */
 
 public class FilterHandler {
     private static final String TAG = "FilterHandler";
@@ -40,9 +45,8 @@ public class FilterHandler {
     private Menu menu;
     private static final String DIGIT_PATTERN = "\\d+";
     private static final Pattern DIGIT_PATTERN_COMPILED = Pattern.compile(DIGIT_PATTERN);
-    List<Movie> moviesGlobal;
-    List<Movie> movieFiltered = new ArrayList<>();
-    List<Movie> movieWork;
+    private List<Movie> moviesGlobal;
+    private List<Movie> movieFiltered = new ArrayList<>();
     private TextView textViewVoteMax;
     private TextView textViewVoteMin;
     private TextView textViewYearMax;
@@ -56,14 +60,13 @@ public class FilterHandler {
     public FilterHandler(Menu menu, Fragment fragment){
         this.fragment = fragment;
         this.menu = menu;
-        this.movieWork = new ArrayList<>();
         this.moviesGlobal = new ArrayList<>();
     }
 
     public void implementFilter(int tipo) {
         LayoutInflater factory = LayoutInflater.from(fragment.getActivity());
         //final View textEntryView = factory.inflate(R.layout.filter_dialog, null);
-        final View textEntryView = factory.inflate(R.layout.filter_dialog_2, null);
+        @SuppressLint("InflateParams") final View textEntryView = factory.inflate(R.layout.filter_dialog_2, null);
 
 
         MenuItem filterMenuItem;
@@ -81,10 +84,8 @@ public class FilterHandler {
         textViewYearMax = textEntryView.findViewById(R.id.textViewMaxYear);
         textViewYearMin = textEntryView.findViewById(R.id.textViewMinYear);
 
-
         List<String> listVote = Constants.setGenre();
         spinnerList(spinnerCategroy, listVote);
-
 
         List<String> listYear = new ArrayList<>();
         listYear.add("");
@@ -98,57 +99,44 @@ public class FilterHandler {
         listYear.add("Year DESC");
         spinnerList(spinnerOrder, listYear);
 
-        View filterOpt = filterMenuItem.getActionView();
-        Log.d(TAG, "FilterMenuItem: "+filterMenuItem);
-        Log.d(TAG, "FilterOpt: "+filterOpt);
-
         final AlertDialog.Builder alert = new AlertDialog.Builder(fragment.getActivity()).setView(textEntryView).setTitle(" Filter:");
-        filterMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                Log.d(TAG, "onClick");
 
-                seekBarMove();
+        filterMenuItem.setOnMenuItemClickListener(item -> {
+            Log.d(TAG, "onClick");
 
-                alert.setIcon(R.drawable.heart_on).setTitle(" Filter:").setView(textEntryView).setPositiveButton("Save",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int whichButton) {
+            ViewGroup viewGroup = (ViewGroup) textEntryView.getParent();
 
-                                String stringSpinnerCategory = spinnerCategroy.getSelectedItem().toString();
-                                String stringSpinnerOrder = spinnerOrder.getSelectedItem().toString();
+            if(viewGroup != null)
+                viewGroup.removeView(textEntryView);
 
-                                filter2(textViewVoteMin.getText().toString(), textViewVoteMax.getText().toString(),
-                                        textViewYearMin.getText().toString(), textViewYearMax.getText().toString(),
-                                        stringSpinnerCategory, stringSpinnerOrder);
+            seekBarMove();
 
-                                ViewGroup viewGroup = (ViewGroup) textEntryView.getParent();
-                                viewGroup.removeView(textEntryView);
-                            }
+            alert.setIcon(R.drawable.heart_on).setTitle(" Filter:").setView(textEntryView).setPositiveButton("Save",
+                    (dialog, whichButton) -> {
 
-                        }).setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int whichButton) {
-                                ViewGroup viewGroup = (ViewGroup) textEntryView.getParent();
-                                viewGroup.removeView(textEntryView);
-                                Log.d(TAG, "Cancel");
-                            }
-                        });
-                alert.show();
-                return true;
-            }
+                        setFragmentCanLoad();
+
+                        String stringSpinnerCategory = spinnerCategroy.getSelectedItem().toString();
+                        String stringSpinnerOrder = spinnerOrder.getSelectedItem().toString();
+
+                        filter(textViewVoteMin.getText().toString(), textViewVoteMax.getText().toString(),
+                                textViewYearMin.getText().toString(), textViewYearMax.getText().toString(),
+                                stringSpinnerCategory, stringSpinnerOrder);
+
+                    }).setNegativeButton("Cancel",
+                    (dialog, whichButton) -> Log.d(TAG, "Cancel"));
+
+            alert.show();
+            return true;
         });
     }
 
-    void spinnerList(Spinner spinner, List<String> spinnerFilter) {
-        List<String> categroyList = new ArrayList<>();
+    private void spinnerList(Spinner spinner, List<String> spinnerFilter) {
 
-        for(String s : spinnerFilter)
-            categroyList.add(s);
+        List<String> categoryList = new ArrayList<>(spinnerFilter);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(fragment.getActivity(),
-                android.R.layout.simple_spinner_item, categroyList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(fragment.getActivity(),
+                android.R.layout.simple_spinner_item, categoryList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -162,43 +150,26 @@ public class FilterHandler {
         });
     }
 
-    public void seekBarMove() {
-
+    private void seekBarMove() {
 
         // set listener
-        rangeSeekbarVote.setOnRangeSeekbarChangeListener(new OnRangeSeekbarChangeListener() {
-            @Override
-            public void valueChanged(Number minValue, Number maxValue) {
-                Log.d(TAG, "ChangedVote: "+minValue+", "+maxValue);
-                textViewVoteMin.setText(String.valueOf(minValue));
-                textViewVoteMax.setText(String.valueOf(maxValue));
-            }
+        rangeSeekbarVote.setOnRangeSeekbarChangeListener((minValue, maxValue) -> {
+            Log.d(TAG, "ChangedVote: "+minValue+", "+maxValue);
+            textViewVoteMin.setText(String.valueOf(minValue));
+            textViewVoteMax.setText(String.valueOf(maxValue));
         });
         // set final value listener
-        rangeSeekbarVote.setOnRangeSeekbarFinalValueListener(new OnRangeSeekbarFinalValueListener() {
-            @Override
-            public void finalValue(Number minValue, Number maxValue) {
-                Log.d("CRS=>", String.valueOf(minValue) + " : " + String.valueOf(maxValue));
-            }
-        });
+        rangeSeekbarVote.setOnRangeSeekbarFinalValueListener((minValue, maxValue) -> Log.d("CRS=>", minValue + " : " + maxValue));
 
         // set listener
-        rangeSeekbarYear.setOnRangeSeekbarChangeListener(new OnRangeSeekbarChangeListener() {
-            @Override
-            public void valueChanged(Number minValue, Number maxValue) {
-                Log.d(TAG, "ChangedYear: "+minValue+", "+maxValue);
-                textViewYearMin.setText(String.valueOf(minValue));
-                textViewYearMax.setText(String.valueOf(maxValue));
-            }
+        rangeSeekbarYear.setOnRangeSeekbarChangeListener((minValue, maxValue) -> {
+            Log.d(TAG, "ChangedYear: "+minValue+", "+maxValue);
+            textViewYearMin.setText(String.valueOf(minValue));
+            textViewYearMax.setText(String.valueOf(maxValue));
         });
 
         // set final value listener
-        rangeSeekbarYear.setOnRangeSeekbarFinalValueListener(new OnRangeSeekbarFinalValueListener() {
-            @Override
-            public void finalValue(Number minValue, Number maxValue) {
-                Log.d("CRS=>", String.valueOf(minValue) + " : " + String.valueOf(maxValue));
-            }
-        });
+        rangeSeekbarYear.setOnRangeSeekbarFinalValueListener((minValue, maxValue) -> Log.d("CRS=>", minValue + " : " + maxValue));
     }
 
     //Setta la lista globale
@@ -206,7 +177,6 @@ public class FilterHandler {
         if(moviesGlobal==null || moviesGlobal.size()==0) {
             Log.d(TAG, "Lista null");
             this.moviesGlobal = new ArrayList<>();
-            this.movieWork = new ArrayList<>();
         }
 
         else {
@@ -215,147 +185,143 @@ public class FilterHandler {
         }
     }
 
-    public void filterVote(String voteMin, String voteMax) {
-        Boolean flag = false;
+    private List<Movie> filterVote(String voteMin, String voteMax) {
         int intVoteMin = Integer.parseInt(voteMin);
         int intVoteMax = Integer.parseInt(voteMax);
 
-        for(Movie m : movieWork) {
-            if(m.getVoteAverage() >= intVoteMin &&
+        if(intVoteMin == 0 && intVoteMax == 10)
+            return moviesGlobal;
+
+        List<Movie> tmp = new ArrayList<>();
+
+        for(Movie m : moviesGlobal) {
+            if(m!=null && m.getVoteAverage() != null && m.getVoteAverage() >= intVoteMin &&
                     m.getVoteAverage() <= intVoteMax) {
-                for(Movie m2 : movieFiltered) {
-                    if (m2.getId().equals(m.getId())) {
-                        flag = true;
+                if(!tmp.contains(m))
+                    tmp.add(m);
+            }
+            else
+                Log.d(TAG, "MovieNull");
+        }
+
+        return tmp;
+    }
+
+    private List<Movie> filterGen(int genId, List<Movie> tmp) {
+        List<Movie> tmp2 = new ArrayList<>();
+
+        for(Movie m : tmp) {
+            if(m!=null && m.getGenreIds() != null) {
+                if(!tmp2.contains(m)) {
+                    for (Integer id : m.getGenreIds()) {
+                        if (id == genId)
+                            tmp2.add(m);
                     }
                 }
-                if (!flag) {
-                    movieFiltered.add(m);
-                }
             }
+            else
+                Log.d(TAG, "MovieNull");
         }
-        movieWork.clear();
-        movieWork.addAll(movieFiltered);
-        movieFiltered.clear();
+        return tmp2;
     }
 
-    public void filterGen(int genId) {
-        Boolean flag = false;
-        for(Movie m : movieWork) {
-            for(Integer genM : m.getGenreIds()) {
-                if(genM.equals(genId)) {
-                    for(Movie m2 : movieFiltered) {
-                        if (m2.getId().equals(m.getId())) {
-                            flag = true;
-                        }
-                    }
-                    if(!flag)
-                        movieFiltered.add(m);
-                }
-            }
-        }
-        movieWork.clear();
-        movieWork.addAll(movieFiltered);
-        movieFiltered.clear();
-    }
-
-    public void filterOrder(String order) {
-        if(order.equals("Name ASC"))
-            Collections.sort(movieWork, new NameFunctor("A"));
-        else if(order.equals("Name DESC"))
-            Collections.sort(movieWork, new NameFunctor("D"));
-        else if(order.equals("Vote ASC"))
-            Collections.sort(movieWork, new NameFunctor("A"));
-        else if(order.equals("Vote DESC"))
-            Collections.sort(movieWork, new VoteFunctor("D"));
-        else if(order.equals("Popularity ASC"))
-            Collections.sort(movieWork, new PopularityFunctor("A"));
-        else if(order.equals("Popularity DESC"))
-            Collections.sort(movieWork, new PopularityFunctor("D"));
-        else if(order.equals("Year ASC"))
-            Collections.sort(movieWork, new YearFunctor("A"));
-        else if(order.equals("Year DESC"))
-            Collections.sort(movieWork, new YearFunctor("D"));
-    }
-
-    public void filterYear(String yearMin, String yearMax) {
-        Boolean flag = false;
+    private List<Movie> filterYear(String yearMin, String yearMax, List<Movie> tmp) {
         int yearIntMin = Integer.parseInt(yearMin);
         int yearIntMax = Integer.parseInt(yearMax);
-        int yearMovieInt;
-        //String s;
-        for(Movie m : movieWork) {
-            yearMovieInt = 0;
-            if(m.getReleaseDate().length()==10)
+        int yearMovieInt = 0;
+
+        if(yearIntMin == 1929 && yearIntMax == 2027)
+            return tmp;
+
+        List<Movie> tmp1 = new ArrayList<>();
+
+        for(Movie m : tmp) {
+            if(m != null && m.getReleaseDate() != null && m.getReleaseDate().length()==10)
                 yearMovieInt = Integer.parseInt(m.getReleaseDate().substring(0,4));
+            else
+                Log.d(TAG, "MovieNull");
+
             if(yearMovieInt >= yearIntMin && yearMovieInt <= yearIntMax) {
-                for(Movie m2 : movieFiltered) {
-                    if (m2.getId().equals(m.getId())) {
-                        flag = true;
-                    }
-                }
-                if (!flag) {
-                    movieFiltered.add(m);
-                }
+                if(!tmp1.contains(m))
+                    tmp1.add(m);
             }
         }
-        movieWork.clear();
-        movieWork.addAll(movieFiltered);
-        movieFiltered.clear();
+        return tmp1;
     }
 
-    public void filter2(String votoMin, String votoMax, String annoMin, String annoMax, String category, String order) {
-        movieWork.clear();
-        movieWork.addAll(moviesGlobal);
+    private void filterOrder(String order) {
+        switch (order) {
+            case "Name ASC":
+                Collections.sort(movieFiltered, new NameFunctor("A"));
+                break;
+            case "Name DESC":
+                Collections.sort(movieFiltered, new NameFunctor("D"));
+                break;
+            case "Vote ASC":
+                Collections.sort(movieFiltered, new VoteFunctor("A"));
+                break;
+            case "Vote DESC":
+                Collections.sort(movieFiltered, new VoteFunctor("D"));
+                break;
+            case "Popularity ASC":
+                Collections.sort(movieFiltered, new PopularityFunctor("A"));
+                break;
+            case "Popularity DESC":
+                Collections.sort(movieFiltered, new PopularityFunctor("D"));
+                break;
+            case "Year ASC":
+                Collections.sort(movieFiltered, new YearFunctor("A"));
+                break;
+            case "Year DESC":
+                Collections.sort(movieFiltered, new YearFunctor("D"));
+                break;
+        }
+    }
 
-        for(Movie m : movieWork)
-            Log.d(TAG, "Work0. Name: "+m.getTitle()+", Year: "+m.getReleaseDate());
+
+    private void filter(String votoMin, String votoMax, String annoMin, String annoMax, String category, String order) {
+        movieFiltered.clear();
 
         if(category.equals("") && order.equals("")){
-            filterVote(votoMin, votoMax);
-            filterYear(annoMin, annoMax);
+            movieFiltered = filterYear(annoMin, annoMax, filterVote(votoMin, votoMax));
             Log.d(TAG, "Entrato0");
-            for(Movie m : movieWork)
-                Log.d(TAG, "Work1. Name: "+m.getTitle()+", Year: "+m.getReleaseDate());
         }
 
         else {
             int genId = genSet(category);
 
-            if(category.equals("") && !order.equals("")) {
+            if(!category.equals("") && !order.equals("")) {
                 Log.d(TAG, "Entrato1");
-                filterVote(votoMin, votoMax);
-                filterYear(annoMin, annoMax);
+                movieFiltered = filterGen(genId, filterYear(annoMin, annoMax, filterVote(votoMin, votoMax)));
                 filterOrder(order);
             }
-
-            else if(!category.equals("") && order.equals("")) {
+            else if(category.equals("")) {
                 Log.d(TAG, "Entrato2");
-                filterVote(votoMin, votoMax);
-                filterYear(annoMin, annoMax);
-                filterGen(genId);
+                movieFiltered = filterYear(annoMin, annoMax, filterVote(votoMin, votoMax));
+                filterOrder(order);
+            }else {
+                Log.d(TAG, "Entrato3");
+                movieFiltered = filterGen(genId, filterYear(annoMin, annoMax, filterVote(votoMin, votoMax)));
             }
 
-            else if(!category.equals("") && !order.equals("")) {
-                Log.d(TAG, "Entrato3");
-                filterVote(votoMin, votoMax);
-                filterYear(annoMin, annoMax);
-                filterGen(genId);
-                filterOrder(order);
-            }
         }
 
-        if(fragment instanceof AddListFragment)
-            ((AddListFragment) fragment).initMovieRV(movieWork);
-        if(fragment instanceof NuoviArriviFragment)
-            ((NuoviArriviFragment) fragment).initMovieRV(movieWork);
-        if(fragment instanceof SearchFragment)
-            ((SearchFragment) fragment).initMovieRV(movieWork);
-        if(fragment instanceof ProssimeUsciteFragment)
-            ((ProssimeUsciteFragment) fragment).initMovieRV(movieWork);;
-        if(fragment instanceof PiuVistiFragment)
-            ((PiuVistiFragment) fragment).initMovieRV(movieWork);
-        if(fragment instanceof MostraCategoriaFragment)
-            ((MostraCategoriaFragment) fragment).initMovieRV(movieWork);
+        if(fragment instanceof NuoviArriviFragment) {
+            ( (NuoviArriviFragment) fragment ).initMovieRV(movieFiltered);
+        }else if(fragment instanceof SearchFragment) {
+            ( (SearchFragment) fragment ).initMovieRV(movieFiltered);
+        }else if(fragment instanceof ProssimeUsciteFragment){
+            ((ProssimeUsciteFragment) fragment).initMovieRV(movieFiltered);
+        }else if(fragment instanceof PiuVistiFragment) {
+            ( (PiuVistiFragment) fragment ).initMovieRV(movieFiltered);
+        }else if(fragment instanceof MostraCategoriaFragment) {
+            ( (MostraCategoriaFragment) fragment ).initMovieRV(movieFiltered);
+        }
+
+        for(int i=0; i< movieFiltered.size(); i++){
+            if(movieFiltered.get(i) != null)
+                Log.d(TAG, "film " + movieFiltered.get(i).getTitle());
+        }
 
     }
 
@@ -364,43 +330,79 @@ public class FilterHandler {
         if(category.equals("Action"))
             genId = Constants.ACTION;
         else {
-            if(category.equals("Adventure"))
-                genId = Constants.ADVENTURE;
-            else if(category.equals("Animation"))
-                genId = Constants.ANIMATION;
-            else if(category.equals("Comedy"))
-                genId = Constants.COMEDY;
-            else if(category.equals("Crime"))
-                genId = Constants.CRIME;
-            else if(category.equals("Documentary"))
-                genId = Constants.DOCUMENTARY;
-            else if(category.equals("Drama"))
-                genId = Constants.DRAMA;
-            else if(category.equals("Family"))
-                genId = Constants.FAMILY;
-            else if(category.equals("Fantasy"))
-                genId = Constants.FANTASY;
-            else if(category.equals("History"))
-                genId = Constants.HISTORY;
-            else if(category.equals("Horror"))
-                genId = Constants.HORROR;
-            else if(category.equals("Music"))
-                genId = Constants.MUSIC;
-            else if(category.equals("Mystery"))
-                genId = Constants.MYSTERY;
-            else if(category.equals("Romance"))
-                genId = Constants.ROMANCE;
-            else if(category.equals("SciFi"))
-                genId = Constants.SCIFI;
-            else if(category.equals("Thriller"))
-                genId = Constants.THRILLER;
-            else if(category.equals("Tv-Movie"))
-                genId = Constants.TVMOVIE;
-            else if(category.equals("War"))
-                genId = Constants.WAR;
-            else if(category.equals("Western"))
-                genId = Constants.WESTERN;
+            switch (category) {
+                case "Adventure":
+                    genId = Constants.ADVENTURE;
+                    break;
+                case "Animation":
+                    genId = Constants.ANIMATION;
+                    break;
+                case "Comedy":
+                    genId = Constants.COMEDY;
+                    break;
+                case "Crime":
+                    genId = Constants.CRIME;
+                    break;
+                case "Documentary":
+                    genId = Constants.DOCUMENTARY;
+                    break;
+                case "Drama":
+                    genId = Constants.DRAMA;
+                    break;
+                case "Family":
+                    genId = Constants.FAMILY;
+                    break;
+                case "Fantasy":
+                    genId = Constants.FANTASY;
+                    break;
+                case "History":
+                    genId = Constants.HISTORY;
+                    break;
+                case "Horror":
+                    genId = Constants.HORROR;
+                    break;
+                case "Music":
+                    genId = Constants.MUSIC;
+                    break;
+                case "Mystery":
+                    genId = Constants.MYSTERY;
+                    break;
+                case "Romance":
+                    genId = Constants.ROMANCE;
+                    break;
+                case "SciFi":
+                    genId = Constants.SCIFI;
+                    break;
+                case "Thriller":
+                    genId = Constants.THRILLER;
+                    break;
+                case "Tv-Movie":
+                    genId = Constants.TVMOVIE;
+                    break;
+                case "War":
+                    genId = Constants.WAR;
+                    break;
+                case "Western":
+                    genId = Constants.WESTERN;
+                    break;
+            }
         }
         return genId;
+    }
+
+    private void setFragmentCanLoad(){
+
+        if(fragment instanceof MostraCategoriaFragment) {
+            ((MostraCategoriaFragment) fragment).setCanLoad(false);
+        }else if(fragment instanceof PiuVistiFragment){
+            ((PiuVistiFragment) fragment).setCanLoad(false);
+        }else if(fragment instanceof ProssimeUsciteFragment) {
+            ((ProssimeUsciteFragment) fragment).setCanLoad(false);
+        }else if(fragment instanceof NuoviArriviFragment){
+            ((NuoviArriviFragment) fragment).setCanLoad(false);
+        }else if(fragment instanceof SearchFragment){
+            ((SearchFragment) fragment).setCanLoad(false);
+        }
+
     }
 }
