@@ -5,35 +5,40 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
-import java.util.List;
 
-//interfaccia per l'interazione dell'applicazione con le due istanze di Database
+import com.example.cinemhub.model.Favorite;
+
+import java.util.List;
 
 @Dao
 public interface MovieDao {
-    String TAG = "DbInterface";
+    public final String TAG = "DbInterface";
 
     @Insert
-    void addFavorite(Favorite favorite);
+    public void addFavorite(Favorite favorite);
 
     @Query("select * from Favorite")
-    List<Favorite> getFavorite();
+    public List<Favorite> getFavorite();
 
+    //cancella una riga tramite Fvaorite.setID()
     @Delete
-    void deleteFavorite(Favorite dbToDelete);
-
-    @Insert
-    void addUserRating(UserInfo info);
-
-    @Query("select * from UserInfo")
-    List<UserInfo> getUserOverview();
-
-    @Query("select * from UserInfo where movieId = :id")
-    UserInfo getUserInfo(int id);
+    public void deleteFavorite(Favorite dbToDelete);
 
     @Update
-    void updateUserRating(UserInfo nextDb);
+    public void changeDb(Favorite nextDb);
+
+    @Insert
+    public void addUserRating(UserRatingDB userRatingDB);
+
+    @Query("select * from UserRatingDB")
+    public List<UserRatingDB> getUserOverview();
+
+    @Query("select * from UserRatingDB where movie_id = :id")
+    public UserRatingDB getUserInfo(int id);
+
+    @Update
+    public void updateUserRating(UserRatingDB nextDb);
 
     @Delete
-    void deleteUser(UserInfo userToDelete);
+    public void deleteUser(UserRatingDB dbToDelete);
 }

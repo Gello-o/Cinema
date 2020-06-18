@@ -1,10 +1,10 @@
 package com.example.cinemhub;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
@@ -13,8 +13,9 @@ import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
+import com.example.cinemhub.model.Favorite;
 import com.example.cinemhub.model.FavoriteDB;
-import com.example.cinemhub.model.UserInfo;
+import com.example.cinemhub.model.UserRatingDB;
 
 import java.util.List;
 
@@ -25,11 +26,17 @@ public class UserOperation {
 
     private TextView showVote, warning, comment, usersRating;
     private EditText editText;
-    private RatingBar ratingBar;
+    private RatingBar ratingBar, ratingBarUser;
+    private Button button, editRatingButton, deleteButton;
+    private List<UserRatingDB> lineUser;
+    private UserRatingDB userRatingDB;
 
-    private float submittedRating;
-    private String id, commento;
-    private boolean app = true;
+    float submittedRating;
+    public String id, commento;
+    boolean app = true;
+
+
+
 
     //costructor allow findview and Toast
     public UserOperation(Activity activity,Context context){
@@ -38,25 +45,24 @@ public class UserOperation {
     }
 
     //////////
-    void eseguiUser(String _id) {
+    public void eseguiUser(String _id) {
         // cancellaDb();
         id = _id;
 
-        Button button = this.activity.findViewById(R.id.submit_rating);
+        button = this.activity.findViewById(R.id.submit_rating);
         ratingBar = this.activity.findViewById(R.id.ratingBar);
         editText = this.activity.findViewById(R.id.user_overview);
         showVote = this.activity.findViewById(R.id.show_vote);
         warning = this.activity.findViewById(R.id.warning);
         comment = this.activity.findViewById(R.id.comment);
         editText = this.activity.findViewById(R.id.user_overview);
-        Button editRatingButton = this.activity.findViewById(R.id.edit_rating);
+        editRatingButton = this.activity.findViewById(R.id.edit_rating);
         usersRating = this.activity.findViewById(R.id.users_rating2);
-        Button deleteButton = this.activity.findViewById(R.id.delete_button);
+        deleteButton = this.activity.findViewById(R.id.delete_button);
 
         writeComment();
 
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @SuppressLint("SetTextI18n")
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 submittedRating = ratingBar.getRating();
@@ -72,7 +78,6 @@ public class UserOperation {
 
         if (!editText.getText().toString().equals(commento)) {
             editText.setOnClickListener(new View.OnClickListener() {
-                @SuppressLint("SetTextI18n")
                 @Override
                 public void onClick(View v) {
                     editText.setFocusableInTouchMode(true);
@@ -119,7 +124,6 @@ public class UserOperation {
 
 
         editRatingButton.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
                 app = false;
@@ -145,13 +149,12 @@ public class UserOperation {
         });
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
-                UserInfo info;
-                info = FavoriteDB.getInstance().dbInterface().getUserInfo(Integer.parseInt(id));
-                if(info != null){
-                    FavoriteDB.getInstance().dbInterface().deleteUser(info);
+                UserRatingDB user;
+                user = FavoriteDB.getInstance().dbInterface().getUserInfo(Integer.parseInt(id));
+                if(user != null){
+                    FavoriteDB.getInstance().dbInterface().deleteUser(user);
                     ratingBar.setRating(0);
                     usersRating.setText("0 / 10");
                     comment.setText("");
@@ -165,20 +168,20 @@ public class UserOperation {
     ///////////////
 
     private void showInfo() {
-        List<UserInfo> lineUser = FavoriteDB.getInstance().dbInterface().getUserOverview();
-        for(UserInfo userRating: lineUser){
+        lineUser = FavoriteDB.getInstance().dbInterface().getUserOverview();
+        for(UserRatingDB userRatingDB : lineUser){
             Log.d(TAG,"Database: " +
-                    " ID: " + userRating.getMovieId() +
-                    " Rating: " + userRating.getRating() +
-                    " Overview: " + userRating.getOverview());
+                    " ID: " + userRatingDB.getMovie_id() +
+                    " Rating: " + userRatingDB.getRating() +
+                    " Overview: " + userRatingDB.getOverview());
         }
     }
 
-    private void saveUser(String id){
-        UserInfo userRatingDB = new UserInfo();
+    private void saveUser(String _id){
+        userRatingDB = new UserRatingDB();
 
         String name = editText.getText().toString();
-        userRatingDB.setMovieId(Integer.parseInt(id));
+        userRatingDB.setMovie_id(Integer.parseInt(_id));
         userRatingDB.setRating(submittedRating);
         userRatingDB.setOverview(name);
         Log.d(TAG, "Memorizzato nel DB");
@@ -194,27 +197,28 @@ public class UserOperation {
     }
 
     private boolean checkUser(){
-        UserInfo user;
+        UserRatingDB user;
         user = FavoriteDB.getInstance().dbInterface().getUserInfo(Integer.parseInt(id));
-        if(user != null)
+        if(user != null){
             return true;
-        return false;
+        }else {
+            return false;
+        }
     }
 
     private void getUsereInfo(){
         if(checkUser()){
-            UserInfo user;
+            UserRatingDB user;
             user = FavoriteDB.getInstance().dbInterface().getUserInfo(Integer.parseInt(id));
             commento = user.getOverview();
             submittedRating = user.getRating();
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private void writeComment(){
         if(checkUser()){//==true)
             getUsereInfo();
-            usersRating.setText(submittedRating + " / 10");
+            usersRating.setText((int) submittedRating + " / 10");
             comment.setText(commento);
         }else{
             usersRating.setText("0 / 10");
@@ -223,7 +227,7 @@ public class UserOperation {
     }
 
     private void cancellaDb() {
-        List<UserInfo> line = FavoriteDB.getInstance().dbInterface().getUserOverview();
+        List<UserRatingDB> line = FavoriteDB.getInstance().dbInterface().getUserOverview();
         FavoriteDB.getInstance().clearAllTables();
         Log.d(TAG, "db size: " + line.size());
     }

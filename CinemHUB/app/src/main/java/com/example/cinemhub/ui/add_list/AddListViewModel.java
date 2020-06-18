@@ -1,23 +1,34 @@
-package com.example.cinemhub.menu_items.ricerca;
+package com.example.cinemhub.ui.add_list;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesRepository;
 import java.util.List;
 
-public class SearchViewModel extends ViewModel {
+public class AddListViewModel extends ViewModel {
 
-    private static final String TAG = "SearchViewModel";
     private MutableLiveData<List<Movie>> mText;
     MoviesRepository repo;
+    private int page;
 
-    public MutableLiveData<List<Movie>> doSearch(String query) {
+    public LiveData<List<Movie>> getText() {
         if(mText == null){
             mText = new MutableLiveData<>();
             repo = MoviesRepository.getInstance();
-            repo.searchMovie(1, query, mText);
+            int i;
+            for(i=1; i<5; i++) {
+                repo.searchMovie(i, "star+wars", mText);
+            }
+            page = i;
         }
         return mText;
     }
+
+    public int getPage() {
+        return page;
+    }
+
+
 }

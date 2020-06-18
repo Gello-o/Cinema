@@ -2,6 +2,7 @@ package com.example.cinemhub.ui.home;
 
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,7 +34,8 @@ import java.util.TimerTask;
 
 public class HomeFragment extends Fragment {
 
-    //private static final String TAG = "HomeFragment";
+    private static final String TAG = "HomeFragment";
+    private HomeViewModel homeViewModel;
     private RecyclerView popularRV;
     private MoviesAdapter popularAdapter;
     private TextView popularTV;
@@ -45,8 +47,8 @@ public class HomeFragment extends Fragment {
     private TextView prossimeUsciteTV;
     private ViewPager sliderpager;
     private TabLayout indicator;
-    private List<Movie> slides;
-    private SliderPagerAdapter slideAdapter;
+    List<Movie> slides;
+    SliderPagerAdapter slideAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -62,42 +64,61 @@ public class HomeFragment extends Fragment {
         sliderpager = root.findViewById(R.id.slider_pager);
         indicator = root.findViewById(R.id.indicator);
 
-        HomeViewModel homeViewModel =
+        homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
 
-        homeViewModel.getPopolari().observe(getViewLifecycleOwner(), moviesSet -> {
-            initPopularRV(moviesSet);
-            popularAdapter.notifyDataSetChanged();
-        });
-
-        homeViewModel.getTopRated().observe(getViewLifecycleOwner(), moviesSet -> {
-            initTopRatedRV(moviesSet);
-            topRatedAdapter.notifyDataSetChanged();
-        });
-
-        homeViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), moviesSet -> {
-            initProssimeUscite(moviesSet);
-            prossimeUsciteAdapter.notifyDataSetChanged();
-        });
-
-
-        homeViewModel.getAlCinema().observe(getViewLifecycleOwner(), moviesSet -> {
-            slides = new ArrayList<>();
-            if(moviesSet != null && !moviesSet.isEmpty()) {
-                for (int i = 0; i < moviesSet.size(); i++) {
-                    if(moviesSet.get(i) != null && moviesSet.get(i).getVoteAverage() > 7)
-                        slides.add(moviesSet.get(i));
-                }
-            }else{
-
+        homeViewModel.getPopolari().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> moviesSet) {
+                if(moviesSet == null)
+                    Log.d(TAG, "moviesSet nullo");
+                else
+                    Log.d(TAG, ""+moviesSet.size());
+                initPopularRV(moviesSet);
+                popularAdapter.notifyDataSetChanged();
             }
-            initSlider();
-            messageHandler = new Handler(Looper.getMainLooper());
-            indicator.setupWithViewPager(sliderpager,true);
-            Timer timer = new Timer();
-            timer.scheduleAtFixedRate(new SliderTimer(),4000,4000);
+        });
 
-            slideAdapter.notifyDataSetChanged();
+        homeViewModel.getTopRated().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> moviesSet) {
+                if(moviesSet == null)
+                    Log.d(TAG, "moviesSet nullo");
+                else
+                    Log.d(TAG, ""+moviesSet.size());
+                initTopRatedRV(moviesSet);
+                topRatedAdapter.notifyDataSetChanged();
+            }
+        });
+
+        homeViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> moviesSet) {
+                if(moviesSet == null)
+                    Log.d(TAG, "moviesSet nullo");
+                else
+                    Log.d(TAG, ""+moviesSet.size());
+                initProssimeUscite(moviesSet);
+                prossimeUsciteAdapter.notifyDataSetChanged();
+            }
+        });
+
+
+        homeViewModel.getAlCinema().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> moviesSet) {
+                slides = new ArrayList<>();
+                for(int i=0; i<4; i++){
+                    slides.add(moviesSet.get(i));
+                }
+                initSlider();
+                messageHandler = new Handler(Looper.getMainLooper());
+                indicator.setupWithViewPager(sliderpager,true);
+                Timer timer = new Timer();
+                timer.scheduleAtFixedRate(new HomeFragment.SliderTimer(),4000,4000);
+
+                slideAdapter.notifyDataSetChanged();
+            }
         });
 
         setHasOptionsMenu(true);
@@ -105,35 +126,50 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-    private void initPopularRV (List<Movie>set){
-        popularAdapter = new MoviesAdapter(getActivity(), set);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+    public void initPopularRV (List<Movie>set){
+        if(set == null)
+            Log.d(TAG, "SET POPOLARI NULL");
+        else if(set.isEmpty())
+            Log.d(TAG, "SET POPOLARI vuoto");
+        popularAdapter = new MoviesAdapter(getContext(), set);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         popularRV.setLayoutManager(layoutManager);
         popularRV.setAdapter(popularAdapter);
         popularRV.setItemAnimator(new DefaultItemAnimator());
-        popularTV.setText(R.string.popolari);
+        popularTV.setText("Popular");
     }
 
-    private void initTopRatedRV (List<Movie>set){
-        topRatedAdapter = new MoviesAdapter(getActivity(), set);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+    public void initTopRatedRV (List<Movie>set){
+        if(set == null)
+            Log.d(TAG, "SET top NULL");
+        else if(set.isEmpty())
+            Log.d(TAG, "SET top vuoto");
+        topRatedAdapter = new MoviesAdapter(getContext(), set);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         topRatedRV.setLayoutManager(layoutManager);
         topRatedRV.setAdapter(topRatedAdapter);
         topRatedRV.setItemAnimator(new DefaultItemAnimator());
-        topRatedTV.setText(R.string.top_rated);
+        topRatedTV.setText("Top Rated");
     }
 
-    private void initProssimeUscite (List<Movie>set){
-        prossimeUsciteAdapter = new MoviesAdapter(getActivity(), set);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+    public void initProssimeUscite (List<Movie>set){
+        if(set == null)
+            Log.d(TAG, "SET Prossime NULL");
+        else if(set.isEmpty())
+            Log.d(TAG, "SET Prossime vuoto");
+        prossimeUsciteAdapter = new MoviesAdapter(getContext(), set);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         prossimeUsciteRV.setLayoutManager(layoutManager);
         prossimeUsciteRV.setAdapter(prossimeUsciteAdapter);
         prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
-        prossimeUsciteTV.setText(R.string.upcoming);
+        prossimeUsciteTV.setText("Upcoming");
     }
 
-    private void initSlider(){
-        //se slides è vuoto dobbiamo pensare ad una soluzione
+    public void initSlider(){
+        if(slides == null)
+            Log.d(TAG, "Slider null");
+        else if(slides.isEmpty())
+            Log.d(TAG, "Slider vuoto");
         slideAdapter = new SliderPagerAdapter(getActivity(), slides);
         sliderpager.setAdapter(slideAdapter);
     }
@@ -145,13 +181,16 @@ public class HomeFragment extends Fragment {
         @Override
         public void run() {
 
-            HomeFragment.this.runOnUiThread(() -> {
+            HomeFragment.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
 
-                if(slides != null) {
-                    if (sliderpager.getCurrentItem() < slides.size() - 1) {
-                        sliderpager.setCurrentItem(sliderpager.getCurrentItem() + 1);
-                    } else
-                        sliderpager.setCurrentItem(0);
+                    if(slides != null) {
+                        if (sliderpager.getCurrentItem() < slides.size() - 1) {
+                            sliderpager.setCurrentItem(sliderpager.getCurrentItem() + 1);
+                        } else
+                            sliderpager.setCurrentItem(0);
+                    }
                 }
             });
 
@@ -160,13 +199,12 @@ public class HomeFragment extends Fragment {
     }
 
     private Handler messageHandler;
-    
-    private void runOnUiThread(Runnable action) {
+    protected void runOnUiThread(Runnable action) {
         messageHandler.post(action);
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main, menu);
         SearchHandler searchOperation = new SearchHandler(menu, this);
         searchOperation.implementSearch(1);

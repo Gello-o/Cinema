@@ -15,6 +15,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.cinemhub.R;
+import com.example.cinemhub.ui.add_list.AddListFragment;
+import com.example.cinemhub.ui.add_list.AddListFragmentDirections;
 import com.example.cinemhub.ui.categorie.CategorieFragment;
 import com.example.cinemhub.ui.categorie.CategorieFragmentDirections;
 import com.example.cinemhub.ui.home.HomeFragment;
@@ -27,15 +29,6 @@ import com.example.cinemhub.ui.preferiti.PreferitiFragment;
 import com.example.cinemhub.ui.preferiti.PreferitiFragmentDirections;
 import com.example.cinemhub.ui.prossime_uscite.ProssimeUsciteFragment;
 import com.example.cinemhub.ui.prossime_uscite.ProssimeUsciteFragmentDirections;
-
-/*
-oggetto che ha la responsabilità di gestire la logica della ricerca:
-associa l'item di ricerca al suo menu; Inizializza la searchView su
-cui imposta un listener.
-
-Utilizza la navigazione per passare la query dal
-fragment da cui si sta ricercando al fragment di ricerca
- */
 
 public class SearchHandler {
     private static final String TAG = "SearchHandler";
@@ -72,11 +65,14 @@ public class SearchHandler {
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
                     // the search view is now open
-                    new Handler().post(() -> {
-                        searchView.requestFocus();
-                        InputMethodManager imm = (InputMethodManager) fragment.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        if (imm != null) { // it's never null. I've added this line just to make the compiler happy
-                            imm.showSoftInput(searchView.findFocus(), 0);
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            searchView.requestFocus();
+                            InputMethodManager imm = (InputMethodManager) fragment.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            if (imm != null) { // it's never null. I've added this line just to make the compiler happy
+                                imm.showSoftInput(searchView.findFocus(), 0);
+                            }
                         }
                     });
                     return true;
@@ -103,7 +99,6 @@ public class SearchHandler {
                     String queryFinal = query.trim().replaceAll("\\s+", "+").replaceAll("[^a-zA-Z0-9+]", "");
                     System.out.println("Query: " + queryFinal);
                     View view = fragment.getView();
-
                     NavController navController = Navigation.findNavController(view);
 
                     Log.d(TAG, "query submitted");
@@ -116,6 +111,11 @@ public class SearchHandler {
                         Log.d(TAG, "piu visti");
                         PiuVistiFragmentDirections.GoToSearchAction action =
                                 PiuVistiFragmentDirections.goToSearchAction(queryFinal);
+                        navController.navigate(action);
+                    }else if(fragment instanceof AddListFragment){
+                        Log.d(TAG, "addlist");
+                        AddListFragmentDirections.GoToSearchAction action =
+                                AddListFragmentDirections.goToSearchAction(queryFinal);
                         navController.navigate(action);
                     }else if(fragment instanceof ProssimeUsciteFragment) {
                         Log.d(TAG, "prossime uscite");
@@ -138,6 +138,14 @@ public class SearchHandler {
                                 CategorieFragmentDirections.goToSearchAction(queryFinal);
                         navController.navigate(action);
                     }
+                    else{
+                   /*gestione casi in cui non devo lanciare la ricerca:
+                   A) NON MOSTRO IL BOTTONE
+                   B) QUANDO CLICCA SU SUBMIT MOSTRO ALERT
+                   */Log.d(TAG, "altro mannaggia");
+
+                    }
+
                     return false;
                 }
             });

@@ -1,14 +1,22 @@
 package com.example.cinemhub;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.webkit.WebChromeClient;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
@@ -29,6 +37,14 @@ import com.google.android.youtube.player.YouTubePlayerView;
 public class ActivityDetail extends YouTubeBaseActivity {
     private static final String TAG = "ActivityDetail";
 
+    private TextView nameOfMovie, plotSynopsis, userRating, releaseDate;
+    private ImageView imageView;
+    private YouTubePlayerView playerView;
+    private YouTubePlayer.OnInitializedListener initializedListener;
+    private Context mContext;
+    private UserOperation userOperation ;
+    private FavoriteOperation favoriteOperation;
+
     String thumbnail, movieName, synopsis, rating, release, id, originalMovieName, voteCount, genre;
 
 
@@ -38,18 +54,19 @@ public class ActivityDetail extends YouTubeBaseActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "creating ActivityDetail");
         setContentView(R.layout.activity_detail);
-
-        UserOperation userOperation = new UserOperation(this, this);
-        FavoriteOperation favoriteOperation = new FavoriteOperation(this, this);
+        Toolbar toolbar = findViewById(R.id.toolbar_activity_detail);
+        userOperation = new UserOperation(this,this);
+        favoriteOperation = new FavoriteOperation(this,this);
 
         initCollapsingToolbar();
+        mContext = getBaseContext();
 
-        ImageView imageView = findViewById(R.id.image_activity_detail);
-        TextView nameOfMovie = findViewById(R.id.title);
-        TextView plotSynopsis = findViewById(R.id.plotsynopsis);
-        TextView userRating = findViewById(R.id.usersRating);
-        TextView releaseDate = findViewById(R.id.releaseDate);
-        YouTubePlayerView playerView = findViewById(R.id.player);
+        imageView = findViewById(R.id.image_activity_detail);
+        nameOfMovie = findViewById(R.id.title);
+        plotSynopsis = findViewById(R.id.plotsynopsis);
+        userRating = findViewById(R.id.usersRating);
+        releaseDate = findViewById(R.id.releaseDate);
+        playerView = findViewById(R.id.player);
 
         Intent intent = getIntent();
         Log.d(TAG, "Receiving intent");
@@ -69,10 +86,10 @@ public class ActivityDetail extends YouTubeBaseActivity {
             MutableLiveData<String> keyDatum = new MutableLiveData<>();
             MoviesRepository.getInstance().getTrailer(id, keyDatum);
 
-            YouTubePlayer.OnInitializedListener initializedListener = new YouTubePlayer.OnInitializedListener() {
+            initializedListener = new YouTubePlayer.OnInitializedListener() {
                 @Override
                 public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-                    if (keyDatum.getValue() != null)
+                    if(keyDatum.getValue()!=null)
                         youTubePlayer.cueVideo(keyDatum.getValue());
                     else
                         youTubePlayer.cueVideo("WECcGZLvcz0");
@@ -97,7 +114,7 @@ public class ActivityDetail extends YouTubeBaseActivity {
             }
 
             if (movieName == null && originalMovieName == null) {
-                nameOfMovie.setText(R.string.no_title);
+                nameOfMovie.setText("NON HA TITOLO");
             } else {
                 if (movieName != null)
                     nameOfMovie.setText(movieName);
@@ -163,7 +180,7 @@ public class ActivityDetail extends YouTubeBaseActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
         finish();
         return true;
     }

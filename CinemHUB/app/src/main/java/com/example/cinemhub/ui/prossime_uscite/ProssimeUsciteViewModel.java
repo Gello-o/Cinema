@@ -1,35 +1,36 @@
 package com.example.cinemhub.ui.prossime_uscite;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesRepository;
-import com.example.cinemhub.model.Resource;
 
 import java.util.List;
 
 public class ProssimeUsciteViewModel extends ViewModel {
-    //private static final String TAG = "NuoviArriviViewModel";
-    private MutableLiveData<Resource<List<Movie>>> film;
-    private int page = 1;
+    private MutableLiveData<List<Movie>> film;
+    int page;
+    MoviesRepository repo;
     private int currentResults;
     private boolean isLoading;
 
-    public MutableLiveData<Resource<List<Movie>>> getProssimeUscite() {
+    public MutableLiveData<List<Movie>> getProssimeUscite() {
         if(film == null) {
             film = new MutableLiveData<>();
-            MoviesRepository.getInstance().getMoviesLL("now_playing", page, film);
+            repo = MoviesRepository.getInstance();
+            int i;
+            for(i=1; i<2; i++)
+                repo.getMovies("upcoming", i, film);
+            page = i;
         }
         return film;
     }
 
-    public MutableLiveData<Resource<List<Movie>>> getMoreProssimeUscite() {
-        MoviesRepository.getInstance().getMoviesLL("now_playing", page, film);
-        return film;
-    }
-
-    public MutableLiveData<Resource<List<Movie>>> getMoviesLiveData() {
+    public LiveData<List<Movie>> getMoreProssimeUscite() {
+        repo = MoviesRepository.getInstance();
+        repo.getMovies("upcoming", 1, film);
         return film;
     }
 
@@ -56,5 +57,4 @@ public class ProssimeUsciteViewModel extends ViewModel {
     public void setLoading(boolean loading) {
         isLoading = loading;
     }
-
 }

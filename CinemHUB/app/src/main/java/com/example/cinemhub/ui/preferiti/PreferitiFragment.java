@@ -27,8 +27,9 @@ import java.util.List;
 public class PreferitiFragment extends Fragment {
 
     private static final String TAG = "PreferitiFragment";
-    private RecyclerView preferitiRV;
-    private List<Favorite> favoriteList;
+    RecyclerView preferitiRV;
+    MoviesAdapter moviesAdapter;
+    List<Favorite> favoriteList;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -54,13 +55,13 @@ public class PreferitiFragment extends Fragment {
         return root;
     }
 
-    private List <Movie> queryFavoriteDB(){
+    public List <Movie> queryFavoriteDB(){
         String title, posterPath, plotSynopsis, originalTitle, releaseDate;
         int id, genre, voteCount;
         Double userRating;
         Movie movie;
         List<Movie> lista = new ArrayList<>();
-        Log.d(TAG, "size " + favoriteList.size());
+        Log.d(TAG, ""+favoriteList.size());
         if(!favoriteList.isEmpty()) {
 
             for (Favorite fav : favoriteList) {
@@ -104,15 +105,15 @@ public class PreferitiFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main, menu);
         SearchHandler searchOperation = new SearchHandler(menu, this);
         searchOperation.implementSearch(1);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private void initMovies(List<Movie> movies){
-        MoviesAdapter moviesAdapter = new MoviesAdapter(getActivity(), movies);
+    public void initMovies(List<Movie> movies){
+        moviesAdapter = new MoviesAdapter(getActivity(), movies);
         moviesAdapter.notifyDataSetChanged();
         preferitiRV.setAdapter(moviesAdapter);
     }

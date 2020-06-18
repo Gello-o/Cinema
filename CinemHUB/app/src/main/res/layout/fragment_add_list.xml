@@ -4,20 +4,22 @@
     android:layout_width="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
-    android:id="@+id/genere_fragment">
+    android:id="@+id/add_list_fragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimaryDark"
-        tools:context=".ui.categorie.MostraCategoriaFragment">
+        android:background="@color/colorPrimary"
+        tools:context=".ui.add_list.AddListFragment">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_genere"
-            android:layout_height="match_parent"
+            android:id="@+id/recycler_view_add_list"
             android:layout_width="match_parent"
-            android:orientation="vertical" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:layout_editor_absoluteX="-38dp"
+            tools:layout_editor_absoluteY="0dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.core.widget.NestedScrollView>
+

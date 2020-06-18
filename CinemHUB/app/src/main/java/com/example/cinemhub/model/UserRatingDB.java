@@ -5,9 +5,9 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "UserInfo")
-public class UserInfo {
-    public String TAG = "UserInfo";
+@Entity(tableName = "UserRatingDB")
+public class UserRatingDB {
+    public String TAG = "UserRatingDB";
 
     // definizione del Db
     @PrimaryKey

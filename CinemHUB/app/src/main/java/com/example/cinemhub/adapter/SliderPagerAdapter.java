@@ -1,6 +1,5 @@
 package com.example.cinemhub.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -38,7 +37,7 @@ public class SliderPagerAdapter extends PagerAdapter {
 
 
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        @SuppressLint("InflateParams") View slideLayout = inflater.inflate(R.layout.slide_item,null);
+        View slideLayout = inflater.inflate(R.layout.slide_item,null);
 
         ImageView slideImg = slideLayout.findViewById(R.id.slide_img);
        // TextView slideText = slideLayout.findViewById(R.id.slide_title);
@@ -54,23 +53,27 @@ public class SliderPagerAdapter extends PagerAdapter {
             slideImg.setImageResource(R.drawable.image_not_found);
         }
 
-        slideImg.setOnClickListener(v -> {
-            Movie clickedDataItem;
+        slideImg.setOnClickListener(new View.OnClickListener() {
 
-            Log.d(TAG, "Clicked");
-            if(position != RecyclerView.NO_POSITION){
-                clickedDataItem = mList.get(position);
-                Intent intent = new Intent(mContext, ActivityDetail.class);
-                intent.putExtra("original_title", mList.get(position).getOriginalTitle());
-                intent.putExtra("title", mList.get(position).getTitle());
-                intent.putExtra("poster_path", mList.get(position).getPosterPath());
-                intent.putExtra("overview", mList.get(position).getOverview());
-                intent.putExtra("release_date", mList.get(position).getReleaseDate());
-                intent.putExtra("id", Integer.toString(mList.get(position).getId()));
-                intent.putExtra("vote_average", Double.toString(mList.get(position).getVoteAverage()));
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.startActivity(intent);
-                Toast.makeText(v.getContext(), "you clicked " + clickedDataItem.getOriginalTitle(), Toast.LENGTH_SHORT).show();
+            @Override
+            public void onClick(View v) {
+                Movie clickedDataItem;
+
+                Log.d(TAG, "Clicked");
+                if(position != RecyclerView.NO_POSITION){
+                    clickedDataItem = mList.get(position);
+                    Intent intent = new Intent(mContext, ActivityDetail.class);
+                    intent.putExtra("original_title", mList.get(position).getOriginalTitle());
+                    intent.putExtra("title", mList.get(position).getTitle());
+                    intent.putExtra("poster_path", mList.get(position).getPosterPath());
+                    intent.putExtra("overview", mList.get(position).getOverview());
+                    intent.putExtra("release_date", mList.get(position).getReleaseDate());
+                    intent.putExtra("id", Integer.toString(mList.get(position).getId()));
+                    intent.putExtra("vote_average", Double.toString(mList.get(position).getVoteAverage()));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent);
+                    Toast.makeText(v.getContext(), "you clicked " + clickedDataItem.getOriginalTitle(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
