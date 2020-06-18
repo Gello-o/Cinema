@@ -1,5 +1,6 @@
 package com.example.cinemhub.ui.nuovi_arrivi;
 
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,17 +9,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.cinemhub.model.Resource;
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
@@ -26,7 +24,12 @@ import com.example.cinemhub.menu_items.Refresh;
 import com.example.cinemhub.menu_items.filtri.FilterHandler;
 import com.example.cinemhub.menu_items.ricerca.SearchHandler;
 import com.example.cinemhub.model.Movie;
+import com.google.gson.Gson;
+import com.google.gson.internal.$Gson$Preconditions;
+
 import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class NuoviArriviFragment extends Fragment {
     private static final String TAG = "NuoviArriviFragment";
@@ -41,9 +44,15 @@ public class NuoviArriviFragment extends Fragment {
     private List<Movie> currentMovies;
     private boolean canLoad = true;
 
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
+        if(savedInstanceState != null){
+            Gson gson = new Gson();
+            String json = savedInstanceState.getString("Filter");
+            filterOperation = gson.fromJson(json, FilterHandler.class);
+        }
+
         View root = inflater.inflate(R.layout.fragment_nuovi_arrivi, container, false);
         prossimeUsciteRV = root.findViewById(R.id.recycler_view_nuovi_arrivi);
         setHasOptionsMenu(true);
@@ -51,8 +60,8 @@ public class NuoviArriviFragment extends Fragment {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onResume() {
+        super.onResume();
         if(!canLoad)
             canLoad = true;
     }
@@ -127,36 +136,31 @@ public class NuoviArriviFragment extends Fragment {
             }
         });
 
-        nuoviArriviViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<Resource<List<Movie>>>() {
-            @Override
-            public void onChanged(@Nullable Resource<List<Movie>> resource) {
-                if(resource != null) {
-                    moviesAdapter.setData(resource.getData());
-                    currentMovies = resource.getData();
+        nuoviArriviViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), resource -> {
+            if(resource != null) {
+                moviesAdapter.setData(resource.getData());
+                currentMovies = resource.getData();
 
-                    if(resource.getData().size() < 20)
-                        setCanLoad(false);
-                    else
-                        setCanLoad(true);
+                if(resource.getData().size() < 20)
+                    setCanLoad(false);
 
-                    Log.d(TAG, "CurrentListSize: " + resource.getData().size());
 
-                    if (filterOperation != null) {
-                        filterOperation.setMovie(currentMovies);
-                        Log.d(TAG, "FilterSetMovie");
-                    } else
-                        Log.d(TAG, "FilterOperationNull");
+                Log.d(TAG, "CurrentListSize: " + resource.getData().size());
 
-                    if (!resource.isLoading() && canLoad) {
-                        Log.d(TAG, "STA CARICANDO");
-                        nuoviArriviViewModel.setLoading(false);
-                        if (resource.getData() != null) {
-                            nuoviArriviViewModel.setCurrentResults(resource.getData().size());
-                        }
+                if (filterOperation != null) {
+                    filterOperation.setMovie(currentMovies);
+                    Log.d(TAG, "FilterSetMovie");
+                } else
+                    Log.d(TAG, "FilterOperationNull");
+
+                if (!resource.isLoading() && canLoad) {
+                    Log.d(TAG, "STA CARICANDO");
+                    nuoviArriviViewModel.setLoading(false);
+                    if (resource.getData() != null) {
+                        nuoviArriviViewModel.setCurrentResults(resource.getData().size());
                     }
                 }
             }
-
         });
     }
 
@@ -199,4 +203,12 @@ public class NuoviArriviFragment extends Fragment {
     public void setCanLoad(boolean canLoad) {
         this.canLoad = canLoad;
     }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Gson gson = new Gson();
+        String filterToString = gson.toJson(filterOperation);
+        outState.putString("Filter", filterToString);
+     }
 }

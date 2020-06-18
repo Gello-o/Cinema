@@ -89,11 +89,6 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
     }
 
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
     private boolean isConnected() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService((Context.CONNECTIVITY_SERVICE));
 

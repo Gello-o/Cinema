@@ -3,6 +3,8 @@ package com.example.cinemhub.menu_items.filtri;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,9 +39,9 @@ un AlertDialog in cui l'utente ha la possibilità di scegliere delle combinazion
 ordinamento, genere, per voto e/o per anno di uscita
 
 Quando l'utente decide di filtrare, l'oggetto FilterHandler disabilita il lazy loading
- */
+*/
 
-public class FilterHandler {
+public class FilterHandler{
     private static final String TAG = "FilterHandler";
     private Fragment fragment;
     private Menu menu;
@@ -180,7 +182,7 @@ public class FilterHandler {
         }
 
         else {
-            this.moviesGlobal = moviesGlobal;
+            this.moviesGlobal.addAll(moviesGlobal);
             Log.d(TAG, "MoviesGlobalSize: "+moviesGlobal.size());
         }
     }
@@ -316,11 +318,6 @@ public class FilterHandler {
             ( (PiuVistiFragment) fragment ).initMovieRV(movieFiltered);
         }else if(fragment instanceof MostraCategoriaFragment) {
             ( (MostraCategoriaFragment) fragment ).initMovieRV(movieFiltered);
-        }
-
-        for(int i=0; i< movieFiltered.size(); i++){
-            if(movieFiltered.get(i) != null)
-                Log.d(TAG, "film " + movieFiltered.get(i).getTitle());
         }
 
     }

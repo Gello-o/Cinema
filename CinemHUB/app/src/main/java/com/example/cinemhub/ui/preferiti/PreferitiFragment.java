@@ -60,7 +60,7 @@ public class PreferitiFragment extends Fragment {
         Double userRating;
         Movie movie;
         List<Movie> lista = new ArrayList<>();
-        Log.d(TAG, ""+favoriteList.size());
+        Log.d(TAG, "size " + favoriteList.size());
         if(!favoriteList.isEmpty()) {
 
             for (Favorite fav : favoriteList) {
