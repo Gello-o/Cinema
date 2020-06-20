@@ -23,8 +23,6 @@ import com.example.cinemhub.model.Resource;
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.menu_items.Refresh;
-import com.example.cinemhub.menu_items.filtri.FilterHandler;
-import com.example.cinemhub.menu_items.ricerca.SearchHandler;
 import com.example.cinemhub.model.Movie;
 
 import java.util.List;
@@ -38,10 +36,7 @@ public class PiuVistiFragment extends Fragment {
     private int lastVisibleItem;
     private int visibleItemCount;
     private int threshold = 1;
-    private FilterHandler filterOperation;
-    private Refresh refreshOperation;
     private List<Movie> currentMovies;
-    private boolean canLoad = true;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -91,7 +86,7 @@ public class PiuVistiFragment extends Fragment {
                         (totalItemCount <= (lastVisibleItem + threshold) && dy > 0  && !piuVistiViewModel.isLoading()) &&
                                 piuVistiViewModel.getMoviesLiveData().getValue() != null &&
                                 piuVistiViewModel.getCurrentResults() != piuVistiViewModel.getMoviesLiveData().getValue().getTotalResults())
-                        && canLoad
+                        && piuVistiViewModel.canLoad()
                 ) {
                     Resource<List<Movie>> moviesResource = new Resource<>();
 
@@ -130,20 +125,11 @@ public class PiuVistiFragment extends Fragment {
                     currentMovies = resource.getData();
 
                     if(resource.getData().size() < 20)
-                        setCanLoad(false);
-                    else
-                        setCanLoad(true);
+                        piuVistiViewModel.setCanLoad(false);
 
                     Log.d(TAG, "CurrentListSize: "+resource.getData().size());
 
-                    if (filterOperation != null) {
-                        filterOperation.setMovie(resource.getData());
-                        Log.d(TAG, "FilterSetMovie");
-                    }
-                    else
-                        Log.d(TAG, "FilterOperationNull");
-
-                    if (!resource.isLoading() && canLoad) {
+                    if (!resource.isLoading() /*&& canLoad*/) {
                         Log.d(TAG, "STA CARICANDO");
                         piuVistiViewModel.setLoading(false);
                         if (resource.getData() != null) {
@@ -159,11 +145,9 @@ public class PiuVistiFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.main3, menu);
-        SearchHandler searchOperation = new SearchHandler(menu, this);
-        filterOperation = new FilterHandler(menu, this);
-        refreshOperation = new Refresh(menu, this);
-        searchOperation.implementSearch(2);
-        filterOperation.implementFilter(2);
+        Refresh refreshOperation = new Refresh(menu, this);
+        piuVistiViewModel.initFilters(menu, this);
+        piuVistiViewModel.initSearch(menu, this);
         refreshOperation.implementRefresh(2);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -193,6 +177,14 @@ public class PiuVistiFragment extends Fragment {
     }
 
     public void setCanLoad(boolean canLoad) {
-        this.canLoad = canLoad;
+        piuVistiViewModel.setCanLoad(canLoad);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(!piuVistiViewModel.canLoad()){
+            piuVistiViewModel.setCanLoad(true);
+        }
     }
 }

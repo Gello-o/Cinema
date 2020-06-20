@@ -148,14 +148,20 @@ public class NuoviArriviFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.main3, menu);
-        SearchHandler searchOperation = new SearchHandler(menu, this);
-        Refresh refreshOperation = new Refresh(menu, this);
-        searchOperation.implementSearch(2);
         nuoviArriviViewModel.initFilters(menu, this);
+        nuoviArriviViewModel.initSearch(menu, this);
+        Refresh refreshOperation = new Refresh(menu, this);
         refreshOperation.implementRefresh(2);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(!nuoviArriviViewModel.canLoad()){
+            nuoviArriviViewModel.setCanLoad(true);
+        }
+    }
 
     private List<Movie> getMovies() {
 

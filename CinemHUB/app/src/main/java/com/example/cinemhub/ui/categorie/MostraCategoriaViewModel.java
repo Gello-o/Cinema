@@ -1,8 +1,14 @@
 package com.example.cinemhub.ui.categorie;
 
+import android.view.Menu;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.cinemhub.menu_items.filtri.FilterHandler;
+import com.example.cinemhub.menu_items.ricerca.SearchHandler;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesRepository;
 import com.example.cinemhub.model.Resource;
@@ -16,8 +22,9 @@ public class MostraCategoriaViewModel extends ViewModel {
     private int genere;
     private int currentResults;
     private boolean isLoading;
+    private boolean canLoad = true;
 
-    public MutableLiveData<Resource<List<Movie>>> getGenere(int genere) {
+    MutableLiveData<Resource<List<Movie>>> getGenere(int genere) {
         this.genere = genere;
         if(film == null) {
             film = new MutableLiveData<>();
@@ -26,7 +33,7 @@ public class MostraCategoriaViewModel extends ViewModel {
         return film;
     }
 
-    public MutableLiveData<Resource<List<Movie>>> getMoreGenere() {
+    MutableLiveData<Resource<List<Movie>>> getMoreGenere() {
         MoviesRepository.getInstance().getGenresLL(genere, page, film);
         return film;
     }
@@ -57,6 +64,24 @@ public class MostraCategoriaViewModel extends ViewModel {
 
     public void setLoading(boolean loading) {
         isLoading = loading;
+    }
+
+    public void initFilters(@NonNull Menu menu, Fragment fragment){
+        FilterHandler filterOperation = new FilterHandler(menu, fragment);
+        filterOperation.implementFilter(2);
+    }
+
+    public void initSearch(@NonNull Menu menu, Fragment fragment){
+        SearchHandler searchOperation = new SearchHandler(menu, fragment);
+        searchOperation.implementSearch(2);
+    }
+
+    public boolean canLoad() {
+        return canLoad;
+    }
+
+    public void setCanLoad(boolean canLoad) {
+        this.canLoad = canLoad;
     }
 
 }

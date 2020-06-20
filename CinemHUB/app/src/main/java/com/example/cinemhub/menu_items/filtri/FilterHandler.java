@@ -168,19 +168,6 @@ public class FilterHandler {
         rangeSeekbarYear.setOnRangeSeekbarFinalValueListener((minValue, maxValue) -> Log.d("CRS=>", minValue + " : " + maxValue));
     }
 
-    //Setta la lista globale
-    public void setMovie(List<Movie> moviesGlobal) {
-        if(moviesGlobal==null || moviesGlobal.size()==0) {
-            Log.d(TAG, "Lista null");
-            this.moviesGlobal = new ArrayList<>();
-        }
-
-        else {
-            this.moviesGlobal = moviesGlobal;
-            Log.d(TAG, "MoviesGlobalSize: "+moviesGlobal.size());
-        }
-    }
-
     private List<Movie> filterVote(String voteMin, String voteMax) {
         int intVoteMin = Integer.parseInt(voteMin);
         int intVoteMax = Integer.parseInt(voteMax);
