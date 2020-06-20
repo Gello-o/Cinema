@@ -11,26 +11,23 @@
         <item
             android:id="@+id/nav_preferiti"
             android:icon="@drawable/ic_menu_preferiti"
-            android:title="Favorites" />
-        <item
-            android:id="@+id/nav_add_list"
-            android:icon="@drawable/ic_menu_add_list"
-            android:title="Add to list" />
+            android:title="FAVORITES" />
+
         <item
             android:id="@+id/nav_categorie"
             android:icon="@drawable/ic_menu_categorie"
-            android:title="Categories" />
+            android:title="CATEGORIES" />
         <item
             android:id="@+id/nav_nuovi_arrivi"
             android:icon="@drawable/ic_menu_nuovi_arrivi"
-            android:title="Now Playing" />
+            android:title="NOW PLAYING" />
         <item
             android:id="@+id/nav_prossime_uscite"
             android:icon="@drawable/ic_menu_prossime_uscite"
-            android:title="Upcoming" />
+            android:title="UPCOMING" />
         <item
             android:id="@+id/nav_piu_visti"
             android:icon="@drawable/ic_menu_piu_visti"
-            android:title="Most watched" />
+            android:title="MOST WATCHED" />
     </group>
 </menu>

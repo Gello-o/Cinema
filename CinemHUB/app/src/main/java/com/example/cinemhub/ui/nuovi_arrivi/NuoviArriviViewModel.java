@@ -1,42 +1,43 @@
 package com.example.cinemhub.ui.nuovi_arrivi;
 
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.util.Log;
-import androidx.lifecycle.LiveData;
+import android.view.Menu;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.bumptech.glide.load.engine.Resource;
+import com.example.cinemhub.menu_items.filtri.FilterHandler;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesRepository;
-import java.util.ArrayList;
+import com.example.cinemhub.model.Resource;
+
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class NuoviArriviViewModel extends ViewModel {
-    private static final String TAG = "NuoviArriviViewModel";
-    private MutableLiveData<List<Movie>> film;
-    int page = 2;
-    MoviesRepository repo;
+    //private static final String TAG = "NuoviArriviViewModel";
+    private MutableLiveData<Resource<List<Movie>>> film;
+    private int page = 1;
     private int currentResults;
     private boolean isLoading;
+    private FilterHandler filterOperation;
+    private boolean canLoad = true;
 
-    public MutableLiveData<List<Movie>> getNuoviArrivi() {
+    public MutableLiveData<Resource<List<Movie>>> getProssimeUscite() {
         if(film == null) {
             film = new MutableLiveData<>();
-            repo = MoviesRepository.getInstance();
-            for(int i=1; i<page; i++)
-                repo.getMovies("now_playing", i, film);
+            MoviesRepository.getInstance().getMoviesLL("now_playing", page, film);
         }
         return film;
     }
 
-    public LiveData<List<Movie>> getMoreNuoviArrivi() {
-        repo = MoviesRepository.getInstance();
-        for(int i=1; i<page; i++)
-            repo.getMovies("now_playing", i, film);
+    public MutableLiveData<Resource<List<Movie>>> getMoreProssimeUscite() {
+        MoviesRepository.getInstance().getMoviesLL("now_playing", page, film);
+        return film;
+    }
+
+    public MutableLiveData<Resource<List<Movie>>> getMoviesLiveData() {
         return film;
     }
 
@@ -64,4 +65,16 @@ public class NuoviArriviViewModel extends ViewModel {
         isLoading = loading;
     }
 
+    public void initFilters(@NonNull Menu menu, Fragment fragment){
+        this.filterOperation = new FilterHandler(menu, fragment);
+        filterOperation.implementFilter(2);
+    }
+
+    public boolean canLoad() {
+        return canLoad;
+    }
+
+    public void setCanLoad(boolean canLoad) {
+        this.canLoad = canLoad;
+    }
 }

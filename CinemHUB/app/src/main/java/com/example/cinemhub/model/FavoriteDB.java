@@ -8,16 +8,19 @@ import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {Favorite.class, UserRatingDB.class}, version = 3)
+/*
+oggetto database che ha due istanze: la prima per memorizzare oggetti Favorite,
+la seconda per memorizzare il rating dell'utente
+ */
+
+@Database(entities = {Favorite.class, UserInfo.class}, version = 3)
 public abstract class FavoriteDB extends RoomDatabase {
     public final String TAG = "DbStructure";
     private static FavoriteDB favoriteDB;
     private static FavoriteDB userRatingDB;
     private static Context mContext;
 
-
-
-    static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+    private static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL("DROP TABLE Favorite");
@@ -28,11 +31,12 @@ public abstract class FavoriteDB extends RoomDatabase {
         }
     };
 
-    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+    private static final Migration MIGRATION_2_3 = new Migration(2, 3) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("DROP TABLE UserRatingDB");
 
-            database.execSQL("CREATE TABLE `UserRatingDB` (`id` INTEGER, "
+            database.execSQL("CREATE TABLE `UserInfo` (`id` INTEGER, "
                     + "`rating` FLOAT, `overview` TEXT, PRIMARY KEY(`id`))");
         }
     };
@@ -74,7 +78,7 @@ public abstract class FavoriteDB extends RoomDatabase {
             return null;
         if(userRatingDB == null){
             synchronized (FavoriteDB.class){
-                favoriteDB = Room.databaseBuilder(mContext, FavoriteDB.class,"UserRatingDB")
+                favoriteDB = Room.databaseBuilder(mContext, FavoriteDB.class,"UserInfo")
                         .addMigrations(MIGRATION_1_2)
                         .addMigrations(MIGRATION_2_3)
                         .allowMainThreadQueries()

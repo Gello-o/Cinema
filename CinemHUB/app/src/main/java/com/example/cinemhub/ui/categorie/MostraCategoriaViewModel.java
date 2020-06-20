@@ -1,93 +1,62 @@
 package com.example.cinemhub.ui.categorie;
 
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.util.Log;
-
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesRepository;
-import com.example.cinemhub.ui.nuovi_arrivi.NuoviArriviViewModel;
+import com.example.cinemhub.model.Resource;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MostraCategoriaViewModel extends ViewModel {
-    private MutableLiveData<List<Movie>> pagina;
-    private static final String TAG = "MostraCategorieFragment";
-    int index = 1;
-    int genere;
+    private MutableLiveData<Resource<List<Movie>>> film;
+    //private static final String TAG = "MostraCategorieFragment";
+    private int page = 1;
+    private int genere;
+    private int currentResults;
+    private boolean isLoading;
 
-    private MoviesRepository repo;
-
-    public MutableLiveData<List<Movie>> getGenere(int genere) {
+    public MutableLiveData<Resource<List<Movie>>> getGenere(int genere) {
         this.genere = genere;
-        if(pagina == null) {
-            pagina = new MutableLiveData<>();
-            repo = MoviesRepository.getInstance();
+        if(film == null) {
+            film = new MutableLiveData<>();
+            MoviesRepository.getInstance().getGenresLL(genere, page, film);
         }
-        return pagina;
+        return film;
     }
 
-
-    private class ShowMoreAsyncTask extends AsyncTask<Void, Void, LiveData<List<Movie>>> {
-
-        @Override
-        protected LiveData<List<Movie>> doInBackground(Void... voids) {
-            Log.d(TAG, "indice " + index);
-            repo.getGenres(genere, index, pagina);
-            if(index == 10) {
-                stopRepeatingTask();
-                resetIndex();
-            }
-            else
-                index++;
-            return pagina;
-        }
+    public MutableLiveData<Resource<List<Movie>>> getMoreGenere() {
+        MoviesRepository.getInstance().getGenresLL(genere, page, film);
+        return film;
     }
 
-    private Timer timer;
-    private TimerTask timerTask;
-
-    public void setRepeatingAsyncTask(){
-
-        final Handler handler = new Handler();
-        timer = new Timer();
-        pagina.setValue(new ArrayList<>());
-        Log.d(TAG, "valore indice: " + index);
-
-        timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            ShowMoreAsyncTask task = new ShowMoreAsyncTask();
-                            task.execute();
-                        } catch (Exception e) {
-                            Log.d(TAG, "eccezione");
-                        }
-                    }
-                });
-            }
-        };
-
-        timer.schedule(timerTask, 0, 900);
-
+    public MutableLiveData<Resource<List<Movie>>> getMoviesLiveData() {
+        return film;
     }
 
-    public void stopRepeatingTask(){
-        timer.cancel();
-        timer.purge();
+    public int getPage() {
+        return page;
     }
 
-    public void resetIndex(){
-        index = 1;
+    public void setPage(int page) {
+        this.page = page;
     }
+
+    public int getCurrentResults() {
+        return currentResults;
+    }
+
+    public void setCurrentResults(int currentResults) {
+        this.currentResults = currentResults;
+    }
+
+    public boolean isLoading() {
+        return isLoading;
+    }
+
+    public void setLoading(boolean loading) {
+        isLoading = loading;
+    }
+
 }
