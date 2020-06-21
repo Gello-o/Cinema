@@ -20,10 +20,11 @@ import java.util.List;
 
 public class UserOperation {
     private static final String TAG = "UserOperation";
+
     public Activity activity;
     private Context context;
 
-    private TextView showVote, warning, comment, usersRating;
+    private TextView showVote, warning, comment, userRating;
     private EditText editText;
     private RatingBar ratingBar;
 
@@ -38,11 +39,11 @@ public class UserOperation {
     }
 
     //////////
-    void eseguiUser(String _id) {
+    void eseguiUser(String id) {
         // cancellaDb();
-        id = _id;
+        this.id = id;
 
-        Button button = this.activity.findViewById(R.id.submit_rating);
+        Button submit = this.activity.findViewById(R.id.submit_rating);
         ratingBar = this.activity.findViewById(R.id.ratingBar);
         editText = this.activity.findViewById(R.id.user_overview);
         showVote = this.activity.findViewById(R.id.show_vote);
@@ -50,7 +51,7 @@ public class UserOperation {
         comment = this.activity.findViewById(R.id.comment);
         editText = this.activity.findViewById(R.id.user_overview);
         Button editRatingButton = this.activity.findViewById(R.id.edit_rating);
-        usersRating = this.activity.findViewById(R.id.users_rating2);
+        userRating = this.activity.findViewById(R.id.users_rating2);
         Button deleteButton = this.activity.findViewById(R.id.delete_button);
 
         writeComment();
@@ -60,11 +61,12 @@ public class UserOperation {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 submittedRating = ratingBar.getRating();
+                float rat = Float.parseFloat(userRating.getText().toString().substring(0,1));
                 showVote.setText("your Rating: " + submittedRating);
                 Log.d(TAG,"app: " + app);
-                if(checkUser()) {
-                    if (app && submittedRating != 0) {
-                        warning.setText("WARNING! you'll override your comment");
+                if(rat != 0) {
+                    if (app) {
+                        warning.setText("WARNING! you'll override your vote");
                     }
                 }
             }
@@ -82,14 +84,17 @@ public class UserOperation {
                         editText.setText("");
                     }
                     editText.setTextColor(ContextCompat.getColor(context, R.color.textColor));
-                    if (checkUser()) {
-                        warning.setText("WARNING! you'll override your comment");
+                    if (commento != null && !commento.equals("")) {
+                        if(!warning.getText().toString().equals(""))
+                            warning.setText(warning.getText().toString() + "\n" + "WARNING! you'll overwrite your comment");
+                        else
+                            warning.setText("WARNING! you'll overwrite your comment");
                     }
                 }
             });
         }
 
-        button.setOnClickListener(new View.OnClickListener() {
+        submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -124,7 +129,7 @@ public class UserOperation {
             public void onClick(View v) {
                 app = false;
                 if (checkUser()) {
-                    getUsereInfo();
+                    getUserInfo();
                     ratingBar.setRating(submittedRating);
 
                     editText.setFocusableInTouchMode(true);
@@ -135,8 +140,8 @@ public class UserOperation {
 
                     if (commento.equals("") && submittedRating == 0) {
                         Toast.makeText(context, "Leave a comment first", Toast.LENGTH_SHORT).show();
-                    }else   {
-                        warning.setText("WARNING! you'll change your comment");
+                    }else if(!commento.equals("") ){
+                        warning.setText("WARNING! you'll overwrite your comment");
                     }
                 } else {
                     Toast.makeText(context, "Leave a comment first", Toast.LENGTH_SHORT).show();
@@ -149,11 +154,12 @@ public class UserOperation {
             @Override
             public void onClick(View v) {
                 UserInfo info;
+                commento = "";
                 info = FavoriteDB.getInstance().dbInterface().getUserInfo(Integer.parseInt(id));
                 if(info != null){
                     FavoriteDB.getInstance().dbInterface().deleteUser(info);
                     ratingBar.setRating(0);
-                    usersRating.setText("0 / 10");
+                    userRating.setText("0.0 / 10");
                     comment.setText("");
                     Toast.makeText(context, "Comment Deleted", Toast.LENGTH_SHORT).show();
                 }else{
@@ -175,20 +181,33 @@ public class UserOperation {
     }
 
     private void saveUser(String id){
-        UserInfo userRatingDB = new UserInfo();
+        UserInfo userInfo = new UserInfo();
+        userInfo.setMovieId(Integer.parseInt(id));
 
         String name = editText.getText().toString();
-        userRatingDB.setMovieId(Integer.parseInt(id));
-        userRatingDB.setRating(submittedRating);
-        userRatingDB.setOverview(name);
+        float rat = Float.parseFloat(userRating.getText().toString().substring(0,2).trim());
+
+        if(submittedRating != 0)
+            userInfo.setRating(submittedRating);
+        else
+            userInfo.setRating(rat);
+
+        if(name.equals("")){
+            if(commento != null)
+                userInfo.setOverview(commento);
+            else
+                userInfo.setOverview(name);
+        }else
+            userInfo.setOverview(name);
+
+
         Log.d(TAG, "Memorizzato nel DB");
 
         if (checkUser()) {
-            FavoriteDB.getInstance().dbInterface().updateUserRating(userRatingDB);
+            FavoriteDB.getInstance().dbInterface().updateUserRating(userInfo);
             Log.d(TAG, "update dbuser ok ");
-
         } else {
-            FavoriteDB.getInstance().dbInterface().addUserRating(userRatingDB);
+            FavoriteDB.getInstance().dbInterface().addUserRating(userInfo);
             Log.d(TAG, "added dbuser 1 time ok ");
         }
     }
@@ -201,23 +220,21 @@ public class UserOperation {
         return false;
     }
 
-    private void getUsereInfo(){
-        if(checkUser()){
-            UserInfo user;
-            user = FavoriteDB.getInstance().dbInterface().getUserInfo(Integer.parseInt(id));
-            commento = user.getOverview();
-            submittedRating = user.getRating();
-        }
+    private void getUserInfo(){
+        UserInfo user;
+        user = FavoriteDB.getInstance().dbInterface().getUserInfo(Integer.parseInt(id));
+        commento = user.getOverview();
+        submittedRating = user.getRating();
     }
 
     @SuppressLint("SetTextI18n")
     private void writeComment(){
         if(checkUser()){//==true)
-            getUsereInfo();
-            usersRating.setText(submittedRating + " / 10");
+            getUserInfo();
+            userRating.setText(submittedRating + " / 10");
             comment.setText(commento);
         }else{
-            usersRating.setText("0 / 10");
+            userRating.setText("0 / 10");
             comment.setText("");
         }
     }
