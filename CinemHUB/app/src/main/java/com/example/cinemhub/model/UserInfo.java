@@ -1,9 +1,10 @@
 package com.example.cinemhub.model;
 
-
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+//Oggetto che conserva e mostra i dati inerenti a rating e commento di un utente
 
 @Entity(tableName = "UserInfo")
 public class UserInfo {

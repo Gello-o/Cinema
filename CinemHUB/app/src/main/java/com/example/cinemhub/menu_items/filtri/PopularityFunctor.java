@@ -4,8 +4,10 @@ import com.example.cinemhub.model.Movie;
 
 import java.util.Comparator;
 
+/* Funtore per confronto e ordinamento di film per popolarità */
+
 public class PopularityFunctor implements Comparator<Movie> {
-    String order;
+    private String order;
     @Override
     public int compare(Movie o1, Movie o2) {
         if(order.equals("A"))
@@ -14,7 +16,7 @@ public class PopularityFunctor implements Comparator<Movie> {
             return o2.getVoteCount().compareTo(o1.getVoteCount());
     }
 
-    public PopularityFunctor(String order) {
+    PopularityFunctor(String order) {
         this.order = order;
     }
 }

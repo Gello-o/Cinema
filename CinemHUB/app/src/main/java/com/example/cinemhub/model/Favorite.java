@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-
 //Oggetto che conserva e mostra i dati degli oggetti Movie salvati nei preferiti
 
 @Entity(tableName = "Favorite")

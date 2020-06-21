@@ -22,7 +22,7 @@ import java.util.List;
 /*
 Adapter per oggetti di tipo Movie: il suo ruolo è quello di gestire la visualizzazione dei film
 all'interno della RecyclerView. Ha un onClickListener con un intent che avvia ActivityDetail,
-che è la classe che contiene tutte le informazioni sul film cliccato
+ovvero la classe che contiene tutte le informazioni inerenti al film cliccato
 */
 
 public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{

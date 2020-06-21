@@ -16,8 +16,9 @@ import com.example.cinemhub.model.Resource;
 import java.util.List;
 
 /*
-viewModel che interagisce con l'oggetto SearchFragment: conserva i dati del fragment e
-sfrutta l'oggetto MoviesRepository per effeuttuare chiamate a TMDB
+ViewModel con cui interagisce l'oggetto SearchFragment: preserva i dati del fragment dai suoi
+cambiamenti di stato, sfrutta l'oggetto MoviesRepository per inizializzare il dato che punta alla
+lista di film e gestisce il lazy loading del fragment attraverso la variabile canLoad
 */
 
 public class SearchViewModel extends ViewModel {
@@ -29,7 +30,7 @@ public class SearchViewModel extends ViewModel {
     private boolean isLoading;
     private boolean canLoad = true;
 
-    public MutableLiveData<Resource<List<Movie>>> doSearch(String query) {
+    MutableLiveData<Resource<List<Movie>>> doSearch(String query) {
         this.query = query;
         Log.d(TAG, "query VM " + query);
         if(film == null) {
@@ -40,7 +41,7 @@ public class SearchViewModel extends ViewModel {
         return film;
     }
 
-    public MutableLiveData<Resource<List<Movie>>> searchMore() {
+    MutableLiveData<Resource<List<Movie>>> searchMore() {
         MoviesRepository.getInstance().searchMovie(query, page, film);
         return film;
     }

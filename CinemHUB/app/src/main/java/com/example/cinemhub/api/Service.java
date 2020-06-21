@@ -7,8 +7,10 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import com.example.cinemhub.model.TrailerResponse;
 
-/*l'oggetto Service serve per effettuare la chiamate REST all'API di theMovieDB, da cui
-si ottengono i file JSON che l'oggetto Client si occuperà di convertire*/
+/*
+L'oggetto Service serve per effettuare la chiamate REST all'API di theMovieDB, da cui
+si ottengono i file JSON che l'oggetto Client convertirà in codice Java
+*/
 
 public interface Service {
 

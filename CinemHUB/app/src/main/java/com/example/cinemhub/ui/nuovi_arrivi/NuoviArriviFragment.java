@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -23,11 +22,9 @@ import com.example.cinemhub.model.Resource;
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.menu_items.Refresh;
-import com.example.cinemhub.menu_items.filtri.FilterHandler;
-import com.example.cinemhub.menu_items.ricerca.SearchHandler;
 import com.example.cinemhub.model.Movie;
 import java.util.List;
-import java.util.Objects;
+
 
 public class NuoviArriviFragment extends Fragment {
     private static final String TAG = "NuoviArriviFragment";
@@ -119,29 +116,25 @@ public class NuoviArriviFragment extends Fragment {
             }
         });
 
-        nuoviArriviViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<Resource<List<Movie>>>() {
-            @Override
-            public void onChanged(@Nullable Resource<List<Movie>> resource) {
+        nuoviArriviViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), resource -> {
 
-                if(resource != null) {
-                    moviesAdapter.setData(resource.getData());
-                    currentMovies = resource.getData();
+            if(resource != null) {
+                moviesAdapter.setData(resource.getData());
+                currentMovies = resource.getData();
 
-                    if(resource.getData().size() < 20)
-                        nuoviArriviViewModel.setCanLoad(false);
+                if(resource.getData().size() < 20)
+                    nuoviArriviViewModel.setCanLoad(false);
 
-                    Log.d(TAG, "CurrentListSize: " + resource.getData().size());
+                Log.d(TAG, "CurrentListSize: " + resource.getData().size());
 
-                    if (!resource.isLoading() /*&& nuoviArriviViewModel.canLoad()*/) {
-                        Log.d(TAG, "STA CARICANDO");
-                        nuoviArriviViewModel.setLoading(false);
-                        if (resource.getData() != null) {
-                            nuoviArriviViewModel.setCurrentResults(resource.getData().size());
-                        }
+                if (!resource.isLoading() /*&& nuoviArriviViewModel.canLoad()*/) {
+                    Log.d(TAG, "STA CARICANDO");
+                    nuoviArriviViewModel.setLoading(false);
+                    if (resource.getData() != null) {
+                        nuoviArriviViewModel.setCurrentResults(resource.getData().size());
                     }
                 }
             }
-
         });
     }
 
