@@ -17,7 +17,6 @@ la seconda memorizza oggetti UserInfo
 public abstract class FavoriteDB extends RoomDatabase {
     public final String TAG = "DbStructure";
     private static FavoriteDB favoriteDB;
-    private static FavoriteDB userRatingDB;
     private static Context mContext;
 
     private static final Migration MIGRATION_1_2 = new Migration(1, 2) {
@@ -73,20 +72,6 @@ public abstract class FavoriteDB extends RoomDatabase {
         return favoriteDB;
     }
 
-    public static FavoriteDB getInstanceUser(){
-        if(mContext == null)
-            return null;
-        if(userRatingDB == null){
-            synchronized (FavoriteDB.class){
-                favoriteDB = Room.databaseBuilder(mContext, FavoriteDB.class,"UserInfo")
-                        .addMigrations(MIGRATION_1_2)
-                        .addMigrations(MIGRATION_2_3)
-                        .allowMainThreadQueries()
-                        .build();
-            }
-        }
-        return userRatingDB;
-    }
 
     public abstract MovieDao dbInterface();
 }

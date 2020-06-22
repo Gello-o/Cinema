@@ -3,6 +3,8 @@ package com.example.cinemhub;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
+import com.example.cinemhub.model.Favorite;
 import com.example.cinemhub.model.FavoriteDB;
 import com.example.cinemhub.model.UserInfo;
 
@@ -25,13 +28,11 @@ public class UserOperation {
     private Context context;
 
     private TextView showVote, warning, comment, userRating;
-    private EditText editText;
+    private EditText editComment;
     private RatingBar ratingBar;
 
-    private float submittedRating;
+    private float voteToSubmit, oldVote;
     private String id, commento;
-    private boolean app = true;
-    private boolean alreadySet = false;
 
     //costructor allow findview and Toast
     public UserOperation(Activity activity,Context context){
@@ -46,130 +47,151 @@ public class UserOperation {
 
         Button submit = this.activity.findViewById(R.id.submit_rating);
         ratingBar = this.activity.findViewById(R.id.ratingBar);
-        editText = this.activity.findViewById(R.id.user_overview);
+        editComment = this.activity.findViewById(R.id.user_overview);
         showVote = this.activity.findViewById(R.id.show_vote);
         warning = this.activity.findViewById(R.id.warning);
         comment = this.activity.findViewById(R.id.comment);
-        editText = this.activity.findViewById(R.id.user_overview);
         Button editRatingButton = this.activity.findViewById(R.id.edit_rating);
         userRating = this.activity.findViewById(R.id.users_rating2);
         Button deleteButton = this.activity.findViewById(R.id.delete_button);
 
-        writeComment();
+        if(checkUser()) {
+            UserInfo user;
+            user = FavoriteDB.getInstance().dbInterface().getUserInfo(Integer.parseInt(id));
+            commento = user.getOverview();
+            comment.setText(commento);
+            oldVote = user.getRating();
+            userRating.setText(oldVote + " / 10");
+        }else{
+            commento = "";
+            comment.setText(commento);
+            oldVote = 0;
+            userRating.setText("0.0 / 10");
+        }
 
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                submittedRating = ratingBar.getRating();
-                float rat = Float.parseFloat(userRating.getText().toString().substring(0,1));
-                showVote.setText("your Rating: " + submittedRating);
-                Log.d(TAG,"app: " + app);
-                warning.setText("");
-                if(rat != 0 && submittedRating != 0 && rat != submittedRating) {
-                    if (app) {
-                        warning.setText("WARNING! you'll override your vote");
+                voteToSubmit = ratingBar.getRating();
+                float oldVote = Float.parseFloat(userRating.getText().toString().substring(0,2).trim());
+                showVote.setText("your Rating: " + voteToSubmit);
+
+                if(oldVote != 0 && voteToSubmit != 0 && oldVote != voteToSubmit) {
+                    if(warning.getText().toString().equals(""))
+                        warning.setText(R.string.warning_vote);
+                    else{
+                        if(!warning.getText().toString().contains("vote"))
+                            warning.setText(R.string.warning_vote_comment);
                     }
                 }
+                else{
+                    if(!editComment.getText().toString().equals("") && !editComment.getText().toString().equals(commento))
+                        warning.setText(R.string.warning_comment);
+                    else
+                        warning.setText("");
+
+                }
+
             }
         });
 
-        if (!editText.getText().toString().equals(commento)) {
-            editText.setOnClickListener(new View.OnClickListener() {
-                @SuppressLint("SetTextI18n")
-                @Override
-                public void onClick(View v) {
-                    editText.setFocusableInTouchMode(true);
-                    editText.setFocusable(true);
+        editComment.addTextChangedListener(
+                new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-                    if (editText.getText().toString().equals("Write There:"))
-                        editText.setText("");
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if(s.length() == 0){
 
-                    editText.setTextColor(ContextCompat.getColor(context, R.color.textColor));
+                            if(voteToSubmit != 0)
+                                warning.setText(R.string.warning_vote);
+                            else
+                                warning.setText("");
 
-                    if (commento != null && !commento.equals("")) {
-                        warning.setText("");
-                        if(!warning.getText().toString().equals("") ) {
-                            warning.setText(warning.getText().toString() + "\n" + "WARNING! you'll overwrite your comment");
-                            alreadySet = true;
-                        }else
-                            warning.setText("WARNING! you'll overwrite your comment");
+                        }
+                    }
+
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if(s.length() == 0){
+
+                            if(voteToSubmit != 0 && !commento.equals("") && voteToSubmit != oldVote)
+                                warning.setText(R.string.warning_vote);
+                            else
+                                warning.setText("");
+
+                        }else{
+                            if(!commento.equals("")) {
+                                if (warning.getText().toString().equals(""))
+                                    warning.setText(R.string.warning_comment);
+                                else {
+                                    if (!warning.getText().toString().contains("comment"))
+                                        warning.setText(R.string.warning_vote_comment);
+                                }
+                            }
+                        }
+
                     }
                 }
-            });
-        }
+        );
+
+        editComment.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onClick(View v) {
+                editComment.setFocusableInTouchMode(true);
+                editComment.setFocusable(true);
+
+                if (editComment.getText().toString().equals("Write There:"))
+                    editComment.setText("");
+
+                editComment.setTextColor(ContextCompat.getColor(context, R.color.textColor));
+
+            }
+        });
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (editText.getText().toString().equals("Write There:")) {
-                    editText.setText("");
-                }
-
-                saveUser(id);
-                writeComment();
-
-                if (checkUser()) {
-                    if (commento.equals("") && submittedRating == 0) {
-                        Toast.makeText(context, "empty comment", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(context, "Comment added", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                //azzero tutto
                 warning.setText("");
-                editText.setText("");
-                ratingBar.setRating(0);
-                submittedRating = 0;
-                app = true;
+                if (editComment.getText().toString().equals("Write There:"))
+                    editComment.setText("");
+
+                saveOrUpdateUser();
             }
+
         });
 
-
         editRatingButton.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
             @Override
-            public void onClick(View v) {
-                app = false;
-                if (checkUser()) {
-                    getUserInfo();
-                    ratingBar.setRating(submittedRating);
-
-                    editText.setFocusableInTouchMode(true);
-                    editText.setFocusable(true);
-                    editText.setTextColor(ContextCompat.getColor(context, R.color.textColor));
-                    editText.setText("" + commento);
-                    // editText.hasFocus();
-
-                    if (commento.equals("") && submittedRating == 0) {
-                        Toast.makeText(context, "Leave a comment first", Toast.LENGTH_SHORT).show();
-                    }else if(!commento.equals("") ){
-                        warning.setText("WARNING! you'll overwrite your comment");
-                    }
-                } else {
-                    Toast.makeText(context, "Leave a comment first", Toast.LENGTH_SHORT).show();
-                }
+            public void onClick(View v){
+                warning.setText("");
+                if(!commento.equals(""))
+                    editComment.setText(commento);
+                else
+                    Toast.makeText(context, "Nothing to edit", Toast.LENGTH_SHORT).show();
             }
         });
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
-                UserInfo info;
-                commento = "";
-                info = FavoriteDB.getInstance().dbInterface().getUserInfo(Integer.parseInt(id));
-                if(info != null){
-                    FavoriteDB.getInstance().dbInterface().deleteUser(info);
-                    ratingBar.setRating(0);
-                    userRating.setText("0.0 / 10");
+                warning.setText("");
+                if(checkUser()) {
+                    UserInfo userInfo = FavoriteDB.getInstance().dbInterface().getUserInfo(Integer.parseInt(id));
+                    FavoriteDB.getInstance().dbInterface().deleteUser(userInfo);
+                    commento = "";
+                    oldVote = 0;
                     comment.setText("");
-                    Toast.makeText(context, "Comment Deleted", Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(context, "There is no comment to delete", Toast.LENGTH_SHORT).show();
+                    userRating.setText("0 / 10");
                 }
+                else
+                    Toast.makeText(context, "Leave a comment first", Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -185,67 +207,44 @@ public class UserOperation {
         }
     }
 
-    private void saveUser(String id){
-        UserInfo userInfo = new UserInfo();
-        userInfo.setMovieId(Integer.parseInt(id));
-
-        String name = editText.getText().toString();
-        float rat = Float.parseFloat(userRating.getText().toString().substring(0,2).trim());
-
-        if(submittedRating != 0)
-            userInfo.setRating(submittedRating);
-        else
-            userInfo.setRating(rat);
-
-        if(name.equals("")){
-            if(commento != null)
-                userInfo.setOverview(commento);
-            else
-                userInfo.setOverview(name);
-        }else
-            userInfo.setOverview(name);
-
-
-        Log.d(TAG, "Memorizzato nel DB");
-
-        if (checkUser()) {
-            FavoriteDB.getInstance().dbInterface().updateUserRating(userInfo);
-            Log.d(TAG, "update dbuser ok ");
-        } else {
-            FavoriteDB.getInstance().dbInterface().addUserRating(userInfo);
-            Log.d(TAG, "added dbuser 1 time ok ");
-        }
-    }
-
     private boolean checkUser(){
         UserInfo user;
         user = FavoriteDB.getInstance().dbInterface().getUserInfo(Integer.parseInt(id));
         return user != null;
     }
 
-    private void getUserInfo(){
-        UserInfo user;
-        user = FavoriteDB.getInstance().dbInterface().getUserInfo(Integer.parseInt(id));
-        commento = user.getOverview();
-        submittedRating = user.getRating();
-    }
 
-    @SuppressLint("SetTextI18n")
-    private void writeComment(){
-        if(checkUser()){//==true)
-            getUserInfo();
-            userRating.setText(submittedRating + " / 10");
-            comment.setText(commento);
-        }else{
-            userRating.setText("0.0 / 10");
-            comment.setText("");
+    private void saveOrUpdateUser(){
+        UserInfo userInfo = new UserInfo();
+        userInfo.setMovieId(Integer.parseInt(id));
+
+        if(voteToSubmit != 0) {
+            userInfo.setRating(voteToSubmit);
+            userRating.setText(voteToSubmit + " / 10");
+            oldVote = voteToSubmit;
         }
+        else
+            userInfo.setRating(oldVote);
+
+        if(editComment.getText().toString().equals(""))
+            userInfo.setOverview(commento);
+        else {
+            String newComment = editComment.getText().toString();
+            userInfo.setOverview(newComment);
+            commento = newComment;
+            comment.setText(newComment);
+        }
+
+        if(checkUser())
+            FavoriteDB.getInstance().dbInterface().updateUserRating(userInfo);
+        else
+            FavoriteDB.getInstance().dbInterface().addUserRating(userInfo);
+
+        warning.setText("");
+        editComment.setText("");
+        ratingBar.setRating(0);
+        showInfo();
     }
 
-    private void cancellaDb() {
-        List<UserInfo> line = FavoriteDB.getInstance().dbInterface().getUserOverview();
-        FavoriteDB.getInstance().clearAllTables();
-        Log.d(TAG, "db size: " + line.size());
-    }
 
 }
