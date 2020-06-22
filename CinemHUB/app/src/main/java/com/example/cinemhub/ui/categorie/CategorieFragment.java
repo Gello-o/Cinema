@@ -31,6 +31,7 @@ import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.menu_items.ricerca.SearchHandler;
+import com.example.cinemhub.utils.Constants;
 
 import java.util.List;
 
@@ -53,6 +54,10 @@ public class CategorieFragment extends Fragment {
     private TextView commedieTxt;
     private TextView romanceTxt;
     private ImageView actionBanner;
+    private ImageView fantasyBanner;
+    private ImageView animationBanner;
+    private ImageView comedyBanner;
+    private ImageView romanceBanner;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -62,15 +67,15 @@ public class CategorieFragment extends Fragment {
         azioneRV = root.findViewById(R.id.recycler_azione);
         fantasyRV = root.findViewById(R.id.recycler_fantasy);
         animationRV = root.findViewById(R.id.recycler_animation);
-        commedieRV = root.findViewById(R.id.recycler_commedie);
+        commedieRV = root.findViewById(R.id.recycler_comedy);
         romanceRV = root.findViewById(R.id.recycler_romance);
-        azioneTxt = root.findViewById(R.id.azione_txt);
-        fantasyTxt = root.findViewById(R.id.fantasy_txt);
-        animationTxt = root.findViewById(R.id.animation_txt);
-        commedieTxt = root.findViewById(R.id.commedie_txt);
-        romanceTxt = root.findViewById(R.id.romance_txt);
 
         actionBanner = root.findViewById(R.id.image_action);
+        fantasyBanner = root.findViewById(R.id.image_fantasy);
+        animationBanner = root.findViewById(R.id.image_animation);
+        comedyBanner = root.findViewById(R.id.image_comedy);
+        romanceBanner = root.findViewById(R.id.image_romance);
+
 
         categorieViewModel =
                 new ViewModelProvider(this).get(CategorieViewModel.class);
@@ -134,8 +139,6 @@ public class CategorieFragment extends Fragment {
                 romanceAdapter.notifyDataSetChanged();
             }
         });
-
-        initTexts();
         initImage();
         setHasOptionsMenu(true);
 
@@ -202,99 +205,51 @@ public class CategorieFragment extends Fragment {
         romanceRV.setItemAnimator(new DefaultItemAnimator());
     }
 
-    public void initTexts(){
-        SpannableString ss1 = new SpannableString(azioneTxt.getText());
-        SpannableString ss2 = new SpannableString(fantasyTxt.getText());
-        SpannableString ss3 = new SpannableString(animationTxt.getText());
-        SpannableString ss4 = new SpannableString(commedieTxt.getText());
-        SpannableString ss5 = new SpannableString(romanceTxt.getText());
-
-        CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
-
-        ClickableSpan azioneClickableSpan = new ClickableSpan(){
-
-            @Override
-            public void onClick(@NonNull View widget) {
-                Log.d(TAG, "cliccato");
-                action.setGenere(28);
-                Navigation.findNavController(widget).navigate(action);
-            }
-        };
-
-
-        ClickableSpan fantasyClickableSpan = new ClickableSpan(){
-
-            @Override
-            public void onClick(@NonNull View widget) {
-                Log.d(TAG, "cliccato");
-                action.setGenere(14);
-                Navigation.findNavController(widget).navigate(action);
-            }
-        };
-
-        ClickableSpan animationClickableSpan = new ClickableSpan(){
-
-
-            @Override
-            public void onClick(@NonNull View widget) {
-                Log.d(TAG, "cliccato");
-                action.setGenere(16);
-                Navigation.findNavController(widget).navigate(action);
-            }
-        };
-
-        ClickableSpan commedieClickableSpan = new ClickableSpan(){
-
-
-            @Override
-            public void onClick(@NonNull View widget) {
-                Log.d(TAG, "cliccato");
-                action.setGenere(35);
-                Navigation.findNavController(widget).navigate(action);
-            }
-        };
-
-        ClickableSpan romanceClickableSpan = new ClickableSpan(){
-
-
-            @Override
-            public void onClick(@NonNull View widget) {
-                Log.d(TAG, "cliccato");
-                action.setGenere(10749);
-                Navigation.findNavController(widget).navigate(action);
-            }
-        };
-
-        ss1.setSpan(azioneClickableSpan, 0, 6, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        ss2.setSpan(fantasyClickableSpan, 0, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        ss3.setSpan(animationClickableSpan, 0, 9, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        ss4.setSpan(commedieClickableSpan, 0, 6, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        ss5.setSpan(romanceClickableSpan, 0, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        azioneTxt.setText(ss1);
-        fantasyTxt.setText(ss2);
-        animationTxt.setText(ss3);
-        commedieTxt.setText(ss4);
-        romanceTxt.setText(ss5);
-
-        azioneTxt.setMovementMethod(LinkMovementMethod.getInstance());
-        fantasyTxt.setMovementMethod(LinkMovementMethod.getInstance());
-        animationTxt.setMovementMethod(LinkMovementMethod.getInstance());
-        commedieTxt.setMovementMethod(LinkMovementMethod.getInstance());
-        romanceTxt.setMovementMethod(LinkMovementMethod.getInstance());
-
-    }
-
     public void initImage() {
         actionBanner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
-                Log.d(TAG, "cliccato");
-                action.setGenere(28);
+                action.setGenere(Constants.ACTION);
                 Navigation.findNavController(v).navigate(action);
                 }
             });
+
+        fantasyBanner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
+                action.setGenere(Constants.FANTASY);
+                Navigation.findNavController(v).navigate(action);
+            }
+        });
+
+        animationBanner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
+                action.setGenere(Constants.ANIMATION);
+                Navigation.findNavController(v).navigate(action);
+            }
+        });
+
+        comedyBanner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
+                action.setGenere(Constants.COMEDY);
+                Navigation.findNavController(v).navigate(action);
+            }
+        });
+
+        romanceBanner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
+                action.setGenere(Constants.ROMANCE);
+                Navigation.findNavController(v).navigate(action);
+            }
+        });
     }
 
     @Override
