@@ -17,7 +17,7 @@ import com.example.cinemhub.ui.prossime_uscite.ProssimeUsciteFragment;
 l'oggetto Refresh ha la responsabilità di ripristinare la lista globale di film
 dopo che è avvenuto un filtraggio. Esso abilita nuovamente il lazy loading, che è stato
 disabilitato se si ha filtrato
- */
+*/
 
 public class Refresh {
     private static final String TAG = "Refresh";

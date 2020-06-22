@@ -4,8 +4,10 @@ import com.example.cinemhub.model.Movie;
 
 import java.util.Comparator;
 
+/* Funtore per confronto e ordinamento di film per anno di uscita */
+
 public class YearFunctor implements Comparator<Movie> {
-    String order;
+    private String order;
     @Override
     public int compare(Movie o1, Movie o2) {
         if(order.equals("A"))
@@ -14,7 +16,7 @@ public class YearFunctor implements Comparator<Movie> {
             return o2.getReleaseDate().compareTo(o1.getReleaseDate());
     }
 
-    public YearFunctor(String order) {
+    YearFunctor(String order) {
         this.order = order;
     }
 }

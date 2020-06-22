@@ -1,5 +1,6 @@
 package com.example.cinemhub.ui.categorie;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -11,11 +12,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -48,6 +52,7 @@ public class CategorieFragment extends Fragment {
     private TextView animationTxt;
     private TextView commedieTxt;
     private TextView romanceTxt;
+    private ImageView actionBanner;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -64,6 +69,8 @@ public class CategorieFragment extends Fragment {
         animationTxt = root.findViewById(R.id.animation_txt);
         commedieTxt = root.findViewById(R.id.commedie_txt);
         romanceTxt = root.findViewById(R.id.romance_txt);
+
+        actionBanner = root.findViewById(R.id.image_action);
 
         categorieViewModel =
                 new ViewModelProvider(this).get(CategorieViewModel.class);
@@ -129,6 +136,7 @@ public class CategorieFragment extends Fragment {
         });
 
         initTexts();
+        initImage();
         setHasOptionsMenu(true);
 
         return root;
@@ -275,6 +283,18 @@ public class CategorieFragment extends Fragment {
         commedieTxt.setMovementMethod(LinkMovementMethod.getInstance());
         romanceTxt.setMovementMethod(LinkMovementMethod.getInstance());
 
+    }
+
+    public void initImage() {
+        actionBanner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
+                Log.d(TAG, "cliccato");
+                action.setGenere(28);
+                Navigation.findNavController(v).navigate(action);
+                }
+            });
     }
 
     @Override

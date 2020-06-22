@@ -17,11 +17,10 @@ public class FavoriteOperation {
     public Activity activity;
 
     private Favorite favorite;
-    private List<Favorite> line;
+    private List<Favorite> table;
 
     private String thumbnail, movieName, synopsis, rating, release, id, originalMovieName, voteCount, genre;
-
-
+    
     //costructor allow findview and Toast
     public FavoriteOperation(Activity activity, Context context){
         this.activity = activity;
@@ -85,8 +84,8 @@ public class FavoriteOperation {
     }
 
     private void mostraDb() {
-        line = FavoriteDB.getInstance().dbInterface().getFavorite();
-        for(Favorite favorite : line){
+        table = FavoriteDB.getInstance().dbInterface().getFavorite();
+        for(Favorite favorite : table){
             Log.d(TAG,"Database: " +
                     "ID: " + favorite.getMovieId() +
                     "Title: " + favorite.getTitle());
@@ -94,17 +93,17 @@ public class FavoriteOperation {
     }
 
     private void cancellaDb() {
-        line = FavoriteDB.getInstance().dbInterface().getFavorite();
+        table = FavoriteDB.getInstance().dbInterface().getFavorite();
         FavoriteDB.getInstance().clearAllTables();
-        Log.d(TAG, "db size: " + line.size());
+        Log.d(TAG, "db size: " + table.size());
         mostraDb();
     }
 
     private boolean checkFilm(){
         Log.d(TAG,"entrato nel check");
-        line = FavoriteDB.getInstance().dbInterface().getFavorite();
-        for(Favorite favorite : line){
-            if(favorite.getMovieId() == Integer. parseInt(id))
+        table = FavoriteDB.getInstance().dbInterface().getFavorite();
+        for(Favorite favorite : table){
+            if(favorite.getMovieId() == Integer.parseInt(id))
                 return true;
         }
         return false;

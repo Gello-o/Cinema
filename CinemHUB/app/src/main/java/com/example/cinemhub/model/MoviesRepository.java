@@ -16,9 +16,9 @@ import retrofit2.Response;
 
 /*
 MoviesRepository è l'oggetto che effettua le chiamate REST a TMDB.
-Ha il compito di inserire il dato restituito dalla chiamata all'interno di
-un MutableLiveData che verrà sfruttato nei ViewModel dei vari Fragment
- */
+Ha il compito di inserire il dato restituito dalla chiamata
+all'interno di un MutableLiveData che verrà sfruttato nei vari Fragment
+*/
 
 public class MoviesRepository {
 

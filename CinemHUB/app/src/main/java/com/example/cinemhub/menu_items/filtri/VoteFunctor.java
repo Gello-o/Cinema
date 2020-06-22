@@ -4,6 +4,8 @@ import com.example.cinemhub.model.Movie;
 
 import java.util.Comparator;
 
+/* Funtore per confronto e ordinamento di film per voto medio */
+
 public class VoteFunctor implements Comparator<Movie> {
     String order;
 

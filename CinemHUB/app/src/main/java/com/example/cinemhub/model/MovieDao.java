@@ -7,7 +7,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 import java.util.List;
 
-//interfaccia per l'interazione dell'applicazione con le due istanze di Database
+/*interfaccia per l'interazione dell'applicazione con le due istanze di Database*/
 
 @Dao
 public interface MovieDao {

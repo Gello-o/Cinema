@@ -4,8 +4,11 @@ import com.example.cinemhub.model.Movie;
 
 import java.util.Comparator;
 
+/* Funtore per confronto e ordinamento di film per nome */
+
 public class NameFunctor implements Comparator<Movie> {
-    String order;
+    private String order;
+
         @Override
         public int compare(Movie o1, Movie o2) {
             if(order.equals("A"))
@@ -14,7 +17,7 @@ public class NameFunctor implements Comparator<Movie> {
                 return o2.getTitle().compareTo(o1.getTitle());
         }
 
-        public NameFunctor(String order) {
+        NameFunctor(String order) {
             this.order = order;
         }
 }

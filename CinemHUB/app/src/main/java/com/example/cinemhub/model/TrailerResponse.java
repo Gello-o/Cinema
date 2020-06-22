@@ -4,6 +4,11 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
+/*
+Per Trailer:
+oggetto risultante dalla conversione del file JSON ottenuto da TMDB in linguaggio Java,
+con i rispettivi attributi e metodi get e set.
+*/
 
 public class TrailerResponse {
 

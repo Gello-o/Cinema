@@ -29,22 +29,18 @@ import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /*
-l'oggetto FilterHandler ha la responsabilità di filtrare la lista di Movie. Mostra
-un AlertDialog in cui l'utente ha la possibilità di scegliere delle combinazioni tra i seguenti filtri:
-ordinamento, genere, per voto e/o per anno di uscita
-
+l'oggetto FilterHandler ha la responsabilità di filtrare la lista di Movie.
+Mostra un AlertDialog in cui l'utente ha la possibilità di scegliere tra le combinazioni dei seguenti filtri:
+ordinamento per una specifica carattestica, filtro per genere, per voto e/o per anno di uscita
 Quando l'utente decide di filtrare, l'oggetto FilterHandler disabilita il lazy loading
- */
+*/
 
 public class FilterHandler {
     private static final String TAG = "FilterHandler";
     private Fragment fragment;
     private Menu menu;
-    private static final String DIGIT_PATTERN = "\\d+";
-    private static final Pattern DIGIT_PATTERN_COMPILED = Pattern.compile(DIGIT_PATTERN);
     private List<Movie> moviesGlobal;
     private List<Movie> movieFiltered = new ArrayList<>();
     private TextView textViewVoteMax;
@@ -60,7 +56,6 @@ public class FilterHandler {
     public FilterHandler(Menu menu, Fragment fragment){
         this.fragment = fragment;
         this.menu = menu;
-        this.moviesGlobal = new ArrayList<>();
     }
 
     public void implementFilter(int tipo) {
@@ -172,25 +167,12 @@ public class FilterHandler {
         rangeSeekbarYear.setOnRangeSeekbarFinalValueListener((minValue, maxValue) -> Log.d("CRS=>", minValue + " : " + maxValue));
     }
 
-    //Setta la lista globale
-    public void setMovie(List<Movie> moviesGlobal) {
-        if(moviesGlobal==null || moviesGlobal.size()==0) {
-            Log.d(TAG, "Lista null");
-            this.moviesGlobal = new ArrayList<>();
-        }
-
-        else {
-            this.moviesGlobal = moviesGlobal;
-            Log.d(TAG, "MoviesGlobalSize: "+moviesGlobal.size());
-        }
-    }
-
     private List<Movie> filterVote(String voteMin, String voteMax) {
         int intVoteMin = Integer.parseInt(voteMin);
         int intVoteMax = Integer.parseInt(voteMax);
 
-        if(intVoteMin == 0 && intVoteMax == 10)
-            return moviesGlobal;
+        //if(intVoteMin == 0 && intVoteMax == 10)
+          //  return moviesGlobal;
 
         List<Movie> tmp = new ArrayList<>();
 
@@ -230,8 +212,8 @@ public class FilterHandler {
         int yearIntMax = Integer.parseInt(yearMax);
         int yearMovieInt = 0;
 
-        if(yearIntMin == 1929 && yearIntMax == 2027)
-            return tmp;
+        //if(yearIntMin == 1929 && yearIntMax == 2027)
+          //  return tmp;
 
         List<Movie> tmp1 = new ArrayList<>();
 
@@ -282,6 +264,8 @@ public class FilterHandler {
     private void filter(String votoMin, String votoMax, String annoMin, String annoMax, String category, String order) {
         movieFiltered.clear();
 
+        moviesGlobal = getCurrents();
+
         if(category.equals("") && order.equals("")){
             movieFiltered = filterYear(annoMin, annoMax, filterVote(votoMin, votoMax));
             Log.d(TAG, "Entrato0");
@@ -317,12 +301,12 @@ public class FilterHandler {
         }else if(fragment instanceof MostraCategoriaFragment) {
             ( (MostraCategoriaFragment) fragment ).initMovieRV(movieFiltered);
         }
-
+        /*
         for(int i=0; i< movieFiltered.size(); i++){
             if(movieFiltered.get(i) != null)
                 Log.d(TAG, "film " + movieFiltered.get(i).getTitle());
         }
-
+        */
     }
 
     private int genSet(String category) {
@@ -403,6 +387,24 @@ public class FilterHandler {
         }else if(fragment instanceof SearchFragment){
             ((SearchFragment) fragment).setCanLoad(false);
         }
+
+    }
+
+    private List<Movie> getCurrents(){
+
+        if(fragment instanceof MostraCategoriaFragment) {
+            return ((MostraCategoriaFragment) fragment).getCurrentMovies();
+        }else if(fragment instanceof PiuVistiFragment){
+            return ((PiuVistiFragment) fragment).getCurrentMovies();
+        }else if(fragment instanceof ProssimeUsciteFragment) {
+            return ((ProssimeUsciteFragment) fragment).getCurrentMovies();
+        }else if(fragment instanceof NuoviArriviFragment){
+            return ((NuoviArriviFragment) fragment).getCurrentMovies();
+        }else if(fragment instanceof SearchFragment){
+            return ((SearchFragment) fragment).getCurrentMovies();
+        }
+        Log.d(TAG, "nessuno dei fragment");
+        return new ArrayList<>();
 
     }
 }
