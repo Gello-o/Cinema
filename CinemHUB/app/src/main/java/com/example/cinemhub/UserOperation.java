@@ -31,6 +31,7 @@ public class UserOperation {
     private float submittedRating;
     private String id, commento;
     private boolean app = true;
+    private boolean alreadySet = false;
 
     //costructor allow findview and Toast
     public UserOperation(Activity activity,Context context){
@@ -64,7 +65,8 @@ public class UserOperation {
                 float rat = Float.parseFloat(userRating.getText().toString().substring(0,1));
                 showVote.setText("your Rating: " + submittedRating);
                 Log.d(TAG,"app: " + app);
-                if(rat != 0) {
+                warning.setText("");
+                if(rat != 0 && submittedRating != 0 && rat != submittedRating) {
                     if (app) {
                         warning.setText("WARNING! you'll override your vote");
                     }
@@ -80,14 +82,17 @@ public class UserOperation {
                     editText.setFocusableInTouchMode(true);
                     editText.setFocusable(true);
 
-                    if (editText.getText().toString().equals("Write There:")) {
+                    if (editText.getText().toString().equals("Write There:"))
                         editText.setText("");
-                    }
+
                     editText.setTextColor(ContextCompat.getColor(context, R.color.textColor));
+
                     if (commento != null && !commento.equals("")) {
-                        if(!warning.getText().toString().equals(""))
+                        warning.setText("");
+                        if(!warning.getText().toString().equals("") ) {
                             warning.setText(warning.getText().toString() + "\n" + "WARNING! you'll overwrite your comment");
-                        else
+                            alreadySet = true;
+                        }else
                             warning.setText("WARNING! you'll overwrite your comment");
                     }
                 }
@@ -215,9 +220,7 @@ public class UserOperation {
     private boolean checkUser(){
         UserInfo user;
         user = FavoriteDB.getInstance().dbInterface().getUserInfo(Integer.parseInt(id));
-        if(user != null)
-            return true;
-        return false;
+        return user != null;
     }
 
     private void getUserInfo(){
@@ -234,7 +237,7 @@ public class UserOperation {
             userRating.setText(submittedRating + " / 10");
             comment.setText(commento);
         }else{
-            userRating.setText("0 / 10");
+            userRating.setText("0.0 / 10");
             comment.setText("");
         }
     }
