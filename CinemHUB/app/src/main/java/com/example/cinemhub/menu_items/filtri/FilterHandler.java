@@ -123,10 +123,9 @@ public class FilterHandler {
             seekBarMove();
 
             //Click del pulsante save
-            alert.setIcon(R.drawable.heart_on).setTitle(" Filter:").setView(textEntryView).setPositiveButton("Save",
+            alert.setTitle(" Filter:").setView(textEntryView).setPositiveButton("Save",
                     (dialog, whichButton) -> {
 
-                        //Definisce in che fragment si sta usando l'item.
                         setFragmentCanLoad();
 
                         //Prende gli elementi dei rispettivi spinner.

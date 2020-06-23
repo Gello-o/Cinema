@@ -2,6 +2,7 @@ package com.example.cinemhub.ui.home;
 
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,6 +48,8 @@ public class HomeFragment extends Fragment {
     private TabLayout indicator;
     private List<Movie> slides;
     private SliderPagerAdapter slideAdapter;
+
+    private Timer timer;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -94,15 +97,24 @@ public class HomeFragment extends Fragment {
             initSlider();
             messageHandler = new Handler(Looper.getMainLooper());
             indicator.setupWithViewPager(sliderpager,true);
-            Timer timer = new Timer();
-            timer.scheduleAtFixedRate(new SliderTimer(),4000,4000);
 
+            timer = new Timer();
+            timer.scheduleAtFixedRate(new SliderTimer(),4000,4000);
+            //timer.schedule(new SliderTimer(), 4000);
             slideAdapter.notifyDataSetChanged();
         });
 
         setHasOptionsMenu(true);
 
         return root;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if(timer != null) {
+            timer.cancel();
+        }
     }
 
     private void initPopularRV (List<Movie>set){

@@ -52,4 +52,8 @@
 
     <string name="a_description">A Description</string>
 
+    <string name="warning_comment">Warning! you will overwrite your comment</string>
+    <string name="warning_vote">Warning! you will overwrite your vote</string>
+    <string name="warning_vote_comment">Warning! you will overwrite your vote and comment</string>
+
 </resources>
