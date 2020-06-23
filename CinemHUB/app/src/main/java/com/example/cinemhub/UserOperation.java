@@ -31,7 +31,7 @@ public class UserOperation {
     private EditText editComment;
     private RatingBar ratingBar;
 
-    private float voteToSubmit, oldVote;
+    private int voteToSubmit, oldVote;
     private String id, commento;
 
     //costructor allow findview and Toast
@@ -60,22 +60,24 @@ public class UserOperation {
             user = FavoriteDB.getInstance().dbInterface().getUserInfo(Integer.parseInt(id));
             commento = user.getOverview();
             comment.setText(commento);
-            oldVote = user.getRating();
-            userRating.setText(oldVote + " / 10");
+            oldVote = (int) user.getRating();
+            userRating.setText((int) oldVote + " / 10");
         }else{
             commento = "";
             comment.setText(commento);
             oldVote = 0;
-            userRating.setText("0.0 / 10");
+            userRating.setText("0 / 10");
         }
 
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                voteToSubmit = ratingBar.getRating();
-                float oldVote = Float.parseFloat(userRating.getText().toString().substring(0,2).trim());
+                voteToSubmit = (int) rating;
                 showVote.setText("your Rating: " + voteToSubmit);
+
+                Log.d(TAG, "vecchio " + oldVote);
+                Log.d(TAG, "nuovo " + voteToSubmit);
 
                 if(oldVote != 0 && voteToSubmit != 0 && oldVote != voteToSubmit) {
                     if(warning.getText().toString().equals(""))
@@ -86,10 +88,15 @@ public class UserOperation {
                     }
                 }
                 else{
-                    if(!editComment.getText().toString().equals("") && !editComment.getText().toString().equals(commento))
-                        warning.setText(R.string.warning_comment);
-                    else
+
+                    if(!warning.getText().toString().contains("comment"))
                         warning.setText("");
+                    else{
+                        if(!editComment.getText().toString().equals(commento))
+                            warning.setText(R.string.warning_comment);
+                        else
+                            warning.setText(R.string.warning_vote);
+                    }
 
                 }
 
@@ -104,9 +111,14 @@ public class UserOperation {
                     @SuppressLint("SetTextI18n")
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                        Log.d(TAG, "vecchio commento " + commento);
+
+                        Log.d(TAG, "nuovo commento" + editComment.getText().toString());
+
                         if(s.length() == 0){
 
-                            if(voteToSubmit != 0)
+                            if(voteToSubmit != 0 && oldVote != 0 && voteToSubmit != oldVote)
                                 warning.setText(R.string.warning_vote);
                             else
                                 warning.setText("");
@@ -117,23 +129,32 @@ public class UserOperation {
                     @SuppressLint("SetTextI18n")
                     @Override
                     public void afterTextChanged(Editable s) {
-                        if(s.length() == 0){
 
-                            if(voteToSubmit != 0 && !commento.equals("") && voteToSubmit != oldVote)
-                                warning.setText(R.string.warning_vote);
-                            else
-                                warning.setText("");
+                        Log.d(TAG, "vecchio commento " + commento);
 
-                        }else{
-                            if(!commento.equals("")) {
-                                if (warning.getText().toString().equals(""))
+                        Log.d(TAG, "nuovo commento " + editComment.getText().toString());
+
+                        if(s.length() != 0){
+
+                            if(!commento.equals("") &&
+                                    !editComment.getText().toString().equals("") &&
+                                        !editComment.getText().toString().equals(commento) &&
+                                            !editComment.getText().toString().equals("Write There:")
+                            ){
+                                if(warning.getText().toString().equals(""))
                                     warning.setText(R.string.warning_comment);
-                                else {
-                                    if (!warning.getText().toString().contains("comment"))
+                                else{
+                                    if(!warning.getText().toString().contains("comment"))
                                         warning.setText(R.string.warning_vote_comment);
                                 }
                             }
+                            else{
+                                if(!warning.getText().toString().contains("vote") && editComment.getText().toString().equals(commento))
+                                    warning.setText("");
+                            }
+
                         }
+
 
                     }
                 }
@@ -170,8 +191,10 @@ public class UserOperation {
             @Override
             public void onClick(View v){
                 warning.setText("");
-                if(!commento.equals(""))
+                if(!commento.equals("")){
                     editComment.setText(commento);
+                    ratingBar.setRating(oldVote);
+                }
                 else
                     Toast.makeText(context, "Nothing to edit", Toast.LENGTH_SHORT).show();
             }
