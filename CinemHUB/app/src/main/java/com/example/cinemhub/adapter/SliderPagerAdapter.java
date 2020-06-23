@@ -19,6 +19,13 @@ import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.utils.Constants;
 import java.util.List;
 
+/*
+Adapter per oggetti di tipo Movie: il suo ruolo è quello di gestire la visualizzazione dei film
+all'interno dello Slider nella HomePage.
+Nel metodo instantiateItem viene impostato un onClickListener che avvia ActivityDetail,
+ovvero la classe che contiene tutte le informazioni inerenti al film cliccato.
+*/
+
 public class SliderPagerAdapter extends PagerAdapter {
 
     private static final String TAG = "SliderPagerAdapter";
@@ -41,7 +48,7 @@ public class SliderPagerAdapter extends PagerAdapter {
         @SuppressLint("InflateParams") View slideLayout = inflater.inflate(R.layout.slide_item,null);
 
         ImageView slideImg = slideLayout.findViewById(R.id.slide_img);
-       // TextView slideText = slideLayout.findViewById(R.id.slide_title);
+       //TextView slideText = slideLayout.findViewById(R.id.slide_title);
 
         if(mList.get(position) != null){
             Glide.with(mContext)
@@ -75,7 +82,6 @@ public class SliderPagerAdapter extends PagerAdapter {
         });
 
         container.addView(slideLayout);
-
 
         return slideLayout;
 

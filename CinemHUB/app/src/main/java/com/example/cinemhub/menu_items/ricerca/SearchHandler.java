@@ -17,6 +17,8 @@ import androidx.navigation.Navigation;
 import com.example.cinemhub.R;
 import com.example.cinemhub.ui.categorie.CategorieFragment;
 import com.example.cinemhub.ui.categorie.CategorieFragmentDirections;
+import com.example.cinemhub.ui.categorie.MostraCategoriaFragment;
+import com.example.cinemhub.ui.categorie.MostraCategoriaFragmentDirections;
 import com.example.cinemhub.ui.home.HomeFragment;
 import com.example.cinemhub.ui.home.HomeFragmentDirections;
 import com.example.cinemhub.ui.nuovi_arrivi.NuoviArriviFragment;
@@ -136,6 +138,10 @@ public class SearchHandler {
                         Log.d(TAG, "categorie");
                         CategorieFragmentDirections.GoToSearchAction action =
                                 CategorieFragmentDirections.goToSearchAction(queryFinal);
+                        navController.navigate(action);
+                    }else if(fragment instanceof MostraCategoriaFragment){
+                        MostraCategoriaFragmentDirections.GoToSearchAction action =
+                                MostraCategoriaFragmentDirections.goToSearchAction(queryFinal);
                         navController.navigate(action);
                     }
                     return false;

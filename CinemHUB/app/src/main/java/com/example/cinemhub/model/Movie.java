@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-//oggetto Movie, con i suoi attributi deserializzati
+//oggetto Movie con i suoi attributi, costruttore e metodi get e set
 
 
 public class Movie {

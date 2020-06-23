@@ -22,8 +22,6 @@ import com.example.cinemhub.model.Resource;
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.menu_items.Refresh;
-import com.example.cinemhub.menu_items.filtri.FilterHandler;
-import com.example.cinemhub.menu_items.ricerca.SearchHandler;
 import com.example.cinemhub.model.Movie;
 
 
@@ -38,9 +36,7 @@ public class ProssimeUsciteFragment extends Fragment {
     private int lastVisibleItem;
     private int visibleItemCount;
     private int threshold = 1;
-    private FilterHandler filterOperation;
     private List<Movie> currentMovies;
-    private boolean canLoad = true;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -49,13 +45,6 @@ public class ProssimeUsciteFragment extends Fragment {
         prossimeUsciteRV = root.findViewById(R.id.recycler_view_prossime_uscite);
         setHasOptionsMenu(true);
         return root;
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if(!canLoad)
-            canLoad = true;
     }
 
     @Override
@@ -97,7 +86,7 @@ public class ProssimeUsciteFragment extends Fragment {
                         (totalItemCount <= (lastVisibleItem + threshold) && dy > 0  && !prossimeUsciteViewModel.isLoading()) &&
                                 prossimeUsciteViewModel.getMoviesLiveData().getValue() != null &&
                                 prossimeUsciteViewModel.getCurrentResults() != prossimeUsciteViewModel.getMoviesLiveData().getValue().getTotalResults())
-                        && canLoad
+                        && prossimeUsciteViewModel.canLoad()
                 ) {
                     Resource<List<Movie>> moviesResource = new Resource<>();
 
@@ -134,20 +123,11 @@ public class ProssimeUsciteFragment extends Fragment {
                 currentMovies = resource.getData();
 
                 if(resource.getData().size() < 20)
-                    setCanLoad(false);
-                else
-                    setCanLoad(true);
+                    prossimeUsciteViewModel.setCanLoad(false);
 
                 Log.d(TAG, "CurrentListSize: "+resource.getData().size());
 
-                if (filterOperation != null) {
-                    filterOperation.setMovie(resource.getData());
-                    Log.d(TAG, "FilterSetMovie");
-                }
-                else
-                    Log.d(TAG, "FilterOperationNull");
-
-                if (!resource.isLoading() && canLoad) {
+                if (!resource.isLoading() /*&& canLoad*/) {
                     Log.d(TAG, "STA CARICANDO");
                     prossimeUsciteViewModel.setLoading(false);
                     if (resource.getData() != null) {
@@ -161,11 +141,9 @@ public class ProssimeUsciteFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.main3, menu);
-        SearchHandler searchOperation = new SearchHandler(menu, this);
-        filterOperation = new FilterHandler(menu, this);
+        prossimeUsciteViewModel.initSearch(menu, this);
+        prossimeUsciteViewModel.initFilters(menu, this);
         Refresh refreshOperation = new Refresh(menu, this);
-        searchOperation.implementSearch(2);
-        filterOperation.implementFilter(2);
         refreshOperation.implementRefresh(2);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -195,6 +173,14 @@ public class ProssimeUsciteFragment extends Fragment {
     }
 
     public void setCanLoad(boolean canLoad) {
-        this.canLoad = canLoad;
+        prossimeUsciteViewModel.setCanLoad(canLoad);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(!prossimeUsciteViewModel.canLoad()){
+            prossimeUsciteViewModel.setCanLoad(true);
+        }
     }
 }

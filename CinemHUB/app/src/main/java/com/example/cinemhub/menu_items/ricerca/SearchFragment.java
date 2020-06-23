@@ -22,7 +22,6 @@ import com.example.cinemhub.model.Resource;
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.menu_items.Refresh;
-import com.example.cinemhub.menu_items.filtri.FilterHandler;
 import com.example.cinemhub.model.Movie;
 import java.util.List;
 
@@ -42,9 +41,7 @@ public class SearchFragment extends Fragment {
     private int lastVisibleItem;
     private int visibleItemCount;
     private int threshold = 1;
-    private FilterHandler filterOperation;
     private List<Movie> currentMovies;
-    private boolean canLoad = true;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -95,7 +92,7 @@ public class SearchFragment extends Fragment {
                         (totalItemCount <= (lastVisibleItem + threshold) && dy > 0  && !ricercaViewModel.isLoading()) &&
                                 ricercaViewModel.getMoviesLiveData().getValue() != null &&
                                 ricercaViewModel.getCurrentResults() != ricercaViewModel.getMoviesLiveData().getValue().getTotalResults())
-                        && canLoad
+                        && ricercaViewModel.canLoad()
                 ) {
                     Resource<List<Movie>> moviesResource = new Resource<>();
 
@@ -139,14 +136,7 @@ public class SearchFragment extends Fragment {
 
                 Log.d(TAG, "CurrentListSize: "+resource.getData().size());
 
-                if (filterOperation != null) {
-                    filterOperation.setMovie(currentMovies);
-                    Log.d(TAG, "FilterSetMovie");
-                }
-                else
-                    Log.d(TAG, "FilterOperationNull");
-
-                if (!resource.isLoading() && canLoad) {
+                if (!resource.isLoading() /*&& canLoad*/) {
                     Log.d(TAG, "STA CARICANDO");
                     ricercaViewModel.setLoading(false);
                     if (resource.getData() != null) {
@@ -161,9 +151,8 @@ public class SearchFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.main2, menu);
-        filterOperation = new FilterHandler(menu, this);
+        ricercaViewModel.initFilters(menu, this);
         Refresh refreshOperation = new Refresh(menu, this);
-        filterOperation.implementFilter(1);
         refreshOperation.implementRefresh(1);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -192,6 +181,6 @@ public class SearchFragment extends Fragment {
     }
 
     public void setCanLoad(boolean canLoad) {
-        this.canLoad = canLoad;
+        ricercaViewModel.setCanLoad(canLoad);
     }
 }

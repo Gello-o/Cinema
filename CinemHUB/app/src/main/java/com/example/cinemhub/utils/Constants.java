@@ -15,6 +15,7 @@ public class Constants {
     public static final String LINGUA = "en-US";
 
 
+    //ID associati ai generi di film presenti nella API di TMDB
     public static final Integer ACTION = 28;
     public static final Integer ADVENTURE = 12;
     public static final Integer ANIMATION = 16;
@@ -35,6 +36,7 @@ public class Constants {
     public static final Integer WAR = 10752;
     public static final Integer WESTERN = 37;
 
+    //Costruzione della lista dei generi che andrà passata alla classe FilterHandler.
     public static List<String> setGenre() {
         List<String> listVote = new ArrayList<>();
         listVote.add("");
