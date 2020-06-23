@@ -108,6 +108,16 @@
             app:destination="@id/nav_categorie"
             app:popUpTo="@id/nav_categorie">
         </action>
+
+        <action
+            android:id="@+id/goToSearchAction"
+            app:destination="@id/nav_search"
+            app:popUpTo="@id/nav_genere">
+            <argument
+                android:name="query"
+                app:argType="string" />
+        </action>
+
         <argument
             android:name="genere"
             app:argType="integer" />

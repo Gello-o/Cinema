@@ -31,7 +31,6 @@ public class ActivityDetail extends YouTubeBaseActivity {
 
     String thumbnail, movieName, synopsis, rating, release, id, originalMovieName, voteCount, genre;
 
-
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,10 +111,6 @@ public class ActivityDetail extends YouTubeBaseActivity {
             //chiamat User
             userOperation.eseguiUser(id);
             Log.d(TAG, "superato i userOperation");
-
-            //chiamata favorite
-            favoriteOperation.eseguiPreferiti(id,movieName,thumbnail,rating,synopsis,release,genre,originalMovieName,voteCount);
-
 
             //chiamata favorite
             favoriteOperation.eseguiPreferiti(id,movieName,thumbnail,rating,synopsis,release,genre,originalMovieName,voteCount);

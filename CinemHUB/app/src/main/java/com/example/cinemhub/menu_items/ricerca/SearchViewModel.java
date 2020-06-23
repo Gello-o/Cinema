@@ -1,10 +1,14 @@
 package com.example.cinemhub.menu_items.ricerca;
 
 import android.util.Log;
+import android.view.Menu;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.cinemhub.menu_items.filtri.FilterHandler;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesRepository;
 import com.example.cinemhub.model.Resource;
@@ -12,8 +16,9 @@ import com.example.cinemhub.model.Resource;
 import java.util.List;
 
 /*
-viewModel che interagisce con l'oggetto SearchFragment: conserva i dati del fragment e
-sfrutta l'oggetto MoviesRepository per effeuttuare chiamate a TMDB
+ViewModel con cui interagisce l'oggetto SearchFragment: preserva i dati del fragment dai suoi
+cambiamenti di stato, sfrutta l'oggetto MoviesRepository per inizializzare il dato che punta alla
+lista di film e gestisce il lazy loading del fragment attraverso la variabile canLoad
 */
 
 public class SearchViewModel extends ViewModel {
@@ -23,8 +28,9 @@ public class SearchViewModel extends ViewModel {
     private String query;
     private int currentResults;
     private boolean isLoading;
+    private boolean canLoad = true;
 
-    public MutableLiveData<Resource<List<Movie>>> doSearch(String query) {
+    MutableLiveData<Resource<List<Movie>>> doSearch(String query) {
         this.query = query;
         Log.d(TAG, "query VM " + query);
         if(film == null) {
@@ -35,7 +41,7 @@ public class SearchViewModel extends ViewModel {
         return film;
     }
 
-    public MutableLiveData<Resource<List<Movie>>> searchMore() {
+    MutableLiveData<Resource<List<Movie>>> searchMore() {
         MoviesRepository.getInstance().searchMovie(query, page, film);
         return film;
     }
@@ -66,6 +72,19 @@ public class SearchViewModel extends ViewModel {
 
     public void setLoading(boolean loading) {
         isLoading = loading;
+    }
+
+    public void initFilters(@NonNull Menu menu, Fragment fragment){
+        FilterHandler filterOperation = new FilterHandler(menu, fragment);
+        filterOperation.implementFilter(1);
+    }
+
+    public boolean canLoad() {
+        return canLoad;
+    }
+
+    public void setCanLoad(boolean canLoad) {
+        this.canLoad = canLoad;
     }
 
 }

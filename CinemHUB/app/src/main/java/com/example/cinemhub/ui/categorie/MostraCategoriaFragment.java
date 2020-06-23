@@ -22,8 +22,6 @@ import com.example.cinemhub.model.Resource;
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.menu_items.Refresh;
-import com.example.cinemhub.menu_items.filtri.FilterHandler;
-import com.example.cinemhub.menu_items.ricerca.SearchHandler;
 import com.example.cinemhub.model.Movie;
 import java.util.List;
 
@@ -38,9 +36,7 @@ public class MostraCategoriaFragment extends Fragment {
     private int lastVisibleItem;
     private int visibleItemCount;
     private int threshold = 1;
-    private FilterHandler filterOperation;
     private List<Movie> currentMovies;
-    private boolean canLoad = true;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -50,13 +46,6 @@ public class MostraCategoriaFragment extends Fragment {
         genere = MostraCategoriaFragmentArgs.fromBundle(requireArguments()).getGenere();
         setHasOptionsMenu(true);
         return root;
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if(!canLoad)
-            canLoad = true;
     }
 
     @Override
@@ -98,7 +87,7 @@ public class MostraCategoriaFragment extends Fragment {
                         (totalItemCount <= (lastVisibleItem + threshold) && dy > 0  && !mostraCategoriaViewModel.isLoading()) &&
                                 mostraCategoriaViewModel.getMoviesLiveData().getValue() != null &&
                                 mostraCategoriaViewModel.getCurrentResults() != mostraCategoriaViewModel.getMoviesLiveData().getValue().getTotalResults())
-                        && canLoad
+                        && mostraCategoriaViewModel.canLoad()
                 ) {
                     Resource<List<Movie>> moviesResource = new Resource<>();
 
@@ -135,20 +124,13 @@ public class MostraCategoriaFragment extends Fragment {
                 moviesAdapter.setData(resource.getData());
                 currentMovies = resource.getData();
 
-                if(currentMovies.size() < 20)
-                    setCanLoad(false);
-                else
-                    setCanLoad(true);
+                if(resource.getData().size() < 20)
+                    mostraCategoriaViewModel.setCanLoad(false);
+
                 Log.d(TAG, "CurrentListSize: "+resource.getData().size());
 
-                if (filterOperation != null) {
-                    filterOperation.setMovie(currentMovies);
-                    Log.d(TAG, "FilterSetMovie");
-                }
-                else
-                    Log.d(TAG, "FilterOperationNull");
 
-                if (!resource.isLoading() && canLoad) {
+                if (!resource.isLoading() /*&& canLoad*/) {
                     Log.d(TAG, "STA CARICANDO");
                     mostraCategoriaViewModel.setLoading(false);
                     if (resource.getData() != null) {
@@ -162,12 +144,10 @@ public class MostraCategoriaFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.main3, menu);
-        SearchHandler searchOperation = new SearchHandler(menu, this);
-        filterOperation = new FilterHandler(menu, this);
-        Refresh refreshOperation = new Refresh(menu, this);
-        searchOperation.implementSearch(2);
-        filterOperation.implementFilter(2);
-        refreshOperation.implementRefresh(2);
+        mostraCategoriaViewModel.initFilters(menu, this);
+        mostraCategoriaViewModel.initSearch(menu, this);
+        Refresh refresh = new Refresh(menu, this);
+        refresh.implementRefresh(2);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -196,6 +176,14 @@ public class MostraCategoriaFragment extends Fragment {
     }
 
     public void setCanLoad(boolean canLoad) {
-        this.canLoad = canLoad;
+        mostraCategoriaViewModel.setCanLoad(canLoad);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(!mostraCategoriaViewModel.canLoad()){
+            mostraCategoriaViewModel.setCanLoad(true);
+        }
     }
 }

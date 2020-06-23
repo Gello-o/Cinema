@@ -1,6 +1,5 @@
 package com.example.cinemhub.model;
 
-
 public class Resource<T> {
     private T data;
     private int totalResults;

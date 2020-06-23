@@ -93,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "creato il Db");
         }
         FavoriteDB.getInstance(getApplicationContext());
-        FavoriteDB.getInstanceUser();
     }
 
 

@@ -29,22 +29,18 @@ import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /*
-l'oggetto FilterHandler ha la responsabilità di filtrare la lista di Movie. Mostra
-un AlertDialog in cui l'utente ha la possibilità di scegliere delle combinazioni tra i seguenti filtri:
-ordinamento, genere, per voto e/o per anno di uscita
-
+l'oggetto FilterHandler ha la responsabilità di filtrare la lista di Movie.
+Mostra un AlertDialog in cui l'utente ha la possibilità di scegliere tra le combinazioni dei seguenti filtri:
+ordinamento per una specifica carattestica, filtro per genere, per voto e/o per anno di uscita
 Quando l'utente decide di filtrare, l'oggetto FilterHandler disabilita il lazy loading
- */
+*/
 
 public class FilterHandler {
     private static final String TAG = "FilterHandler";
     private Fragment fragment;
     private Menu menu;
-    private static final String DIGIT_PATTERN = "\\d+";
-    private static final Pattern DIGIT_PATTERN_COMPILED = Pattern.compile(DIGIT_PATTERN);
     private List<Movie> moviesGlobal;
     private List<Movie> movieFiltered = new ArrayList<>();
     private TextView textViewVoteMax;
@@ -56,37 +52,48 @@ public class FilterHandler {
     private Spinner spinnerCategroy;
     private Spinner spinnerOrder;
 
+    /*
+    Costruttore della classe.
+    Gli vengono passati come parametro il fragment su cui andrà ad essere inserito e il menu.
+     */
 
     public FilterHandler(Menu menu, Fragment fragment){
         this.fragment = fragment;
         this.menu = menu;
-        this.moviesGlobal = new ArrayList<>();
     }
 
+    /*
+    Metodo in cui verranno costruiti view e widget in cui sarà permesso filtrare.
+     */
     public void implementFilter(int tipo) {
         LayoutInflater factory = LayoutInflater.from(fragment.getActivity());
         //final View textEntryView = factory.inflate(R.layout.filter_dialog, null);
-        @SuppressLint("InflateParams") final View textEntryView = factory.inflate(R.layout.filter_dialog_2, null);
+        @SuppressLint("InflateParams") final View textEntryView = factory.inflate(R.layout.filter_dialog, null);
 
-
+        //Ci sono varie barre di menu, si andrà a selezionare l'item in base a quella passato per parametro.
         MenuItem filterMenuItem;
         if(tipo==1)
             filterMenuItem = menu.findItem(R.id.filter);
         else
             filterMenuItem = menu.findItem(R.id.filter1);
 
+        //Costruzione dei widget e spinner.
         spinnerCategroy = textEntryView.findViewById(R.id.spinnerCategory);
         spinnerOrder = textEntryView.findViewById(R.id.spinnerOrder);
         rangeSeekbarVote = textEntryView.findViewById(R.id.rangeSeekbarVote);
         rangeSeekbarYear = textEntryView.findViewById(R.id.rangeSeekbarYear);
+
+        //Costruzioone di textview associate agli spinner.
         textViewVoteMax = textEntryView.findViewById(R.id.textViewMaxVote);
         textViewVoteMin = textEntryView.findViewById(R.id.textViewMinVote);
         textViewYearMax = textEntryView.findViewById(R.id.textViewMaxYear);
         textViewYearMin = textEntryView.findViewById(R.id.textViewMinYear);
 
+        //Passaggio di una lista conenente i generi dei film e costruzione del primo spinner.
         List<String> listVote = Constants.setGenre();
         spinnerList(spinnerCategroy, listVote);
 
+        //Costruzione lista contenente i modi per cui si vuole ordinare e costruzione del secondo spinner.
         List<String> listYear = new ArrayList<>();
         listYear.add("");
         listYear.add("Name ASC");
@@ -99,30 +106,38 @@ public class FilterHandler {
         listYear.add("Year DESC");
         spinnerList(spinnerOrder, listYear);
 
+        //Definizione della dialog che andrà a contenere i widget dei filtri
         final AlertDialog.Builder alert = new AlertDialog.Builder(fragment.getActivity()).setView(textEntryView).setTitle(" Filter:");
 
+        //Click dell'item di menu
         filterMenuItem.setOnMenuItemClickListener(item -> {
             Log.d(TAG, "onClick");
 
             ViewGroup viewGroup = (ViewGroup) textEntryView.getParent();
 
+            //Gestione nel caso l'oggetto viewgroup non sia stato rimosso
             if(viewGroup != null)
                 viewGroup.removeView(textEntryView);
 
+            //Gestione del movimento delle seekbar.
             seekBarMove();
 
-            alert.setIcon(R.drawable.heart_on).setTitle(" Filter:").setView(textEntryView).setPositiveButton("Save",
+            //Click del pulsante save
+            alert.setTitle(" Filter:").setView(textEntryView).setPositiveButton("Save",
                     (dialog, whichButton) -> {
 
                         setFragmentCanLoad();
 
+                        //Prende gli elementi dei rispettivi spinner.
                         String stringSpinnerCategory = spinnerCategroy.getSelectedItem().toString();
                         String stringSpinnerOrder = spinnerOrder.getSelectedItem().toString();
 
+                        //Metodo usato per il filtraggio.
                         filter(textViewVoteMin.getText().toString(), textViewVoteMax.getText().toString(),
                                 textViewYearMin.getText().toString(), textViewYearMax.getText().toString(),
                                 stringSpinnerCategory, stringSpinnerOrder);
 
+                        //Click del pulsante cancel.
                     }).setNegativeButton("Cancel",
                     (dialog, whichButton) -> Log.d(TAG, "Cancel"));
 
@@ -131,6 +146,7 @@ public class FilterHandler {
         });
     }
 
+    //Metodo utilizzato per inizializzare gli oggetti di uno spinner in base ad una lista data.
     private void spinnerList(Spinner spinner, List<String> spinnerFilter) {
 
         List<String> categoryList = new ArrayList<>(spinnerFilter);
@@ -150,6 +166,10 @@ public class FilterHandler {
         });
     }
 
+    /*
+    Metodo che permette di rilevare il movimento delle seekbar e che scrive nelle textview
+    asscoiate il valore dei rispettivi thumb.
+     */
     private void seekBarMove() {
 
         // set listener
@@ -172,25 +192,13 @@ public class FilterHandler {
         rangeSeekbarYear.setOnRangeSeekbarFinalValueListener((minValue, maxValue) -> Log.d("CRS=>", minValue + " : " + maxValue));
     }
 
-    //Setta la lista globale
-    public void setMovie(List<Movie> moviesGlobal) {
-        if(moviesGlobal==null || moviesGlobal.size()==0) {
-            Log.d(TAG, "Lista null");
-            this.moviesGlobal = new ArrayList<>();
-        }
-
-        else {
-            this.moviesGlobal = moviesGlobal;
-            Log.d(TAG, "MoviesGlobalSize: "+moviesGlobal.size());
-        }
-    }
-
+    //Metodo di supporto al metodo filter: filtra voto.
     private List<Movie> filterVote(String voteMin, String voteMax) {
         int intVoteMin = Integer.parseInt(voteMin);
         int intVoteMax = Integer.parseInt(voteMax);
 
-        if(intVoteMin == 0 && intVoteMax == 10)
-            return moviesGlobal;
+        //if(intVoteMin == 0 && intVoteMax == 10)
+          //  return moviesGlobal;
 
         List<Movie> tmp = new ArrayList<>();
 
@@ -207,6 +215,7 @@ public class FilterHandler {
         return tmp;
     }
 
+    //Metodo di supporto a filter: filtra per genere
     private List<Movie> filterGen(int genId, List<Movie> tmp) {
         List<Movie> tmp2 = new ArrayList<>();
 
@@ -225,13 +234,14 @@ public class FilterHandler {
         return tmp2;
     }
 
+    //Metodo di supporto a filter: filtra per anno d'uscita.
     private List<Movie> filterYear(String yearMin, String yearMax, List<Movie> tmp) {
         int yearIntMin = Integer.parseInt(yearMin);
         int yearIntMax = Integer.parseInt(yearMax);
         int yearMovieInt = 0;
 
-        if(yearIntMin == 1929 && yearIntMax == 2027)
-            return tmp;
+        //if(yearIntMin == 1929 && yearIntMax == 2027)
+          //  return tmp;
 
         List<Movie> tmp1 = new ArrayList<>();
 
@@ -249,6 +259,7 @@ public class FilterHandler {
         return tmp1;
     }
 
+    //Metodo di supporto al metodo filter: ordina in base al parametro order.
     private void filterOrder(String order) {
         switch (order) {
             case "Name ASC":
@@ -278,9 +289,14 @@ public class FilterHandler {
         }
     }
 
-
+    /*
+    Metodo che fa il filtraggio della lista dei film corrispondente, utilizzando metodi di supporto della classe
+    Infine aggiorna la lista dei film nella stessa pagina
+     */
     private void filter(String votoMin, String votoMax, String annoMin, String annoMax, String category, String order) {
         movieFiltered.clear();
+
+        moviesGlobal = getCurrents();
 
         if(category.equals("") && order.equals("")){
             movieFiltered = filterYear(annoMin, annoMax, filterVote(votoMin, votoMax));
@@ -317,14 +333,15 @@ public class FilterHandler {
         }else if(fragment instanceof MostraCategoriaFragment) {
             ( (MostraCategoriaFragment) fragment ).initMovieRV(movieFiltered);
         }
-
+        /*
         for(int i=0; i< movieFiltered.size(); i++){
             if(movieFiltered.get(i) != null)
                 Log.d(TAG, "film " + movieFiltered.get(i).getTitle());
         }
-
+        */
     }
 
+    //Metodo di supporto a filter: Serve per associare al genere l'id corrispondente all'api tmdb.
     private int genSet(String category) {
         int genId = 0;
         if(category.equals("Action"))
@@ -390,8 +407,8 @@ public class FilterHandler {
         return genId;
     }
 
-    private void setFragmentCanLoad(){
 
+    private void setFragmentCanLoad(){
         if(fragment instanceof MostraCategoriaFragment) {
             ((MostraCategoriaFragment) fragment).setCanLoad(false);
         }else if(fragment instanceof PiuVistiFragment){
@@ -403,6 +420,22 @@ public class FilterHandler {
         }else if(fragment instanceof SearchFragment){
             ((SearchFragment) fragment).setCanLoad(false);
         }
+    }
+
+    private List<Movie> getCurrents(){
+        if(fragment instanceof MostraCategoriaFragment) {
+            return ((MostraCategoriaFragment) fragment).getCurrentMovies();
+        }else if(fragment instanceof PiuVistiFragment){
+            return ((PiuVistiFragment) fragment).getCurrentMovies();
+        }else if(fragment instanceof ProssimeUsciteFragment) {
+            return ((ProssimeUsciteFragment) fragment).getCurrentMovies();
+        }else if(fragment instanceof NuoviArriviFragment){
+            return ((NuoviArriviFragment) fragment).getCurrentMovies();
+        }else if(fragment instanceof SearchFragment){
+            return ((SearchFragment) fragment).getCurrentMovies();
+        }
+        Log.d(TAG, "nessuno dei fragment");
+        return new ArrayList<>();
 
     }
 }
