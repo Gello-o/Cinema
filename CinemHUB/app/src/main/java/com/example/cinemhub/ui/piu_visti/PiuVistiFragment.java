@@ -33,13 +33,13 @@ public class PiuVistiFragment extends Fragment {
     private static final String TAG = "PiuVistiFragment";
     private PiuVistiViewModel piuVistiViewModel;
     private MoviesAdapter moviesAdapter;
-    RecyclerView piuVistiRV;
+    private RecyclerView piuVistiRV;
     private int totalItemCount;
     private int lastVisibleItem;
     private int visibleItemCount;
     private int threshold = 1;
-    FilterHandler filterOperation;
-    Refresh refreshOperation;
+    private FilterHandler filterOperation;
+    private Refresh refreshOperation;
     private List<Movie> currentMovies;
     private boolean canLoad = true;
 
@@ -132,28 +132,32 @@ public class PiuVistiFragment extends Fragment {
         piuVistiViewModel.getPiuVisti().observe(getViewLifecycleOwner(), new Observer<Resource<List<Movie>>>() {
             @Override
             public void onChanged(@Nullable Resource<List<Movie>> resource) {
+                if(resource!=null && resource.getData()!=null) {
+                    moviesAdapter.setData(resource.getData());
+                    currentMovies = resource.getData();
 
-                moviesAdapter.setData(resource.getData());
+                    if(resource.getData().size() < 20)
+                        setCanLoad(false);
+                    else
+                        setCanLoad(true);
 
-                currentMovies = resource.getData();
+                    Log.d(TAG, "CurrentListSize: "+resource.getData().size());
 
-                Log.d(TAG, "CurrentListSize: "+resource.getData().size());
+                    if (filterOperation != null) {
+                        filterOperation.setMovie(resource.getData());
+                        Log.d(TAG, "FilterSetMovie");
+                    }
+                    else
+                        Log.d(TAG, "FilterOperationNull");
 
-                if (filterOperation != null) {
-                    filterOperation.setMovie(resource.getData());
-                    Log.d(TAG, "FilterSetMovie");
-                }
-                else
-                    Log.d(TAG, "FilterOperationNull");
-
-                if (!resource.isLoading() && canLoad) {
-                    Log.d(TAG, "STA CARICANDO");
-                    piuVistiViewModel.setLoading(false);
-                    if (resource.getData() != null) {
-                        piuVistiViewModel.setCurrentResults(resource.getData().size());
+                    if (!resource.isLoading() && canLoad) {
+                        Log.d(TAG, "STA CARICANDO");
+                        piuVistiViewModel.setLoading(false);
+                        if (resource.getData() != null) {
+                            piuVistiViewModel.setCurrentResults(resource.getData().size());
+                        }
                     }
                 }
-
             }
 
         });

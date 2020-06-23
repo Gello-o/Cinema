@@ -1,5 +1,7 @@
 package com.example.cinemhub.menu_items.ricerca;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -9,24 +11,31 @@ import com.example.cinemhub.model.Resource;
 
 import java.util.List;
 
+/*
+viewModel che interagisce con l'oggetto SearchFragment: conserva i dati del fragment e
+sfrutta l'oggetto MoviesRepository per effeuttuare chiamate a TMDB
+*/
+
 public class SearchViewModel extends ViewModel {
     private MutableLiveData<Resource<List<Movie>>> film;
-    private static final String TAG = "MostraCategorieFragment";
-    int page = 1;
-    String query;
+    private static final String TAG = "SearchViewModel";
+    private int page = 1;
+    private String query;
     private int currentResults;
     private boolean isLoading;
 
-    public MutableLiveData<Resource<List<Movie>>> getSearch(String query) {
+    public MutableLiveData<Resource<List<Movie>>> doSearch(String query) {
         this.query = query;
+        Log.d(TAG, "query VM " + query);
         if(film == null) {
+            Log.d(TAG, "film = null");
             film = new MutableLiveData<>();
             MoviesRepository.getInstance().searchMovie(query, page, film);
         }
         return film;
     }
 
-    public MutableLiveData<Resource<List<Movie>>> getMoreSearch() {
+    public MutableLiveData<Resource<List<Movie>>> searchMore() {
         MoviesRepository.getInstance().searchMovie(query, page, film);
         return film;
     }

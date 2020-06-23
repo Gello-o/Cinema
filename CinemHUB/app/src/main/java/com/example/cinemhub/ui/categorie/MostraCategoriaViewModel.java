@@ -11,9 +11,9 @@ import java.util.List;
 
 public class MostraCategoriaViewModel extends ViewModel {
     private MutableLiveData<Resource<List<Movie>>> film;
-    private static final String TAG = "MostraCategorieFragment";
-    int page = 1;
-    int genere;
+    //private static final String TAG = "MostraCategorieFragment";
+    private int page = 1;
+    private int genere;
     private int currentResults;
     private boolean isLoading;
 

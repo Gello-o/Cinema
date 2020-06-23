@@ -37,11 +37,11 @@ public class CategorieViewModel extends ViewModel {
         return mText1;
     }
 
-    public MutableLiveData<List<Movie>> getCrime() {
+    public MutableLiveData<List<Movie>> getAnimation() {
         if(mText2 == null){
             mText2 = new MutableLiveData<>();
             repo = MoviesRepository.getInstance();
-            repo.getGenres(80, 1, mText2);
+            repo.getGenres(16, 1, mText2);
         }
         return mText2;
     }

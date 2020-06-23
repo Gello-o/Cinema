@@ -25,7 +25,7 @@
     <string name="pref_sort_order_key">SortOrder</string>
     <string name="pref_most_popular">Most Popular</string>
     <string name="pref_highest_rated">Highest Rated</string>
-    <string name="a_description">a description</string>
+    <string name="no_title">No Title</string>
     <string name="fullscreen_tutorial" />
     <string name="error_player" />
     <string name="search" />
@@ -44,7 +44,12 @@
     <string name="user_rating">0 / 10</string>
     <string name="refresh" />
     <string name="refresh1" />
-    <string name="textview">TextView</string>
 
+    <string name="popolari">Popular</string>
+    <string name="top_rated">Top Rated</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="now_playing">Now Playing</string>
+
+    <string name="a_description">A Description</string>
 
 </resources>

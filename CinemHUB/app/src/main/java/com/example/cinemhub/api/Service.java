@@ -7,6 +7,9 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import com.example.cinemhub.model.TrailerResponse;
 
+/*l'oggetto Service serve per effettuare la chiamate REST all'API di theMovieDB, da cui
+si ottengono i file JSON che l'oggetto Client si occuperà di convertire*/
+
 public interface Service {
 
     @GET("/3/movie/{category}")
@@ -41,13 +44,4 @@ public interface Service {
             @Query("include_adult") boolean adult
     );
 
-    @GET("/3/search/movie")
-    Call<MoviesResponse> search2(
-            @Query("api_key") String apiKey,
-            @Query("language") String language,
-            @Query("page") int page,
-            @Query("query") String query,
-            @Query("include_adult") boolean adult,
-            @Query("year") int year
-    );
 }

@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -26,22 +25,20 @@ import com.example.cinemhub.menu_items.Refresh;
 import com.example.cinemhub.menu_items.filtri.FilterHandler;
 import com.example.cinemhub.menu_items.ricerca.SearchHandler;
 import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.ui.categorie.MostraCategoriaViewModel;
-
 import java.util.List;
+
 
 public class MostraCategoriaFragment extends Fragment {
     private static final String TAG = "MostraCategoriaFragment";
     private MostraCategoriaViewModel mostraCategoriaViewModel;
     private MoviesAdapter moviesAdapter;
-    RecyclerView mostraCategoriaRV;
-    int genere;
+    private RecyclerView mostraCategoriaRV;
+    private int genere;
     private int totalItemCount;
     private int lastVisibleItem;
     private int visibleItemCount;
     private int threshold = 1;
-    FilterHandler filterOperation;
-    Refresh refreshOperation;
+    private FilterHandler filterOperation;
     private List<Movie> currentMovies;
     private boolean canLoad = true;
 
@@ -50,7 +47,7 @@ public class MostraCategoriaFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_genere, container, false);
         mostraCategoriaRV = root.findViewById(R.id.recycler_genere);
-        genere = MostraCategoriaFragmentArgs.fromBundle(getArguments()).getGenere();
+        genere = MostraCategoriaFragmentArgs.fromBundle(requireArguments()).getGenere();
         setHasOptionsMenu(true);
         return root;
     }
@@ -132,18 +129,20 @@ public class MostraCategoriaFragment extends Fragment {
             }
         });
 
-        mostraCategoriaViewModel.getGenere(genere).observe(getViewLifecycleOwner(), new Observer<Resource<List<Movie>>>() {
-            @Override
-            public void onChanged(@Nullable Resource<List<Movie>> resource) {
+        mostraCategoriaViewModel.getGenere(genere).observe(getViewLifecycleOwner(), resource -> {
+            if(resource!=null) {
 
                 moviesAdapter.setData(resource.getData());
-
                 currentMovies = resource.getData();
 
+                if(currentMovies.size() < 20)
+                    setCanLoad(false);
+                else
+                    setCanLoad(true);
                 Log.d(TAG, "CurrentListSize: "+resource.getData().size());
 
                 if (filterOperation != null) {
-                    filterOperation.setMovie(resource.getData());
+                    filterOperation.setMovie(currentMovies);
                     Log.d(TAG, "FilterSetMovie");
                 }
                 else
@@ -156,9 +155,7 @@ public class MostraCategoriaFragment extends Fragment {
                         mostraCategoriaViewModel.setCurrentResults(resource.getData().size());
                     }
                 }
-
             }
-
         });
     }
 
@@ -167,7 +164,7 @@ public class MostraCategoriaFragment extends Fragment {
         inflater.inflate(R.menu.main3, menu);
         SearchHandler searchOperation = new SearchHandler(menu, this);
         filterOperation = new FilterHandler(menu, this);
-        refreshOperation = new Refresh(menu, this);
+        Refresh refreshOperation = new Refresh(menu, this);
         searchOperation.implementSearch(2);
         filterOperation.implementFilter(2);
         refreshOperation.implementRefresh(2);

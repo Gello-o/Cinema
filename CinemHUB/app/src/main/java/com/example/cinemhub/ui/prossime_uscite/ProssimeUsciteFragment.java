@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -34,13 +33,12 @@ public class ProssimeUsciteFragment extends Fragment {
     private static final String TAG = "ProssimeUscite";
     private ProssimeUsciteViewModel prossimeUsciteViewModel;
     private MoviesAdapter moviesAdapter;
-    RecyclerView prossimeUsciteRV;
+    private RecyclerView prossimeUsciteRV;
     private int totalItemCount;
     private int lastVisibleItem;
     private int visibleItemCount;
     private int threshold = 1;
-    FilterHandler filterOperation;
-    Refresh refreshOperation;
+    private FilterHandler filterOperation;
     private List<Movie> currentMovies;
     private boolean canLoad = true;
 
@@ -130,13 +128,15 @@ public class ProssimeUsciteFragment extends Fragment {
             }
         });
 
-        prossimeUsciteViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), new Observer<Resource<List<Movie>>>() {
-            @Override
-            public void onChanged(@Nullable Resource<List<Movie>> resource) {
-
+        prossimeUsciteViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), resource -> {
+            if(resource!=null && resource.getData()!=null){
                 moviesAdapter.setData(resource.getData());
-
                 currentMovies = resource.getData();
+
+                if(resource.getData().size() < 20)
+                    setCanLoad(false);
+                else
+                    setCanLoad(true);
 
                 Log.d(TAG, "CurrentListSize: "+resource.getData().size());
 
@@ -154,9 +154,7 @@ public class ProssimeUsciteFragment extends Fragment {
                         prossimeUsciteViewModel.setCurrentResults(resource.getData().size());
                     }
                 }
-
             }
-
         });
     }
 
@@ -165,7 +163,7 @@ public class ProssimeUsciteFragment extends Fragment {
         inflater.inflate(R.menu.main3, menu);
         SearchHandler searchOperation = new SearchHandler(menu, this);
         filterOperation = new FilterHandler(menu, this);
-        refreshOperation = new Refresh(menu, this);
+        Refresh refreshOperation = new Refresh(menu, this);
         searchOperation.implementSearch(2);
         filterOperation.implementFilter(2);
         refreshOperation.implementRefresh(2);
