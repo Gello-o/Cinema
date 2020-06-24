@@ -36,6 +36,7 @@
                     android:layout_height="match_parent"
                     android:fitsSystemWindows="true"
                     android:scaleType="centerCrop"
+                    android:adjustViewBounds="true"
                     android:contentDescription="@string/movie_details" />
 
             </RelativeLayout>

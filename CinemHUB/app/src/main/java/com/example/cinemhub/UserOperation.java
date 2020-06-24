@@ -83,10 +83,16 @@ public class UserOperation {
                     if(warning.getText().toString().equals(""))
                         warning.setText(R.string.warning_vote);
                     else{
-                        if(!warning.getText().toString().contains("vote"))
+                        if(!warning.getText().toString().contains("vote")) {
+                            Log.d(TAG, "WarningVoteComment1");
                             warning.setText(R.string.warning_vote_comment);
+                        }
                     }
                 }
+
+                //else if(editComment.getText().equals(commento) && oldVote==voteToSubmit)
+                    //warning.setText("");
+
                 else{
 
                     if(!warning.getText().toString().contains("comment"))
@@ -142,10 +148,14 @@ public class UserOperation {
                                 if(warning.getText().toString().equals(""))
                                     warning.setText(R.string.warning_comment);
                                 else{
-                                    if(!warning.getText().toString().contains("comment"))
+                                    if(!warning.getText().toString().contains("comment")) {
+                                        Log.d(TAG, "WarningVoteComment2");
                                         warning.setText(R.string.warning_vote_comment);
+                                    }
+
                                 }
                             }
+
                             else{
                                 if(!warning.getText().toString().contains("vote") && editComment.getText().toString().equals(commento))
                                     warning.setText("");

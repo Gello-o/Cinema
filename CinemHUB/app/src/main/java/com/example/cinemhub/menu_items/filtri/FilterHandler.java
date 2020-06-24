@@ -123,7 +123,7 @@ public class FilterHandler {
             seekBarMove();
 
             //Click del pulsante save
-            alert.setTitle(" Filter:").setView(textEntryView).setPositiveButton("Save",
+            alert.setView(textEntryView).setPositiveButton("Save",
                     (dialog, whichButton) -> {
 
                         setFragmentCanLoad();
