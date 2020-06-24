@@ -119,9 +119,13 @@ public class MostraCategoriaFragment extends Fragment {
         });
 
         mostraCategoriaViewModel.getGenere(genere).observe(getViewLifecycleOwner(), resource -> {
-            if(resource!=null) {
+            if(resource!=null && resource.getData() != null) {
 
-                moviesAdapter.setData(resource.getData());
+                if(mostraCategoriaViewModel.getFiltered() == null)
+                    moviesAdapter.setData(resource.getData());
+                else
+                    moviesAdapter.setData(mostraCategoriaViewModel.getFiltered());
+
                 currentMovies = resource.getData();
 
                 if(resource.getData().size() < 20)
@@ -175,15 +179,12 @@ public class MostraCategoriaFragment extends Fragment {
         moviesAdapter.notifyDataSetChanged();
     }
 
-    public void setCanLoad(boolean canLoad) {
+    public void setCanLoad(boolean canLoad){
         mostraCategoriaViewModel.setCanLoad(canLoad);
+        mostraCategoriaViewModel.setFiltered(null);
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if(!mostraCategoriaViewModel.canLoad()){
-            mostraCategoriaViewModel.setCanLoad(true);
-        }
+    public void saveFiltered(List <Movie> filtered){
+        mostraCategoriaViewModel.setFiltered(filtered);
     }
 }
