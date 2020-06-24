@@ -83,7 +83,7 @@ public class UserOperation {
                     if(warning.getText().toString().equals(""))
                         warning.setText(R.string.warning_vote);
                     else{
-                        if(!warning.getText().toString().equals(R.string.warning_vote))
+                        if(!warning.getText().toString().contains("vote"))
                             warning.setText(R.string.warning_vote_comment);
                     }
                 }
@@ -134,16 +134,12 @@ public class UserOperation {
 
                         if(s.length() != 0){
 
-                            String commentoEditato = editComment.getText().toString();
-                            String warningText = warning.getText().toString();
-
                             if(!commento.equals("") &&
-                                    !commentoEditato.equals("") &&
-                                        !commentoEditato.equals(commento) &&
-                                            !commentoEditato.equals("Write There:")
+                                    !editComment.getText().toString().equals("") &&
+                                    !editComment.getText().toString().equals(commento) &&
+                                    !editComment.getText().toString().equals("Write There:")
                             ){
-
-                                if(warningText.equals(""))
+                                if(warning.getText().toString().equals(""))
                                     warning.setText(R.string.warning_comment);
                                 else{
                                     if(!warning.getText().toString().contains("comment"))
@@ -151,18 +147,8 @@ public class UserOperation {
                                 }
                             }
                             else{
-                                if(warningText.contains("vote") && warningText.contains("comment")){
-
-                                    if(commentoEditato.equals(commento))
-                                        warning.setText("");
-                                    else
-                                        warning.setText(R.string.warning_comment);
-
-                                }
-                                else if(warningText.contains("vote")){
-                                    warning.setText(R.string.warning_vote);
-                                }
-
+                                if(!warning.getText().toString().contains("vote") && editComment.getText().toString().equals(commento))
+                                    warning.setText("");
                             }
 
                         }

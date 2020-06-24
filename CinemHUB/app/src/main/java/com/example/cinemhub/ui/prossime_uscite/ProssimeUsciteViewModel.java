@@ -22,26 +22,17 @@ public class ProssimeUsciteViewModel extends ViewModel {
     private int currentResults;
     private boolean isLoading;
     private boolean canLoad = true;
-    private List<Movie> filtered;
-
-    public List<Movie> getFiltered() {
-        return filtered;
-    }
-
-    public void setFiltered(List<Movie> filtered) {
-        this.filtered = filtered;
-    }
 
     MutableLiveData<Resource<List<Movie>>> getProssimeUscite() {
         if(film == null) {
             film = new MutableLiveData<>();
-            MoviesRepository.getInstance().getMoviesLL("upcoming", page, film);
+            MoviesRepository.getInstance().getMoviesLL("now_playing", page, film);
         }
         return film;
     }
 
     MutableLiveData<Resource<List<Movie>>> getMoreProssimeUscite() {
-        MoviesRepository.getInstance().getMoviesLL("upcoming", page, film);
+        MoviesRepository.getInstance().getMoviesLL("now_playing", page, film);
         return film;
     }
 

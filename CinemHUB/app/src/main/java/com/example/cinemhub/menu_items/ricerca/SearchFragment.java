@@ -126,12 +126,7 @@ public class SearchFragment extends Fragment {
         ricercaViewModel.doSearch(query).observe(getViewLifecycleOwner(), resource -> {
 
             if(resource != null && resource.getData() != null){
-
-                if(ricercaViewModel.getFiltered() == null)
-                    moviesAdapter.setData(resource.getData());
-                else
-                    moviesAdapter.setData(ricercaViewModel.getFiltered());
-
+                moviesAdapter.setData(resource.getData());
                 currentMovies = resource.getData();
 
                 if(currentMovies.size() < 20)
@@ -187,10 +182,5 @@ public class SearchFragment extends Fragment {
 
     public void setCanLoad(boolean canLoad) {
         ricercaViewModel.setCanLoad(canLoad);
-        ricercaViewModel.setFiltered(null);
-    }
-
-    public void saveFiltered(List <Movie> filtered){
-        ricercaViewModel.setFiltered(filtered);
     }
 }
