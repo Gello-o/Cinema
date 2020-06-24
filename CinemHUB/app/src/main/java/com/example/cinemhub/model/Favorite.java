@@ -1,42 +1,42 @@
 package com.example.cinemhub.model;
 
-import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+//Oggetto tabella: conserva e mostra i dati degli oggetti Movie salvati nei preferiti
 
 @Entity(tableName = "Favorite")
 public class Favorite {
     public String TAG = "Favorite";
 
-    // definizione del Db
+
     @PrimaryKey
-    @NonNull
     int movie_id;
 
     @ColumnInfo(name = "Title")
-    String title;
+    private String title;
 
     @ColumnInfo(name = "OriginalTitle")
-    String originalTitle;
+    private String originalTitle;
 
     @ColumnInfo(name = "Rating")
-    String userRating;
+    private String userRating;
 
     @ColumnInfo(name = "PosterPath")
-    String posterPath;
+    private String posterPath;
 
     @ColumnInfo(name = "Plot")
-    String plotSynopsys;
+    private String plotSynopsys;
 
     @ColumnInfo(name = "ReleaseDate")
-    String releaseDate;
+    private String releaseDate;
 
     @ColumnInfo(name = "VoteCount")
-    String voteCount;
+    private String voteCount;
 
     @ColumnInfo(name = "GenreId")
-    String genreId;
+    private String genreId;
 
     public String getOriginalTitle() {
         return originalTitle;

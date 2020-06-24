@@ -1,13 +1,10 @@
 package com.example.cinemhub.ui.categorie;
 
-import android.content.res.Configuration;
+import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.text.style.CharacterStyle;
 import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,45 +12,52 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.cinemhub.MainActivity;
 import com.example.cinemhub.R;
 import com.example.cinemhub.adapter.MoviesAdapter;
 import com.example.cinemhub.model.Movie;
-import com.example.cinemhub.model.Trailer;
-import com.example.cinemhub.ricerca.SearchHandler;
-import com.example.cinemhub.ui.home.HomeFragment;
-import com.example.cinemhub.ui.home.HomeViewModel;
+import com.example.cinemhub.menu_items.ricerca.SearchHandler;
+import com.example.cinemhub.utils.Constants;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Timer;
 
 public class CategorieFragment extends Fragment {
     private static final String TAG = "CategorieFragment";
     private CategorieViewModel categorieViewModel;
     private RecyclerView azioneRV;
-    private RecyclerView avventuraRV;
-    private RecyclerView crimineRV;
+    private RecyclerView fantasyRV;
+    private RecyclerView animationRV;
+    private RecyclerView commedieRV;
+    private RecyclerView romanceRV;
     private MoviesAdapter azioneAdapter;
-    private MoviesAdapter avventuraAdapter;
-    private MoviesAdapter crimineAdapter;
+    private MoviesAdapter fantasyAdapter;
+    private MoviesAdapter animationAdapter;
+    private MoviesAdapter commedieAdapter;
+    private MoviesAdapter romanceAdapter;
     private TextView azioneTxt;
-    private TextView avventuraTxt;
-    private TextView crimineTxt;
+    private TextView fantasyTxt;
+    private TextView animationTxt;
+    private TextView commedieTxt;
+    private TextView romanceTxt;
+    private ImageView actionBanner;
+    private ImageView fantasyBanner;
+    private ImageView animationBanner;
+    private ImageView comedyBanner;
+    private ImageView romanceBanner;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -61,11 +65,17 @@ public class CategorieFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_categorie, container, false);
 
         azioneRV = root.findViewById(R.id.recycler_azione);
-        avventuraRV = root.findViewById(R.id.recycler_avventura);
-        crimineRV = root.findViewById(R.id.recycler_crimine);
-        azioneTxt = root.findViewById(R.id.azione_txt);
-        avventuraTxt = root.findViewById(R.id.avventura_txt);
-        crimineTxt = root.findViewById(R.id.crimine_txt);
+        fantasyRV = root.findViewById(R.id.recycler_fantasy);
+        animationRV = root.findViewById(R.id.recycler_animation);
+        commedieRV = root.findViewById(R.id.recycler_comedy);
+        romanceRV = root.findViewById(R.id.recycler_romance);
+
+        actionBanner = root.findViewById(R.id.image_action);
+        fantasyBanner = root.findViewById(R.id.image_fantasy);
+        animationBanner = root.findViewById(R.id.image_animation);
+        comedyBanner = root.findViewById(R.id.image_comedy);
+        romanceBanner = root.findViewById(R.id.image_romance);
+
 
         categorieViewModel =
                 new ViewModelProvider(this).get(CategorieViewModel.class);
@@ -77,42 +87,65 @@ public class CategorieFragment extends Fragment {
                     Log.d(TAG, "moviesSet nullo");
                 else
                     Log.d(TAG, ""+moviesSet.size());
-                initPopularRV(moviesSet);
+                initAction(moviesSet);
                 azioneAdapter.notifyDataSetChanged();
             }
         });
 
-        categorieViewModel.getAvventura().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+        categorieViewModel.getFantasy().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> moviesSet) {
                 if(moviesSet == null)
                     Log.d(TAG, "moviesSet nullo");
                 else
                     Log.d(TAG, ""+moviesSet.size());
-                initTopRatedRV(moviesSet);
-                avventuraAdapter.notifyDataSetChanged();
+                initFantasy(moviesSet);
+                fantasyAdapter.notifyDataSetChanged();
             }
         });
 
-        categorieViewModel.getCrime().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+        categorieViewModel.getAnimation().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> moviesSet) {
                 if(moviesSet == null)
                     Log.d(TAG, "moviesSet nullo");
                 else
                     Log.d(TAG, ""+moviesSet.size());
-                initProssimeUscite(moviesSet);
-                crimineAdapter.notifyDataSetChanged();
+                initAnimation(moviesSet);
+                animationAdapter.notifyDataSetChanged();
             }
         });
 
-        initTexts();
+        categorieViewModel.getCommedie().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> moviesSet) {
+                if(moviesSet == null)
+                    Log.d(TAG, "moviesSet nullo");
+                else
+                    Log.d(TAG, ""+moviesSet.size());
+                initCommedie(moviesSet);
+                commedieAdapter.notifyDataSetChanged();
+            }
+        });
+
+        categorieViewModel.getRomance().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> moviesSet) {
+                if(moviesSet == null)
+                    Log.d(TAG, "moviesSet nullo");
+                else
+                    Log.d(TAG, ""+moviesSet.size());
+                initRomance(moviesSet);
+                romanceAdapter.notifyDataSetChanged();
+            }
+        });
+        initImage();
         setHasOptionsMenu(true);
 
         return root;
     }
 
-    public void initPopularRV (List<Movie>set){
+    public void initAction(List<Movie>set){
         if(set == null)
             Log.d(TAG, "SET POPOLARI NULL");
         else if(set.isEmpty())
@@ -124,84 +157,99 @@ public class CategorieFragment extends Fragment {
         azioneRV.setItemAnimator(new DefaultItemAnimator());
     }
 
-    public void initTopRatedRV (List<Movie>set){
+    public void initFantasy (List<Movie>set){
         if(set == null)
             Log.d(TAG, "SET top NULL");
         else if(set.isEmpty())
             Log.d(TAG, "SET top vuoto");
-        avventuraAdapter = new MoviesAdapter(getContext(), set);
+        fantasyAdapter = new MoviesAdapter(getContext(), set);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        avventuraRV.setLayoutManager(layoutManager);
-        avventuraRV.setAdapter(avventuraAdapter);
-        avventuraRV.setItemAnimator(new DefaultItemAnimator());
+        fantasyRV.setLayoutManager(layoutManager);
+        fantasyRV.setAdapter(fantasyAdapter);
+        fantasyRV.setItemAnimator(new DefaultItemAnimator());
     }
 
-    public void initProssimeUscite (List<Movie>set){
+    public void initAnimation (List<Movie>set){
         if(set == null)
             Log.d(TAG, "SET Prossime NULL");
         else if(set.isEmpty())
             Log.d(TAG, "SET Prossime vuoto");
-        crimineAdapter = new MoviesAdapter(getContext(), set);
+        animationAdapter = new MoviesAdapter(getContext(), set);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        crimineRV.setLayoutManager(layoutManager);
-        crimineRV.setAdapter(crimineAdapter);
-        crimineRV.setItemAnimator(new DefaultItemAnimator());
+        animationRV.setLayoutManager(layoutManager);
+        animationRV.setAdapter(animationAdapter);
+        animationRV.setItemAnimator(new DefaultItemAnimator());
     }
 
-    public void initTexts(){
-        SpannableString ss1 = new SpannableString(azioneTxt.getText());
-        SpannableString ss2 = new SpannableString(avventuraTxt.getText());
-        SpannableString ss3 = new SpannableString(crimineTxt.getText());
+    public void initCommedie (List<Movie>set){
+        if(set == null)
+            Log.d(TAG, "SET Prossime NULL");
+        else if(set.isEmpty())
+            Log.d(TAG, "SET Prossime vuoto");
+        commedieAdapter = new MoviesAdapter(getContext(), set);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        commedieRV.setLayoutManager(layoutManager);
+        commedieRV.setAdapter(commedieAdapter);
+        commedieRV.setItemAnimator(new DefaultItemAnimator());
+    }
 
-       CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
+    public void initRomance (List<Movie>set){
+        if(set == null)
+            Log.d(TAG, "SET Prossime NULL");
+        else if(set.isEmpty())
+            Log.d(TAG, "SET Prossime vuoto");
+        romanceAdapter = new MoviesAdapter(getContext(), set);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        romanceRV.setLayoutManager(layoutManager);
+        romanceRV.setAdapter(romanceAdapter);
+        romanceRV.setItemAnimator(new DefaultItemAnimator());
+    }
 
-        ClickableSpan azioneClickableSpan = new ClickableSpan(){
-
+    public void initImage() {
+        actionBanner.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(@NonNull View widget) {
-                Log.d(TAG, "cliccato");
-               action.setGenere(28);
-               Navigation.findNavController(widget).navigate(action);
-            }
-        };
+            public void onClick(View v) {
+                CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
+                action.setGenere(Constants.ACTION);
+                Navigation.findNavController(v).navigate(action);
+                }
+            });
 
-
-        ClickableSpan avventuraClickableSpan = new ClickableSpan(){
-
+        fantasyBanner.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(@NonNull View widget) {
-                Log.d(TAG, "cliccato");
-                action.setGenere(12);
-                Navigation.findNavController(widget).navigate(action);
+            public void onClick(View v) {
+                CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
+                action.setGenere(Constants.FANTASY);
+                Navigation.findNavController(v).navigate(action);
             }
-        };
+        });
 
-        ClickableSpan crimineClickableSpan = new ClickableSpan(){
-
-
+        animationBanner.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(@NonNull View widget) {
-                Log.d(TAG, "cliccato");
-                action.setGenere(80);
-                Navigation.findNavController(widget).navigate(action);
-
-
+            public void onClick(View v) {
+                CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
+                action.setGenere(Constants.ANIMATION);
+                Navigation.findNavController(v).navigate(action);
             }
-        };
+        });
 
-        ss1.setSpan(azioneClickableSpan, 0, 6, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        ss2.setSpan(avventuraClickableSpan, 0, 8, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        ss3.setSpan(crimineClickableSpan, 0, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        comedyBanner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
+                action.setGenere(Constants.COMEDY);
+                Navigation.findNavController(v).navigate(action);
+            }
+        });
 
-        azioneTxt.setText(ss1);
-        avventuraTxt.setText(ss2);
-        crimineTxt.setText(ss3);
-
-        azioneTxt.setMovementMethod(LinkMovementMethod.getInstance());
-        avventuraTxt.setMovementMethod(LinkMovementMethod.getInstance());
-        crimineTxt.setMovementMethod(LinkMovementMethod.getInstance());
-
-
+        romanceBanner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
+                action.setGenere(Constants.ROMANCE);
+                Navigation.findNavController(v).navigate(action);
+            }
+        });
     }
 
     @Override

@@ -1,5 +1,6 @@
-package com.example.cinemhub.ui.categorie;
+package com.example.cinemhub.menu_items.ricerca;
 
+import android.util.Log;
 import android.view.Menu;
 
 import androidx.annotation.NonNull;
@@ -8,33 +9,40 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.cinemhub.menu_items.filtri.FilterHandler;
-import com.example.cinemhub.menu_items.ricerca.SearchHandler;
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesRepository;
 import com.example.cinemhub.model.Resource;
 
 import java.util.List;
 
-public class MostraCategoriaViewModel extends ViewModel {
+/*
+ViewModel con cui interagisce l'oggetto SearchFragment: preserva i dati del fragment dai suoi
+cambiamenti di stato, sfrutta l'oggetto MoviesRepository per inizializzare il dato che punta alla
+lista di film e gestisce il lazy loading del fragment attraverso la variabile canLoad
+*/
+
+public class SearchViewModel extends ViewModel {
     private MutableLiveData<Resource<List<Movie>>> film;
-    //private static final String TAG = "MostraCategorieFragment";
+    private static final String TAG = "SearchViewModel";
     private int page = 1;
-    private int genere;
+    private String query;
     private int currentResults;
     private boolean isLoading;
     private boolean canLoad = true;
 
-    MutableLiveData<Resource<List<Movie>>> getGenere(int genere) {
-        this.genere = genere;
+    MutableLiveData<Resource<List<Movie>>> doSearch(String query) {
+        this.query = query;
+        Log.d(TAG, "query VM " + query);
         if(film == null) {
+            Log.d(TAG, "film = null");
             film = new MutableLiveData<>();
-            MoviesRepository.getInstance().getGenresLL(genere, page, film);
+            MoviesRepository.getInstance().searchMovie(query, page, film);
         }
         return film;
     }
 
-    MutableLiveData<Resource<List<Movie>>> getMoreGenere() {
-        MoviesRepository.getInstance().getGenresLL(genere, page, film);
+    MutableLiveData<Resource<List<Movie>>> searchMore() {
+        MoviesRepository.getInstance().searchMovie(query, page, film);
         return film;
     }
 
@@ -68,12 +76,7 @@ public class MostraCategoriaViewModel extends ViewModel {
 
     public void initFilters(@NonNull Menu menu, Fragment fragment){
         FilterHandler filterOperation = new FilterHandler(menu, fragment);
-        filterOperation.implementFilter(2);
-    }
-
-    public void initSearch(@NonNull Menu menu, Fragment fragment){
-        SearchHandler searchOperation = new SearchHandler(menu, fragment);
-        searchOperation.implementSearch(2);
+        filterOperation.implementFilter(1);
     }
 
     public boolean canLoad() {

@@ -1,31 +1,32 @@
 package com.example.cinemhub.model;
 
-import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "UserRatingDB")
-public class UserRatingDB {
-    public String TAG = "UserRatingDB";
+//Oggetto Tabella: conserva e mostra i dati inerenti a rating e commento di un utente
+
+@Entity(tableName = "UserInfo")
+public class UserInfo {
+    public String TAG = "UserInfo";
 
     // definizione del Db
     @PrimaryKey
-    @NonNull
-    int movie_id;
+    int movieId;
 
     @ColumnInfo(name = "Rating")
-    float rating;
+    private float rating;
 
     @ColumnInfo(name = "Overview")
-    String overview;
+    private String overview;
 
-    public int getMovie_id() {
-        return movie_id;
+
+    public int getMovieId() {
+        return movieId;
     }
 
-    public void setMovie_id(int movie_id) {
-        this.movie_id = movie_id;
+    public void setMovieId(int movieId) {
+        this.movieId = movieId;
     }
 
     public float getRating() {

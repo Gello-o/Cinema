@@ -1,4 +1,4 @@
-package com.example.cinemhub.ui.nuovi_arrivi;
+package com.example.cinemhub.menu_items.ricerca;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -25,23 +25,30 @@ import com.example.cinemhub.menu_items.Refresh;
 import com.example.cinemhub.model.Movie;
 import java.util.List;
 
+/*
+fragment adibito alla ricerca: mostra gli oggetti di tipo Movie
+restituiti dalla ricerca in un layout a griglia. Implementa il lazy loading
+Dà la possibilità all'utente di filtrare i film all'interno della griglia
+*/
 
-public class NuoviArriviFragment extends Fragment {
-    private static final String TAG = "NuoviArriviFragment";
-    private NuoviArriviViewModel nuoviArriviViewModel;
+public class SearchFragment extends Fragment {
+    private static final String TAG = "SearchFragment";
+    private SearchViewModel ricercaViewModel;
     private MoviesAdapter moviesAdapter;
-    private RecyclerView prossimeUsciteRV;
+    private RecyclerView ricercaRV;
+    private String query;
     private int totalItemCount;
     private int lastVisibleItem;
     private int visibleItemCount;
     private int threshold = 1;
     private List<Movie> currentMovies;
 
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_nuovi_arrivi, container, false);
-        prossimeUsciteRV = root.findViewById(R.id.recycler_view_nuovi_arrivi);
+        View root = inflater.inflate(R.layout.search, container, false);
+        ricercaRV = root.findViewById(R.id.recycler_view_ricerca);
+        query = SearchFragmentArgs.fromBundle(requireArguments()).getQuery();
+        Log.d(TAG, "QUERY " + query);
         setHasOptionsMenu(true);
         return root;
     }
@@ -50,8 +57,8 @@ public class NuoviArriviFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        nuoviArriviViewModel =
-                new ViewModelProvider(this).get(NuoviArriviViewModel.class);
+        ricercaViewModel =
+                new ViewModelProvider(this).get(SearchViewModel.class);
 
         GridLayoutManager layoutManager;
 
@@ -60,13 +67,13 @@ public class NuoviArriviFragment extends Fragment {
         else
             layoutManager = new GridLayoutManager(getActivity(), 4);
 
-        prossimeUsciteRV.setLayoutManager(layoutManager);
-        prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
+        ricercaRV.setLayoutManager(layoutManager);
+        ricercaRV.setItemAnimator(new DefaultItemAnimator());
 
         moviesAdapter = new MoviesAdapter(getActivity(), getMovies());
-        prossimeUsciteRV.setAdapter(moviesAdapter);
+        ricercaRV.setAdapter(moviesAdapter);
 
-        prossimeUsciteRV.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        ricercaRV.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -82,22 +89,22 @@ public class NuoviArriviFragment extends Fragment {
                 Log.d(TAG, "visible items " + visibleItemCount);
 
                 if ((totalItemCount == visibleItemCount ||
-                        (totalItemCount <= (lastVisibleItem + threshold) && dy > 0  && !nuoviArriviViewModel.isLoading()) &&
-                                nuoviArriviViewModel.getMoviesLiveData().getValue() != null &&
-                                nuoviArriviViewModel.getCurrentResults() != nuoviArriviViewModel.getMoviesLiveData().getValue().getTotalResults())
-                                && nuoviArriviViewModel.canLoad()
+                        (totalItemCount <= (lastVisibleItem + threshold) && dy > 0  && !ricercaViewModel.isLoading()) &&
+                                ricercaViewModel.getMoviesLiveData().getValue() != null &&
+                                ricercaViewModel.getCurrentResults() != ricercaViewModel.getMoviesLiveData().getValue().getTotalResults())
+                        && ricercaViewModel.canLoad()
                 ) {
                     Resource<List<Movie>> moviesResource = new Resource<>();
 
-                    MutableLiveData<Resource<List<Movie>>> moviesMutableLiveData = nuoviArriviViewModel.getMoviesLiveData();
+                    MutableLiveData<Resource<List<Movie>>> moviesMutableLiveData = ricercaViewModel.getMoviesLiveData();
 
                     if (moviesMutableLiveData.getValue() != null) {
 
-                        nuoviArriviViewModel.setLoading(true);
+                        ricercaViewModel.setLoading(true);
 
                         List<Movie> currentMovies = moviesMutableLiveData.getValue().getData();
 
-                        // It adds a null element to enable the visualization of the loading item (it is managed by the class NuoviArriviAdapter)
+                        // It adds a null element to enable the visualization of the loading item (it is managed by the class SearchAdapter)
                         currentMovies.add(null);
                         moviesResource.setData(currentMovies);
                         moviesResource.setStatusMessage(moviesMutableLiveData.getValue().getStatusMessage());
@@ -107,58 +114,53 @@ public class NuoviArriviFragment extends Fragment {
                         moviesResource.setLoading(true);
                         moviesMutableLiveData.postValue(moviesResource);
 
-                        int page = nuoviArriviViewModel.getPage() + 1;
-                        nuoviArriviViewModel.setPage(page);
+                        int page = ricercaViewModel.getPage() + 1;
+                        ricercaViewModel.setPage(page);
 
-                        nuoviArriviViewModel.getMoreProssimeUscite();
+                        ricercaViewModel.searchMore();
                     }
                 }
             }
         });
 
-        nuoviArriviViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), resource -> {
+        ricercaViewModel.doSearch(query).observe(getViewLifecycleOwner(), resource -> {
 
-            if(resource != null) {
+            if(resource != null && resource.getData() != null){
                 moviesAdapter.setData(resource.getData());
                 currentMovies = resource.getData();
 
-                if(resource.getData().size() < 20)
-                    nuoviArriviViewModel.setCanLoad(false);
+                if(currentMovies.size() < 20)
+                    setCanLoad(false);
+                else
+                    setCanLoad(true);
 
-                Log.d(TAG, "CurrentListSize: " + resource.getData().size());
+                Log.d(TAG, "CurrentListSize: "+resource.getData().size());
 
-                if (!resource.isLoading() /*&& nuoviArriviViewModel.canLoad()*/) {
+                if (!resource.isLoading() /*&& canLoad*/) {
                     Log.d(TAG, "STA CARICANDO");
-                    nuoviArriviViewModel.setLoading(false);
+                    ricercaViewModel.setLoading(false);
                     if (resource.getData() != null) {
-                        nuoviArriviViewModel.setCurrentResults(resource.getData().size());
+                        ricercaViewModel.setCurrentResults(resource.getData().size());
                     }
                 }
             }
+
         });
     }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.main3, menu);
-        nuoviArriviViewModel.initFilters(menu, this);
-        nuoviArriviViewModel.initSearch(menu, this);
+        inflater.inflate(R.menu.main2, menu);
+        ricercaViewModel.initFilters(menu, this);
         Refresh refreshOperation = new Refresh(menu, this);
-        refreshOperation.implementRefresh(2);
+        refreshOperation.implementRefresh(1);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if(!nuoviArriviViewModel.canLoad()){
-            nuoviArriviViewModel.setCanLoad(true);
-        }
-    }
 
     private List<Movie> getMovies() {
 
-        Resource<List<Movie>> moviesResource = nuoviArriviViewModel.getProssimeUscite().getValue();
+        Resource<List<Movie>> moviesResource = ricercaViewModel.doSearch(query).getValue();
 
         if (moviesResource != null) {
             return moviesResource.getData();
@@ -167,7 +169,6 @@ public class NuoviArriviFragment extends Fragment {
         return null;
     }
 
-
     public List<Movie> getCurrentMovies() {
         return currentMovies;
     }
@@ -175,11 +176,11 @@ public class NuoviArriviFragment extends Fragment {
     public void initMovieRV (List<Movie> lista) {
         Log.d(TAG, "size " + lista.size());
         moviesAdapter = new MoviesAdapter(getActivity(), lista);
-        prossimeUsciteRV.setAdapter(moviesAdapter);
+        ricercaRV.setAdapter(moviesAdapter);
         moviesAdapter.notifyDataSetChanged();
     }
 
-    public void setCanLoad(boolean canLoad){
-        nuoviArriviViewModel.setCanLoad(canLoad);
+    public void setCanLoad(boolean canLoad) {
+        ricercaViewModel.setCanLoad(canLoad);
     }
 }

@@ -3,15 +3,22 @@ package com.example.cinemhub.model;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
-
-import com.bumptech.glide.load.engine.Resource;
 import com.example.cinemhub.api.Client;
 import com.example.cinemhub.api.Service;
 import com.example.cinemhub.utils.Constants;
+
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+/*
+MoviesRepository è l'oggetto che effettua le chiamate REST a TMDB.
+Ha il compito di inserire il dato restituito dalla chiamata
+all'interno di un MutableLiveData che verrà sfruttato nei vari Fragment
+*/
 
 public class MoviesRepository {
 
@@ -27,7 +34,9 @@ public class MoviesRepository {
         return instance;
     }
 
-    /*
+    /*chiamata asincrona a TMDB per i fragment che fanno uso del lazy loading. Recupera i film
+        di una tra le categorie principali: top_rated, upcoming, now_playing e popular*/
+
     public void getMoviesLL(String categoria, int pagina, MutableLiveData<Resource<List<Movie>>> moviesData) {
         Service apiService = Client.getClient().create(Service.class);
         Call<MoviesResponse> call;
@@ -80,12 +89,13 @@ public class MoviesRepository {
             }
         });
     }
-    */
+
+    /*chiamata asincrona a TMDB per i fragment che NON fanno uso del lazy loading. Recupera i film
+        di una tra le categorie principali: top_rated, upcoming, now_playing e popular*/
 
     public void getMovies(String categoria, int pagina, MutableLiveData<List<Movie>> moviesData) {
         Service apiService = Client.getClient().create(Service.class);
         Call<MoviesResponse> call;
-
 
         Log.d(TAG, "CHIAMATA " + pagina);
         call = apiService.getTMDB(categoria, Constants.API_KEY, Constants.LINGUA, pagina);
@@ -94,42 +104,25 @@ public class MoviesRepository {
 
             @Override
             public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
-                MoviesResponse moviesResponse = response.body();
-                List<Movie> movies = moviesResponse.getResults();
-
-                if(moviesResponse == null){
-                    Log.d(TAG, "response null");
-                    //gestione risposta nulla
-                }
-                else if(movies == null){
-                    Log.d(TAG, "movies null");
-                }
-
-                if(moviesData.getValue() == null) {
-                    moviesData.setValue(movies);
-                    Log.d(TAG, "null ");
-                    Log.d(TAG, "Pagina: " + pagina);
-                }
-
-                else {
-                    List<Movie> a = moviesData.getValue();
-                    a.addAll(movies);
-                    moviesData.setValue(a); //setValue
-
-                    Log.d(TAG, "not null ");
+                if(response.isSuccessful() && response.body() != null){
+                    List<Movie> movies = response.body().getResults();
+                    if(movies != null)
+                        moviesData.setValue(movies);
+                    else
+                        moviesData.setValue(new ArrayList<>());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<MoviesResponse> call, @NonNull Throwable t) {
-                if (t.getMessage() != null)
-                    Log.d("Error", t.getMessage());
-                else
-                    Log.d("Error", "qualcosa è andato storto");
+                moviesData.setValue(new ArrayList<>());
             }
         });
 
     }
+
+    /*chiamata asincrona a TMDB per i fragment che NON fanno uso del lazy loading. Recupera i film
+        di uno tra i generi principali: azione, avventura, crimine etc...*/
 
     public void getGenres(int genere, int pagina, MutableLiveData<List<Movie>> moviesData){
         Service apiService = Client.getClient().create(Service.class);
@@ -143,45 +136,27 @@ public class MoviesRepository {
 
             @Override
             public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
-                MoviesResponse moviesResponse = response.body();
-                List<Movie> movies = moviesResponse.getResults();
-
-                if(moviesResponse == null){
-                    Log.d(TAG, "response null");
-                    //gestione risposta nulla
-                }
-                else if(movies == null){
-                    Log.d(TAG, "movies null");
-                }
-
-                if(moviesData.getValue() == null) {
-                    moviesData.setValue(movies);
-                    Log.d(TAG, "null ");
-                    Log.d(TAG, "Pagina: " + pagina);
-                }
-
-                else {
-                    List<Movie> a = moviesData.getValue();
-                    a.addAll(movies);
-                    moviesData.setValue(a); //setValue
-
-                    Log.d(TAG, "not null ");
+                if(response.isSuccessful() && response.body() != null){
+                    List<Movie> movies = response.body().getResults();
+                    if(movies != null)
+                        moviesData.setValue(movies);
+                    else
+                        moviesData.setValue(new ArrayList<>());
                 }
             }
 
 
             @Override
             public void onFailure(@NonNull Call<MoviesResponse> call, @NonNull Throwable t) {
-                if (t.getMessage() != null)
-                    Log.d("Error", t.getMessage());
-                else
-                    Log.d("Error", "qualcosa è andato storto");
+                moviesData.setValue(new ArrayList<>());
             }
         });
 
     }
 
-    public void searchMovie(int pagina, String query, MutableLiveData<List<Movie>> moviesData){
+    /*chiamata asincrona a TMDB per la ricerca di una film. Implementa il lazy loading*/
+
+    public void searchMovie(String query, int pagina, MutableLiveData<Resource<List<Movie>>> moviesData) {
         Service apiService = Client.getClient().create(Service.class);
         Call<MoviesResponse> call;
 
@@ -193,43 +168,54 @@ public class MoviesRepository {
 
             @Override
             public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
-                MoviesResponse moviesResponse = response.body();
-                List<Movie> movies = moviesResponse.getResults();
+                if (response.isSuccessful() && response.body() != null) {
 
-                if(moviesResponse == null){
-                    Log.d(TAG, "response null");
-                    //gestione risposta nulla
-                }
-                else if(movies == null){
-                    Log.d(TAG, "movies null");
+                    Resource<List<Movie>> resource = new Resource<>();
+                    Log.d(TAG, "RESPONSE SUCCESFUL");
+                    if (moviesData.getValue() != null && moviesData.getValue().getData() != null) {
+
+                        Log.d(TAG, "dato già popolato");
+                        List<Movie> currentArticleList = moviesData.getValue().getData();
+
+                        currentArticleList.remove(currentArticleList.size() - 1);
+                        currentArticleList.addAll(response.body().getResults());
+                        resource.setData(currentArticleList);
+                    } else {
+                        Log.d(TAG, "dato non ancora popolato");
+                        resource.setData(response.body().getResults());
+                    }
+
+                    resource.setTotalResults(response.body().getTotalResults());
+                    resource.setStatusCode(response.code());
+                    resource.setStatusMessage(response.message());
+                    resource.setLoading(false);
+                    Log.d(TAG, "LOADING FALSE");
+                    moviesData.postValue(resource);
+                } else if (response.errorBody() != null) {
+                    Log.d(TAG, "RESPONSE NOT SUCCESFUL");
+                    Resource<List<Movie>> resource = new Resource<>();
+                    resource.setStatusCode(response.code());
+                    try {
+                        resource.setStatusMessage(response.errorBody().string() + "- " + response.message());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    moviesData.postValue(resource);
                 }
 
-                if(moviesData.getValue() == null) {
-                    moviesData.setValue(movies);
-                    Log.d(TAG, "null ");
-                    Log.d(TAG, "Pagina: " + pagina);
-                }
-
-                else {
-                    List<Movie> a = moviesData.getValue();
-                    a.addAll(movies);
-                    moviesData.setValue(a); //setValue
-
-                    Log.d(TAG, "not null ");
-                }
             }
-
 
             @Override
             public void onFailure(@NonNull Call<MoviesResponse> call, @NonNull Throwable t) {
-                if (t.getMessage() != null)
-                    Log.d("Error", t.getMessage());
-                else
-                    Log.d("Error", "qualcosa è andato storto");
+                Resource<List<Movie>> resource = new Resource<>();
+                resource.setStatusMessage(t.getMessage());
+                moviesData.postValue(resource);
             }
         });
     }
 
+    /*chiamata asincrona a TMDB per il trailer dei film. Viene utilizzata in ActivityDetail, nel momento
+    in cui l'utente accede ai dettagli di un film*/
 
     public void getTrailer(String id, MutableLiveData<String> keyDatum) {
         Service apiService = Client.getClient().create(Service.class);
@@ -239,32 +225,80 @@ public class MoviesRepository {
         call.enqueue(new Callback<TrailerResponse>() {
             @Override
             public void onResponse(@NonNull Call<TrailerResponse> call, @NonNull Response<TrailerResponse> response) {
-                List<Trailer> trailers = null;
-                if(response.body() != null)
-                    trailers = response.body().getTrailers();
-                //Gli diamo il primo trailer.
-                String key = "";
 
-                //Temporaneo
-                if (trailers == null || trailers.size() == 0) {
-                    key = "BdJKm16Co6M";
-                } else
-                    key = trailers.get(0).getKey();
+                if(response.isSuccessful() && response.body() != null){
+                    List<Trailer> trailers = response.body().getTrailers();
+                    if(trailers != null && !trailers.isEmpty() && trailers.get(0)!=null && trailers.get(0).getKey() != null) {
+                        keyDatum.setValue(trailers.get(0).getKey());
+                    }
+                    else
+                        keyDatum.setValue("WECcGZLvcz0");
+                }
 
-                keyDatum.setValue(key);
             }
 
             @Override
             public void onFailure(@NonNull Call<TrailerResponse> call, @NonNull Throwable t) {
-                if (t.getMessage() != null)
-                    Log.d("Error", t.getMessage());
-                else
-                    Log.d("Error", "qualcosa è andato storto");
+                keyDatum.setValue("668nUCeBHyY");
             }
         });
 
     }
 
+    /*chiamata asincrona a TMDB per i fragment che fanno uso del lazy loading. Recupera i film
+        di uno tra i generi principali: azione, avventura, crimine etc...*/
 
+    public void getGenresLL(int genere, int pagina, MutableLiveData<Resource<List<Movie>>> moviesData) {
+        Service apiService = Client.getClient().create(Service.class);
+        Call<MoviesResponse> call;
+
+
+        Log.d(TAG, "CHIAMATA " + pagina);
+        call = apiService.getGenres(Constants.API_KEY, "popularity.desc", Constants.LINGUA, genere, pagina);
+
+        call.enqueue(new Callback<MoviesResponse>() {
+
+            @Override
+            public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+
+                    Resource<List<Movie>> resource = new Resource<>();
+
+                    if (moviesData.getValue() != null && moviesData.getValue().getData() != null) {
+                        List<Movie> currentArticleList = moviesData.getValue().getData();
+
+                        currentArticleList.remove(currentArticleList.size() - 1);
+                        currentArticleList.addAll(response.body().getResults());
+                        resource.setData(currentArticleList);
+                    } else {
+                        resource.setData(response.body().getResults());
+                    }
+
+                    resource.setTotalResults(response.body().getTotalResults());
+                    resource.setStatusCode(response.code());
+                    resource.setStatusMessage(response.message());
+                    resource.setLoading(false);
+                    Log.d(TAG, "LOADING FALSE");
+                    moviesData.postValue(resource);
+                } else if (response.errorBody() != null) {
+                    Resource<List<Movie>> resource = new Resource<>();
+                    resource.setStatusCode(response.code());
+                    try {
+                        resource.setStatusMessage(response.errorBody().string() + "- " + response.message());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    moviesData.postValue(resource);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MoviesResponse> call, @NonNull Throwable t) {
+                Resource<List<Movie>> resource = new Resource<>();
+                resource.setStatusMessage(t.getMessage());
+                moviesData.postValue(resource);
+            }
+        });
+    }
 
 }

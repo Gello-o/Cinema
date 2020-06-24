@@ -34,20 +34,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_add_list"
-        android:name="com.example.cinemhub.ui.add_list.AddListFragment"
-        android:label="@string/menu_add_list"
-        tools:layout="@layout/fragment_add_list">
-        <action
-            android:id="@+id/goToSearchAction"
-            app:destination="@id/nav_search">
-            <argument
-                android:name="query"
-                app:argType="string" />
-        </action>
-    </fragment>
-
-    <fragment
         android:id="@+id/nav_categorie"
         android:name="com.example.cinemhub.ui.categorie.CategorieFragment"
         android:label="@string/menu_categorie"
@@ -122,6 +108,16 @@
             app:destination="@id/nav_categorie"
             app:popUpTo="@id/nav_categorie">
         </action>
+
+        <action
+            android:id="@+id/goToSearchAction"
+            app:destination="@id/nav_search"
+            app:popUpTo="@id/nav_genere">
+            <argument
+                android:name="query"
+                app:argType="string" />
+        </action>
+
         <argument
             android:name="genere"
             app:argType="integer" />
@@ -129,7 +125,7 @@
 
     <fragment
         android:id="@+id/nav_search"
-        android:name="com.example.cinemhub.ricerca.SearchFragment"
+        android:name="com.example.cinemhub.menu_items.ricerca.SearchFragment"
         android:label="@string/menu_genere"
         tools:layout="@layout/search" >
         <action

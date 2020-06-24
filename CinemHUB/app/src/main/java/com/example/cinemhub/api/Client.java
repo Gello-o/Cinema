@@ -4,6 +4,9 @@ import com.example.cinemhub.utils.Constants;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/*l'oggetto Client utilizza la libreria Retrofit per immagazzinare la pagina in formato JSON
+che contiene i film e convertirla nell'oggetto Java MoviesResponse*/
+
 public class Client {
 
     private static Retrofit retrofit = null;

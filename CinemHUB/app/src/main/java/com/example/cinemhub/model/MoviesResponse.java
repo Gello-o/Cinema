@@ -4,6 +4,12 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
+/*
+Per Movie:
+oggetto risultante dalla conversione del file JSON ottenuto da TMDB in linguaggio Java,
+con i rispettivi attributi e metodi get e set.
+*/
+
 public class MoviesResponse {
     @SerializedName("page")
     @Expose
@@ -34,19 +40,19 @@ public class MoviesResponse {
         this.results = results;
     }
 
-    public int getTotal_results() {
+    public int getTotalResults() {
         return total_results;
     }
 
-    public void setTotal_results(int total_results) {
+    public void setTotalResults(int total_results) {
         this.total_results = total_results;
     }
 
-    public int getTotal_pages() {
+    public int getTotalPages() {
         return total_pages;
     }
 
-    public void setTotal_pages(int total_pages) {
+    public void setTotalPages(int total_pages) {
         this.total_pages = total_pages;
     }
 }
