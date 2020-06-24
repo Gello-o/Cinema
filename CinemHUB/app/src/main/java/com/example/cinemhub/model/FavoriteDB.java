@@ -72,6 +72,5 @@ public abstract class FavoriteDB extends RoomDatabase {
         return favoriteDB;
     }
 
-
     public abstract MovieDao dbInterface();
 }

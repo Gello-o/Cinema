@@ -64,6 +64,7 @@ public class NuoviArriviFragment extends Fragment {
         prossimeUsciteRV.setItemAnimator(new DefaultItemAnimator());
 
         moviesAdapter = new MoviesAdapter(getActivity(), getMovies());
+
         prossimeUsciteRV.setAdapter(moviesAdapter);
 
         prossimeUsciteRV.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -118,8 +119,13 @@ public class NuoviArriviFragment extends Fragment {
 
         nuoviArriviViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), resource -> {
 
-            if(resource != null) {
-                moviesAdapter.setData(resource.getData());
+            if(resource != null && resource.getData() != null) {
+
+                if(nuoviArriviViewModel.getFiltered() == null)
+                    moviesAdapter.setData(resource.getData());
+                else
+                    moviesAdapter.setData(nuoviArriviViewModel.getFiltered());
+
                 currentMovies = resource.getData();
 
                 if(resource.getData().size() < 20)
@@ -148,14 +154,6 @@ public class NuoviArriviFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if(!nuoviArriviViewModel.canLoad()){
-            nuoviArriviViewModel.setCanLoad(true);
-        }
-    }
-
     private List<Movie> getMovies() {
 
         Resource<List<Movie>> moviesResource = nuoviArriviViewModel.getProssimeUscite().getValue();
@@ -181,5 +179,10 @@ public class NuoviArriviFragment extends Fragment {
 
     public void setCanLoad(boolean canLoad){
         nuoviArriviViewModel.setCanLoad(canLoad);
+        nuoviArriviViewModel.setFiltered(null);
+    }
+
+    public void saveFiltered(List <Movie> filtered){
+        nuoviArriviViewModel.setFiltered(filtered);
     }
 }

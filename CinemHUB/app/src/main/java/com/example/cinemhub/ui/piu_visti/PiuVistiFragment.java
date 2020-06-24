@@ -121,7 +121,12 @@ public class PiuVistiFragment extends Fragment {
             @Override
             public void onChanged(@Nullable Resource<List<Movie>> resource) {
                 if(resource!=null && resource.getData()!=null) {
-                    moviesAdapter.setData(resource.getData());
+
+                    if(piuVistiViewModel.getFiltered() == null)
+                        moviesAdapter.setData(resource.getData());
+                    else
+                        moviesAdapter.setData(piuVistiViewModel.getFiltered());
+
                     currentMovies = resource.getData();
 
                     if(resource.getData().size() < 20)
@@ -176,15 +181,12 @@ public class PiuVistiFragment extends Fragment {
         moviesAdapter.notifyDataSetChanged();
     }
 
-    public void setCanLoad(boolean canLoad) {
+    public void setCanLoad(boolean canLoad){
         piuVistiViewModel.setCanLoad(canLoad);
+        piuVistiViewModel.setFiltered(null);
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if(!piuVistiViewModel.canLoad()){
-            piuVistiViewModel.setCanLoad(true);
-        }
+    public void saveFiltered(List <Movie> filtered){
+        piuVistiViewModel.setFiltered(filtered);
     }
 }

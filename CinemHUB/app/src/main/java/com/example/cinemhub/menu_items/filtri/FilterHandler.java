@@ -149,7 +149,6 @@ public class FilterHandler {
 
         // set listener
         rangeSeekbarVote.setOnRangeSeekbarChangeListener((minValue, maxValue) -> {
-            Log.d(TAG, "ChangedVote: "+minValue+", "+maxValue);
             textViewVoteMin.setText(String.valueOf(minValue));
             textViewVoteMax.setText(String.valueOf(maxValue));
         });
@@ -158,7 +157,6 @@ public class FilterHandler {
 
         // set listener
         rangeSeekbarYear.setOnRangeSeekbarChangeListener((minValue, maxValue) -> {
-            Log.d(TAG, "ChangedYear: "+minValue+", "+maxValue);
             textViewYearMin.setText(String.valueOf(minValue));
             textViewYearMax.setText(String.valueOf(maxValue));
         });
@@ -292,21 +290,25 @@ public class FilterHandler {
 
         if(fragment instanceof NuoviArriviFragment) {
             ( (NuoviArriviFragment) fragment ).initMovieRV(movieFiltered);
+            ( (NuoviArriviFragment) fragment ).saveFiltered(movieFiltered);
         }else if(fragment instanceof SearchFragment) {
             ( (SearchFragment) fragment ).initMovieRV(movieFiltered);
+            ( (SearchFragment) fragment ).saveFiltered(movieFiltered);
         }else if(fragment instanceof ProssimeUsciteFragment){
             ((ProssimeUsciteFragment) fragment).initMovieRV(movieFiltered);
+            ((ProssimeUsciteFragment) fragment ).saveFiltered(movieFiltered);
         }else if(fragment instanceof PiuVistiFragment) {
             ( (PiuVistiFragment) fragment ).initMovieRV(movieFiltered);
+            ( (PiuVistiFragment) fragment ).saveFiltered(movieFiltered);
         }else if(fragment instanceof MostraCategoriaFragment) {
             ( (MostraCategoriaFragment) fragment ).initMovieRV(movieFiltered);
+            ( (MostraCategoriaFragment) fragment ).saveFiltered(movieFiltered);
         }
-        /*
+
         for(int i=0; i< movieFiltered.size(); i++){
             if(movieFiltered.get(i) != null)
                 Log.d(TAG, "film " + movieFiltered.get(i).getTitle());
         }
-        */
     }
 
     private int genSet(String category) {

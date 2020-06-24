@@ -119,7 +119,12 @@ public class ProssimeUsciteFragment extends Fragment {
 
         prossimeUsciteViewModel.getProssimeUscite().observe(getViewLifecycleOwner(), resource -> {
             if(resource!=null && resource.getData()!=null){
-                moviesAdapter.setData(resource.getData());
+
+                if(prossimeUsciteViewModel.getFiltered() == null)
+                    moviesAdapter.setData(resource.getData());
+                else
+                    moviesAdapter.setData(prossimeUsciteViewModel.getFiltered());
+
                 currentMovies = resource.getData();
 
                 if(resource.getData().size() < 20)
@@ -174,13 +179,10 @@ public class ProssimeUsciteFragment extends Fragment {
 
     public void setCanLoad(boolean canLoad) {
         prossimeUsciteViewModel.setCanLoad(canLoad);
+        prossimeUsciteViewModel.setFiltered(null);
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if(!prossimeUsciteViewModel.canLoad()){
-            prossimeUsciteViewModel.setCanLoad(true);
-        }
+    public void saveFiltered(List <Movie> filtered){
+        prossimeUsciteViewModel.setFiltered(filtered);
     }
 }

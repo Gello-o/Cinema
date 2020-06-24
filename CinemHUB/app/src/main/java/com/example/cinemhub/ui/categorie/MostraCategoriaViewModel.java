@@ -23,6 +23,15 @@ public class MostraCategoriaViewModel extends ViewModel {
     private int currentResults;
     private boolean isLoading;
     private boolean canLoad = true;
+    private List<Movie> filtered;
+
+    public List<Movie> getFiltered() {
+        return filtered;
+    }
+
+    public void setFiltered(List<Movie> filtered) {
+        this.filtered = filtered;
+    }
 
     MutableLiveData<Resource<List<Movie>>> getGenere(int genere) {
         this.genere = genere;
