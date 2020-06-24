@@ -16,8 +16,6 @@ import com.example.cinemhub.model.FavoriteDB;
 import com.google.android.material.navigation.NavigationView;
 import androidx.annotation.NonNull;
 
-import android.widget.Toast;
-
 import androidx.annotation.RequiresApi;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
@@ -34,6 +32,25 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private static final String TAG = "MainActivity";
+    private boolean isRunning = true;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.isRunning = true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        this.isRunning = false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        this.isRunning = false;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -41,37 +58,42 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkRequest.Builder builder = new NetworkRequest.Builder();
-
-        connectivityManager.registerNetworkCallback(
-                builder.build(),
-                new ConnectivityManager.NetworkCallback() {
-
-                    @Override
-                    public void onLost(Network network) {
-                        // Network lost
-                        Toast.makeText(MainActivity.this, "check connection", Toast.LENGTH_LONG).show();
-                        new AlertDialog.Builder(MainActivity.this).setIcon(R.drawable.dialog_alert).setTitle("Internet Connection Alert")
-                                .setMessage("Please Check your internet connection").setPositiveButton("close", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        })
-                                .show();
-                    }
-                }
-        );
-
-
-        // Test iniziale su connessione dispositivo (essenziale) per l'app
+// Test iniziale su connessione dispositivo app
         if (!isConnected()) {
-            new AlertDialog.Builder(this).setIcon(R.drawable.dialog_alert).setTitle("Internet Connection Alert")
-                    .setMessage("Please Check your internet connection").setPositiveButton("close", (dialog, which) -> finish())
+            new AlertDialog.Builder(MainActivity.this).setIcon(R.drawable.dialog_alert).setTitle(R.string.connection_alert)
+                    .setMessage(R.string.connection_lost1).setPositiveButton("close", (dialog, which) -> finish())
                     .show();
-        } else {
-            //Toast.makeText(MainActivity.this, "Welcome in CinemHUB", Toast.LENGTH_LONG).show();
+        }
+        else{
+            ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkRequest.Builder builder = new NetworkRequest.Builder();
+            AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this).setIcon(R.drawable.dialog_alert);
+
+            connectivityManager.registerNetworkCallback(
+                    builder.build(),
+                    new ConnectivityManager.NetworkCallback() {
+
+                        // Perdita connessione durante uso app
+                        @Override
+                        public void onLost(Network network) {
+                            if(isRunning){
+                                alert.setTitle(R.string.connection_alert)
+                                        .setMessage(R.string.connection_lost).setNegativeButton("close", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        finish();
+                                    }
+                                }).setPositiveButton("continue without network", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                })
+                                        .show();
+                            }
+                        }
+
+                    }
+            );
 
             Toolbar toolbar = findViewById(R.id.toolbar_main);
             setSupportActionBar(toolbar);
@@ -81,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
             NavigationView navigationView = findViewById(R.id.nav_view);
 
-            // menu should be considered as top level destinations.
+
             mAppBarConfiguration = new AppBarConfiguration.Builder(
                     R.id.nav_home, R.id.nav_preferiti, R.id.nav_categorie, R.id.nav_nuovi_arrivi, R.id.nav_prossime_uscite, R.id.nav_piu_visti)
                     .setDrawerLayout(drawer)
@@ -91,10 +113,10 @@ public class MainActivity extends AppCompatActivity {
             NavigationUI.setupWithNavController(navigationView, navController);
 
             Log.d(TAG, "creato il Db");
+// }
+            FavoriteDB.getInstance(getApplicationContext());
         }
-        FavoriteDB.getInstance(getApplicationContext());
     }
-
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -132,7 +154,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
-
 
 
 

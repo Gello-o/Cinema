@@ -115,7 +115,7 @@ public class FilterHandler {
 
             ViewGroup viewGroup = (ViewGroup) textEntryView.getParent();
 
-            //Gestione nel caso l'oggetto viewgroup non sia stato rimosso
+            //Gestione nel caso la view dell'alert non sia stata rimossa in precedenza
             if(viewGroup != null)
                 viewGroup.removeView(textEntryView);
 
@@ -199,6 +199,9 @@ public class FilterHandler {
 
         //if(intVoteMin == 0 && intVoteMax == 10)
           //  return moviesGlobal;
+        if(moviesGlobal == null)
+            return new ArrayList<>();
+
 
         List<Movie> tmp = new ArrayList<>();
 
@@ -324,14 +327,19 @@ public class FilterHandler {
 
         if(fragment instanceof NuoviArriviFragment) {
             ( (NuoviArriviFragment) fragment ).initMovieRV(movieFiltered);
+            ( (NuoviArriviFragment) fragment ).saveFiltered(movieFiltered);
         }else if(fragment instanceof SearchFragment) {
             ( (SearchFragment) fragment ).initMovieRV(movieFiltered);
+            ( (SearchFragment) fragment ).saveFiltered(movieFiltered);
         }else if(fragment instanceof ProssimeUsciteFragment){
             ((ProssimeUsciteFragment) fragment).initMovieRV(movieFiltered);
+            ((ProssimeUsciteFragment) fragment).saveFiltered(movieFiltered);
         }else if(fragment instanceof PiuVistiFragment) {
             ( (PiuVistiFragment) fragment ).initMovieRV(movieFiltered);
+            ( (PiuVistiFragment) fragment ).saveFiltered(movieFiltered);
         }else if(fragment instanceof MostraCategoriaFragment) {
             ( (MostraCategoriaFragment) fragment ).initMovieRV(movieFiltered);
+            ( (MostraCategoriaFragment) fragment ).saveFiltered(movieFiltered);
         }
         /*
         for(int i=0; i< movieFiltered.size(); i++){
