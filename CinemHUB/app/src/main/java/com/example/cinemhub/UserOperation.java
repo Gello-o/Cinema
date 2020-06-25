@@ -2,7 +2,9 @@ package com.example.cinemhub;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -141,8 +143,15 @@ public class UserOperation {
                                 }
                             }
                             else{
-                                if(!warning.getText().toString().contains("vote") && editComment.getText().toString().equals(commento))
-                                    warning.setText("");
+                                if(editComment.getText().toString().equals(commento)){
+                                    if(!warning.getText().toString().equals("Warning! you will overwrite your vote")){
+                                        if(warning.getText().toString().equals("Warning! you will overwrite your vote and comment"))
+                                            warning.setText(R.string.warning_vote);
+                                        else
+                                            warning.setText("");
+                                    }
+
+                                }
                             }
 
                         }
@@ -172,32 +181,44 @@ public class UserOperation {
                 edited = false;
                 ratingBar.setIsIndicator(false);
             }
+
             saveOrUpdateUser();
+
+
         });
 
         editRatingButton.setOnClickListener(v -> {
 
-            edited = true;
-            ratingBar.setRating(0);
-            ratingBar.setIsIndicator(true);
-
-            if(!commento.equals(""))
+            if(!commento.equals("")){
+                edited = true;
+                ratingBar.setRating(0);
+                ratingBar.setIsIndicator(true);
                 editComment.setText(commento);
-
-            else
+            }else
                 Toast.makeText(context, "Nothing to edit", Toast.LENGTH_SHORT).show();
         });
 
         deleteButton.setOnClickListener(v -> {
             warning.setText("");
             if(checkUser()) {
-                UserInfo userInfo = FavoriteDB.getInstance().dbInterface().getUserInfo(Integer.parseInt(id));
-                FavoriteDB.getInstance().dbInterface().deleteUser(userInfo);
-                commento = "";
-                oldVote = 0;
-                comment.setText("");
-                userRating.setText("0 / 10");
+                new AlertDialog.Builder(context)
+                        .setTitle(R.string.delete)
+                        .setMessage("Are you sure to Delete?")
+                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                UserInfo userInfo = FavoriteDB.getInstance().dbInterface().getUserInfo(Integer.parseInt(id));
+                                FavoriteDB.getInstance().dbInterface().deleteUser(userInfo);
+                                commento = "";
+                                oldVote = 0;
+                                comment.setText("");
+                                userRating.setText("0 / 10");
+                            }
+                        })
+                        .setNegativeButton("NO", null)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
             }
+
             else
                 Toast.makeText(context, "Leave a comment first", Toast.LENGTH_SHORT).show();
 
