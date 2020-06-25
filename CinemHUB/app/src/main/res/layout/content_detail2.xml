@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/your_vote"
+        android:textColor="#000000"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_margin_left"
@@ -36,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/show_vote"
-        android:textSize="15dp"/>
+        android:textSize="15sp"/>
 
     <TextView
         android:id="@+id/warning"
@@ -45,8 +46,9 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="15dp"
         android:textColor="@color/warning"
-        android:textSize="15dp"
-        android:textStyle="bold"/>
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_marginStart="10dp" />
 
     <EditText
         android:id="@+id/user_overview"
@@ -68,11 +70,12 @@
         android:layout_width="100dp"
         android:layout_height="40dp"
         android:layout_marginTop="5dp"
-        android:text="Submit"
+        android:text="@string/submit"
         android:layout_gravity="center_vertical|center_horizontal"/>
 
     <TextView
         android:id="@+id/text_comment"
+        android:textColor="#000000"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -80,9 +83,10 @@
         android:layout_marginTop="10dp"
         android:text="@string/your_comment"
         android:padding="@dimen/padding_layout"
-        android:textSize="25dp"
+        android:textSize="25sp"
         android:textStyle="bold"
-        android:layout_gravity="center_vertical|center_horizontal"        />
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_marginStart="10dp" />
 
 
     <LinearLayout
@@ -91,7 +95,8 @@
         android:orientation="horizontal"
         android:id="@+id/linear_layout"
         android:layout_gravity="center"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:id="@+id/image_star"
@@ -100,7 +105,11 @@
             android:layout_gravity="left"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="20dp"
-            android:src="@drawable/star_on" />
+            android:src="@drawable/star_on"
+            android:contentDescription="@string/imageView"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="15dp"
+            tools:ignore="RtlHardcoded" />
 
         <TextView
             android:id="@+id/users_rating2"
@@ -121,7 +130,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -140,7 +149,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:background="@drawable/button_border"
-            android:text="Delete" />
+            android:text="@string/delete" />
 
         <Button
             android:id="@+id/edit_rating"
@@ -149,6 +158,9 @@
             android:layout_marginRight="30dp"
             android:layout_marginLeft="15dp"
             android:background="@drawable/button_border"
-            android:text="Edit" />
+            android:text="@string/edit"
+            android:layout_marginEnd="30dp"
+            android:layout_marginStart="15dp"
+            tools:ignore="ButtonStyle" />
     </LinearLayout>
 </LinearLayout>

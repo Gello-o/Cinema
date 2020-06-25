@@ -58,5 +58,9 @@
     <string name="connection_lost">Connection lost! if you choose to continue, you will only be able to see your Favorites. All other features will be unavailable</string>
     <string name="connection_lost1">Connection lost, please check it and retry</string>
     <string name="connection_alert">Internet Connection Alert</string>
+    <string name="submit">Submit</string>
+    <string name="imageView">ImageView</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
 
 </resources>
