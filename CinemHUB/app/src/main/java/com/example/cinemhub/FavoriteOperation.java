@@ -83,22 +83,6 @@ public class FavoriteOperation {
         Log.d(TAG,"entarto nella tab Favorite");
     }
 
-    private void mostraDb() {
-        table = FavoriteDB.getInstance().dbInterface().getFavorite();
-        for(Favorite favorite : table){
-            Log.d(TAG,"Database: " +
-                    "ID: " + favorite.getMovieId() +
-                    "Title: " + favorite.getTitle());
-        }
-    }
-
-    private void cancellaDb() {
-        table = FavoriteDB.getInstance().dbInterface().getFavorite();
-        FavoriteDB.getInstance().clearAllTables();
-        Log.d(TAG, "db size: " + table.size());
-        mostraDb();
-    }
-
     private boolean checkFilm(){
         Log.d(TAG,"entrato nel check");
         table = FavoriteDB.getInstance().dbInterface().getFavorite();

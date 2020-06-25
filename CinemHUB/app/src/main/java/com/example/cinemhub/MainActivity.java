@@ -2,7 +2,6 @@ package com.example.cinemhub;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
@@ -78,11 +77,8 @@ public class MainActivity extends AppCompatActivity {
                         public void onLost(@NonNull Network network) {
                             if(isRunning){
                                 alert.setTitle(R.string.connection_alert)
-                                        .setMessage(R.string.connection_lost).setNegativeButton("close", (dialog, which) -> finish()).setPositiveButton("continue without network", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                    }
-                                })
+                                        .setMessage(R.string.connection_lost).setNegativeButton("close", (dialog, which) -> finish()).setPositiveButton("continue without network", (dialog, which) -> {
+                                        })
                                         .show();
                             }
                         }
