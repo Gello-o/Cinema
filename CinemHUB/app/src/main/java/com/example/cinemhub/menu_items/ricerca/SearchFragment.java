@@ -134,10 +134,8 @@ public class SearchFragment extends Fragment {
 
                 currentMovies = resource.getData();
 
-                if(currentMovies.size() < 20)
-                    setCanLoad(false);
-                else
-                    setCanLoad(true);
+                if(resource.getData().size() < 20)
+                    ricercaViewModel.setCanLoad(false);
 
                 Log.d(TAG, "CurrentListSize: "+resource.getData().size());
 
