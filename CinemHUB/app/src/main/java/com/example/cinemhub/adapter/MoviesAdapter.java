@@ -141,6 +141,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             } else {
                 Glide.with(context)
                         .load(Constants.BASE_IMAGE_URL + m.getPosterPath())
+                        .placeholder(R.drawable.image_not_found_card)
                         .dontAnimate()
                         .into(thumbnail);
             }

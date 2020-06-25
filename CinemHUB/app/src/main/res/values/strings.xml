@@ -5,7 +5,6 @@
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
 
     <string name="menu_home">HOME</string>
     <string name="menu_preferiti">FAVORITES</string>
@@ -14,7 +13,16 @@
     <string name="menu_prossime_uscite">UPCOMING</string>
     <string name="menu_piu_visti">MOST WATCHED</string>
     <string name="home_second">Home Second</string>
-    <string name="menu_genere"></string>
+    <string name="menu_genere" />
+
+    <string name="category_filter">Category</string>
+    <string name="order_filter">Ordered By</string>
+    <string name="year_filter">Year Range</string>
+    <string name="start_date_filter">1929</string>
+    <string name="end_date_filter">2027</string>
+    <string name="vote_filter">Vote Range</string>
+    <string name="start_vote_filter">0</string>
+    <string name="end_vote_filter">10</string>
 
     <string name="movie_name">Movie Title</string>
     <string name="movie_details">Movie Details</string>
@@ -29,6 +37,7 @@
     <string name="fullscreen_tutorial" />
     <string name="error_player" />
     <string name="search" />
+    <string name="text">Testo qualsiasi</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -49,8 +58,6 @@
     <string name="top_rated">Top Rated</string>
     <string name="upcoming">Upcoming</string>
     <string name="now_playing">Now Playing</string>
-
-    <string name="a_description">A Description</string>
 
     <string name="warning_comment">Warning! you will overwrite your comment</string>
     <string name="warning_vote">Warning! you will overwrite your vote</string>

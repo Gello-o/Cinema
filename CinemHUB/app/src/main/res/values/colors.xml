@@ -7,4 +7,6 @@
     <color name="warning">#FF0000</color>
     <color name="textColor">#A5000000</color>
     <color name="editTextColor">#E0E0E0</color>
+    <color name="colorSlider">#FFD300</color>
+
 </resources>

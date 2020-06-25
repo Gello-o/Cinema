@@ -204,13 +204,15 @@ public class UserOperation {
                 new AlertDialog.Builder(context)
                         .setTitle(R.string.delete)
                         .setMessage("Are you sure to Delete?")
-                        .setPositiveButton("YES", (dialog, which) -> {
-                            UserInfo userInfo = FavoriteDB.getInstance().dbInterface().getUserInfo(Integer.parseInt(id));
-                            FavoriteDB.getInstance().dbInterface().deleteUser(userInfo);
-                            commento = "";
-                            oldVote = 0;
-                            comment.setText("");
-                            userRating.setText("0 / 10");
+                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                UserInfo userInfo = FavoriteDB.getInstance().dbInterface().getUserInfo(Integer.parseInt(id));
+                                FavoriteDB.getInstance().dbInterface().deleteUser(userInfo);
+                                commento = "";
+                                oldVote = 0;
+                                comment.setText("");
+                                userRating.setText("0 / 10");
+                            }
                         })
                         .setNegativeButton("NO", null)
                         .setIcon(android.R.drawable.ic_dialog_alert)
