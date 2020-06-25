@@ -32,7 +32,7 @@ public class PiuVistiViewModel extends ViewModel {
         this.filtered = filtered;
     }
 
-    public MutableLiveData<Resource<List<Movie>>> getPiuVisti() {
+    MutableLiveData<Resource<List<Movie>>> getPiuVisti() {
         if(film == null) {
             film = new MutableLiveData<>();
             MoviesRepository.getInstance().getMoviesLL("top_rated", page, film);
@@ -40,7 +40,7 @@ public class PiuVistiViewModel extends ViewModel {
         return film;
     }
 
-    public MutableLiveData<Resource<List<Movie>>> getMorePiuVisti() {
+    MutableLiveData<Resource<List<Movie>>> getMorePiuVisti() {
         MoviesRepository.getInstance().getMoviesLL("top_rated", page, film);
         return film;
     }
@@ -78,7 +78,7 @@ public class PiuVistiViewModel extends ViewModel {
         filterOperation.implementFilter(2);
     }
 
-    public void initSearch(@NonNull Menu menu, Fragment fragment){
+    void initSearch(@NonNull Menu menu, Fragment fragment){
         SearchHandler searchOperation = new SearchHandler(menu, fragment);
         searchOperation.implementSearch(2);
     }

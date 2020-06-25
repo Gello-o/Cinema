@@ -6,62 +6,57 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesRepository;
+import com.example.cinemhub.utils.Constants;
 
 import java.util.List;
 
 public class CategorieViewModel extends ViewModel {
 
-    private static final String TAG = "CategorieViewModel";
-    private MutableLiveData<List<Movie>> mText;
-    private MutableLiveData<List<Movie>> mText1;
-    private MutableLiveData<List<Movie>> mText2;
-    private MutableLiveData<List<Movie>> mText3;
-    private MutableLiveData<List<Movie>> mText4;
-    MoviesRepository repo;
+    //private static final String TAG = "CategorieViewModel";
+    private MutableLiveData<List<Movie>> azioneMovies;
+    private MutableLiveData<List<Movie>> fantasyMovies;
+    private MutableLiveData<List<Movie>> animationMovies;
+    private MutableLiveData<List<Movie>> comedyMovies;
+    private MutableLiveData<List<Movie>> romanceMovies;
 
-    public MutableLiveData<List<Movie>> getAzione() {
-        if(mText == null){
-            mText = new MutableLiveData<>();
-            repo = MoviesRepository.getInstance();
-            repo.getGenres(28, 1, mText);
+    MutableLiveData<List<Movie>> getAzione() {
+        if(azioneMovies == null){
+            azioneMovies = new MutableLiveData<>();
+            MoviesRepository.getInstance().getGenres(Constants.ACTION, 1, azioneMovies);
         }
-        return mText;
+        return azioneMovies;
     }
 
-    public MutableLiveData<List<Movie>> getFantasy() {
-        if(mText1 == null){
-            mText1 = new MutableLiveData<>();
-            repo = MoviesRepository.getInstance();
-            repo.getGenres(14, 1, mText1);
+    MutableLiveData<List<Movie>> getFantasy() {
+        if(fantasyMovies == null){
+            fantasyMovies = new MutableLiveData<>();
+            MoviesRepository.getInstance().getGenres(Constants.FANTASY, 1, fantasyMovies);
         }
-        return mText1;
+        return fantasyMovies;
     }
 
     public MutableLiveData<List<Movie>> getAnimation() {
-        if(mText2 == null){
-            mText2 = new MutableLiveData<>();
-            repo = MoviesRepository.getInstance();
-            repo.getGenres(16, 1, mText2);
+        if(animationMovies == null){
+            animationMovies = new MutableLiveData<>();
+            MoviesRepository.getInstance().getGenres(Constants.ANIMATION, 1, animationMovies);
         }
-        return mText2;
+        return animationMovies;
     }
 
-    public MutableLiveData<List<Movie>> getCommedie() {
-        if(mText3 == null){
-            mText3 = new MutableLiveData<>();
-            repo = MoviesRepository.getInstance();
-            repo.getGenres(35, 1, mText3);
+    MutableLiveData<List<Movie>> getCommedie() {
+        if(comedyMovies == null){
+            comedyMovies = new MutableLiveData<>();
+            MoviesRepository.getInstance().getGenres(Constants.COMEDY, 1, comedyMovies);
         }
-        return mText3;
+        return comedyMovies;
     }
 
-    public MutableLiveData<List<Movie>> getRomance() {
-        if(mText4 == null){
-            mText4 = new MutableLiveData<>();
-            repo = MoviesRepository.getInstance();
-            repo.getGenres(10749, 1, mText4);
+    MutableLiveData<List<Movie>> getRomance() {
+        if(romanceMovies == null){
+            romanceMovies = new MutableLiveData<>();
+            MoviesRepository.getInstance().getGenres(Constants.ROMANCE, 1, romanceMovies);
         }
-        return mText4;
+        return romanceMovies;
     }
 
 }

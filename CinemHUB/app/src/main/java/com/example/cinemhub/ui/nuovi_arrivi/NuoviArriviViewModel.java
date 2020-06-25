@@ -1,10 +1,10 @@
 package com.example.cinemhub.ui.nuovi_arrivi;
 
-import android.util.Log;
+
 import android.view.Menu;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -15,11 +15,10 @@ import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesRepository;
 import com.example.cinemhub.model.Resource;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NuoviArriviViewModel extends ViewModel {
-    private static final String TAG = "NuoviArriviViewModel";
+    //private static final String TAG = "NuoviArriviViewModel";
     private MutableLiveData<Resource<List<Movie>>> film;
     private int page = 1;
     private int currentResults;
@@ -35,7 +34,7 @@ public class NuoviArriviViewModel extends ViewModel {
         this.filtered = filtered;
     }
 
-    public MutableLiveData<Resource<List<Movie>>> getProssimeUscite() {
+    MutableLiveData<Resource<List<Movie>>> getProssimeUscite() {
         if(film == null) {
             film = new MutableLiveData<>();
             MoviesRepository.getInstance().getMoviesLL("now_playing", page, film);
@@ -43,7 +42,7 @@ public class NuoviArriviViewModel extends ViewModel {
         return film;
     }
 
-    public MutableLiveData<Resource<List<Movie>>> getMoreProssimeUscite() {
+    MutableLiveData<Resource<List<Movie>>> getMoreProssimeUscite() {
         MoviesRepository.getInstance().getMoviesLL("now_playing", page, film);
         return film;
     }
@@ -81,7 +80,7 @@ public class NuoviArriviViewModel extends ViewModel {
         filterOperation.implementFilter(2);
     }
 
-    public void initSearch(@NonNull Menu menu, Fragment fragment){
+    void initSearch(@NonNull Menu menu, Fragment fragment){
         SearchHandler searchOperation = new SearchHandler(menu, fragment);
         searchOperation.implementSearch(2);
     }

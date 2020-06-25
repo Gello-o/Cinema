@@ -1,5 +1,6 @@
 package com.example.cinemhub.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import androidx.room.Database;
@@ -16,7 +17,9 @@ la seconda memorizza oggetti UserInfo
 @Database(entities = {Favorite.class, UserInfo.class}, version = 3)
 public abstract class FavoriteDB extends RoomDatabase {
     public final String TAG = "DbStructure";
+    @SuppressLint("StaticFieldLeak")
     private static FavoriteDB favoriteDB;
+    @SuppressLint("StaticFieldLeak")
     private static Context mContext;
 
     private static final Migration MIGRATION_1_2 = new Migration(1, 2) {

@@ -39,41 +39,38 @@ public class Refresh {
         else
             refreshMenuItem = menu.findItem(R.id.refresh1);
 
-        refreshMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                Log.d(TAG, "ClickedRefresh");
+        refreshMenuItem.setOnMenuItemClickListener(item -> {
+            Log.d(TAG, "ClickedRefresh");
 
-                if(fragment instanceof MostraCategoriaFragment) {
-                    if(((MostraCategoriaFragment) fragment).getCurrentMovies() != null){
-                        ((MostraCategoriaFragment) fragment).setCanLoad(true);
-                        ((MostraCategoriaFragment) fragment).initMovieRV(((MostraCategoriaFragment) fragment).getCurrentMovies());
-                     }
+            if(fragment instanceof MostraCategoriaFragment) {
+                if(((MostraCategoriaFragment) fragment).getCurrentMovies() != null){
+                    ((MostraCategoriaFragment) fragment).setCanLoad(true);
+                    ((MostraCategoriaFragment) fragment).initMovieRV(((MostraCategoriaFragment) fragment).getCurrentMovies());
+                 }
 
-                }else if(fragment instanceof PiuVistiFragment){
-                    if(((PiuVistiFragment) fragment).getCurrentMovies() != null){
-                        ((PiuVistiFragment) fragment).setCanLoad(true);
-                        ((PiuVistiFragment) fragment).initMovieRV(((PiuVistiFragment) fragment).getCurrentMovies());
-                    }
-                }else if(fragment instanceof ProssimeUsciteFragment) {
-                    if(((ProssimeUsciteFragment) fragment).getCurrentMovies() != null){
-                        ((ProssimeUsciteFragment) fragment).setCanLoad(true);
-                        ((ProssimeUsciteFragment) fragment ).initMovieRV(( (ProssimeUsciteFragment) fragment ).getCurrentMovies());
-                    }
-                }else if(fragment instanceof NuoviArriviFragment){
-                    if(((NuoviArriviFragment) fragment).getCurrentMovies() != null){
-                        ((NuoviArriviFragment) fragment).setCanLoad(true);
-                        ((NuoviArriviFragment) fragment).initMovieRV(((NuoviArriviFragment) fragment).getCurrentMovies());
-                    }
-                }else if(fragment instanceof SearchFragment){
-                    if(((SearchFragment) fragment).getCurrentMovies() != null){
-                        ((SearchFragment) fragment).setCanLoad(true);
-                        ((SearchFragment) fragment).initMovieRV(((SearchFragment) fragment).getCurrentMovies());
-                    }
+            }else if(fragment instanceof PiuVistiFragment){
+                if(((PiuVistiFragment) fragment).getCurrentMovies() != null){
+                    ((PiuVistiFragment) fragment).setCanLoad(true);
+                    ((PiuVistiFragment) fragment).initMovieRV(((PiuVistiFragment) fragment).getCurrentMovies());
                 }
-
-                return true;
+            }else if(fragment instanceof ProssimeUsciteFragment) {
+                if(((ProssimeUsciteFragment) fragment).getCurrentMovies() != null){
+                    ((ProssimeUsciteFragment) fragment).setCanLoad(true);
+                    ((ProssimeUsciteFragment) fragment ).initMovieRV(( (ProssimeUsciteFragment) fragment ).getCurrentMovies());
+                }
+            }else if(fragment instanceof NuoviArriviFragment){
+                if(((NuoviArriviFragment) fragment).getCurrentMovies() != null){
+                    ((NuoviArriviFragment) fragment).setCanLoad(true);
+                    ((NuoviArriviFragment) fragment).initMovieRV(((NuoviArriviFragment) fragment).getCurrentMovies());
+                }
+            }else if(fragment instanceof SearchFragment){
+                if(((SearchFragment) fragment).getCurrentMovies() != null){
+                    ((SearchFragment) fragment).setCanLoad(true);
+                    ((SearchFragment) fragment).initMovieRV(((SearchFragment) fragment).getCurrentMovies());
+                }
             }
+
+            return true;
         });
     }
 

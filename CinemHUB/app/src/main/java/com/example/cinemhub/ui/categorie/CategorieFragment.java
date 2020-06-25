@@ -1,11 +1,6 @@
 package com.example.cinemhub.ui.categorie;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,14 +8,10 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
+
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -37,7 +28,6 @@ import java.util.List;
 
 public class CategorieFragment extends Fragment {
     private static final String TAG = "CategorieFragment";
-    private CategorieViewModel categorieViewModel;
     private RecyclerView azioneRV;
     private RecyclerView fantasyRV;
     private RecyclerView animationRV;
@@ -48,11 +38,6 @@ public class CategorieFragment extends Fragment {
     private MoviesAdapter animationAdapter;
     private MoviesAdapter commedieAdapter;
     private MoviesAdapter romanceAdapter;
-    private TextView azioneTxt;
-    private TextView fantasyTxt;
-    private TextView animationTxt;
-    private TextView commedieTxt;
-    private TextView romanceTxt;
     private ImageView actionBanner;
     private ImageView fantasyBanner;
     private ImageView animationBanner;
@@ -77,67 +62,51 @@ public class CategorieFragment extends Fragment {
         romanceBanner = root.findViewById(R.id.image_romance);
 
 
-        categorieViewModel =
-                new ViewModelProvider(this).get(CategorieViewModel.class);
+        CategorieViewModel categorieViewModel = new ViewModelProvider(this).get(CategorieViewModel.class);
 
-        categorieViewModel.getAzione().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> moviesSet) {
-                if(moviesSet == null)
-                    Log.d(TAG, "moviesSet nullo");
-                else
-                    Log.d(TAG, ""+moviesSet.size());
-                initAction(moviesSet);
-                azioneAdapter.notifyDataSetChanged();
-            }
+        categorieViewModel.getAzione().observe(getViewLifecycleOwner(), moviesSet -> {
+            if(moviesSet == null)
+                Log.d(TAG, "moviesSet nullo");
+            else
+                Log.d(TAG, ""+moviesSet.size());
+            initAction(moviesSet);
+            azioneAdapter.notifyDataSetChanged();
         });
 
-        categorieViewModel.getFantasy().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> moviesSet) {
-                if(moviesSet == null)
-                    Log.d(TAG, "moviesSet nullo");
-                else
-                    Log.d(TAG, ""+moviesSet.size());
-                initFantasy(moviesSet);
-                fantasyAdapter.notifyDataSetChanged();
-            }
+        categorieViewModel.getFantasy().observe(getViewLifecycleOwner(), (List<Movie> moviesSet) -> {
+            if(moviesSet == null)
+                Log.d(TAG, "moviesSet nullo");
+            else
+                Log.d(TAG, ""+moviesSet.size());
+            initFantasy(moviesSet);
+            fantasyAdapter.notifyDataSetChanged();
         });
 
-        categorieViewModel.getAnimation().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> moviesSet) {
-                if(moviesSet == null)
-                    Log.d(TAG, "moviesSet nullo");
-                else
-                    Log.d(TAG, ""+moviesSet.size());
-                initAnimation(moviesSet);
-                animationAdapter.notifyDataSetChanged();
-            }
+        categorieViewModel.getAnimation().observe(getViewLifecycleOwner(), moviesSet -> {
+            if(moviesSet == null)
+                Log.d(TAG, "moviesSet nullo");
+            else
+                Log.d(TAG, ""+moviesSet.size());
+            initAnimation(moviesSet);
+            animationAdapter.notifyDataSetChanged();
         });
 
-        categorieViewModel.getCommedie().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> moviesSet) {
-                if(moviesSet == null)
-                    Log.d(TAG, "moviesSet nullo");
-                else
-                    Log.d(TAG, ""+moviesSet.size());
-                initCommedie(moviesSet);
-                commedieAdapter.notifyDataSetChanged();
-            }
+        categorieViewModel.getCommedie().observe(getViewLifecycleOwner(), moviesSet -> {
+            if(moviesSet == null)
+                Log.d(TAG, "moviesSet nullo");
+            else
+                Log.d(TAG, ""+moviesSet.size());
+            initCommedie(moviesSet);
+            commedieAdapter.notifyDataSetChanged();
         });
 
-        categorieViewModel.getRomance().observe(getViewLifecycleOwner(), new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> moviesSet) {
-                if(moviesSet == null)
-                    Log.d(TAG, "moviesSet nullo");
-                else
-                    Log.d(TAG, ""+moviesSet.size());
-                initRomance(moviesSet);
-                romanceAdapter.notifyDataSetChanged();
-            }
+        categorieViewModel.getRomance().observe(getViewLifecycleOwner(), moviesSet -> {
+            if(moviesSet == null)
+                Log.d(TAG, "moviesSet nullo");
+            else
+                Log.d(TAG, ""+moviesSet.size());
+            initRomance(moviesSet);
+            romanceAdapter.notifyDataSetChanged();
         });
         initImage();
         setHasOptionsMenu(true);
@@ -145,7 +114,7 @@ public class CategorieFragment extends Fragment {
         return root;
     }
 
-    public void initAction(List<Movie>set){
+    private void initAction(List<Movie> set){
         if(set == null)
             Log.d(TAG, "SET POPOLARI NULL");
         else if(set.isEmpty())
@@ -157,7 +126,7 @@ public class CategorieFragment extends Fragment {
         azioneRV.setItemAnimator(new DefaultItemAnimator());
     }
 
-    public void initFantasy (List<Movie>set){
+    private void initFantasy(List<Movie> set){
         if(set == null)
             Log.d(TAG, "SET top NULL");
         else if(set.isEmpty())
@@ -169,7 +138,7 @@ public class CategorieFragment extends Fragment {
         fantasyRV.setItemAnimator(new DefaultItemAnimator());
     }
 
-    public void initAnimation (List<Movie>set){
+    private void initAnimation(List<Movie> set){
         if(set == null)
             Log.d(TAG, "SET Prossime NULL");
         else if(set.isEmpty())
@@ -181,7 +150,7 @@ public class CategorieFragment extends Fragment {
         animationRV.setItemAnimator(new DefaultItemAnimator());
     }
 
-    public void initCommedie (List<Movie>set){
+    private void initCommedie(List<Movie> set){
         if(set == null)
             Log.d(TAG, "SET Prossime NULL");
         else if(set.isEmpty())
@@ -193,7 +162,7 @@ public class CategorieFragment extends Fragment {
         commedieRV.setItemAnimator(new DefaultItemAnimator());
     }
 
-    public void initRomance (List<Movie>set){
+    private void initRomance(List<Movie> set){
         if(set == null)
             Log.d(TAG, "SET Prossime NULL");
         else if(set.isEmpty())
@@ -205,55 +174,40 @@ public class CategorieFragment extends Fragment {
         romanceRV.setItemAnimator(new DefaultItemAnimator());
     }
 
-    public void initImage() {
-        actionBanner.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
-                action.setGenere(Constants.ACTION);
-                Navigation.findNavController(v).navigate(action);
-                }
+    private void initImage() {
+        actionBanner.setOnClickListener(v -> {
+            CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
+            action.setGenere(Constants.ACTION);
+            Navigation.findNavController(v).navigate(action);
             });
 
-        fantasyBanner.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
-                action.setGenere(Constants.FANTASY);
-                Navigation.findNavController(v).navigate(action);
-            }
+        fantasyBanner.setOnClickListener(v -> {
+            CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
+            action.setGenere(Constants.FANTASY);
+            Navigation.findNavController(v).navigate(action);
         });
 
-        animationBanner.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
-                action.setGenere(Constants.ANIMATION);
-                Navigation.findNavController(v).navigate(action);
-            }
+        animationBanner.setOnClickListener(v -> {
+            CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
+            action.setGenere(Constants.ANIMATION);
+            Navigation.findNavController(v).navigate(action);
         });
 
-        comedyBanner.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
-                action.setGenere(Constants.COMEDY);
-                Navigation.findNavController(v).navigate(action);
-            }
+        comedyBanner.setOnClickListener(v -> {
+            CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
+            action.setGenere(Constants.COMEDY);
+            Navigation.findNavController(v).navigate(action);
         });
 
-        romanceBanner.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
-                action.setGenere(Constants.ROMANCE);
-                Navigation.findNavController(v).navigate(action);
-            }
+        romanceBanner.setOnClickListener(v -> {
+            CategorieFragmentDirections.GoToGenereAction action = CategorieFragmentDirections.goToGenereAction(0);
+            action.setGenere(Constants.ROMANCE);
+            Navigation.findNavController(v).navigate(action);
         });
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main, menu);
         SearchHandler searchOperation = new SearchHandler(menu, this);
         searchOperation.implementSearch(1);

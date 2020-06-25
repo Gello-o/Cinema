@@ -17,7 +17,6 @@ public class FavoriteOperation {
     public Activity activity;
 
     private Favorite favorite;
-    private List<Favorite> table;
 
     private String thumbnail, movieName, synopsis, rating, release, id, originalMovieName, voteCount, genre;
     
@@ -85,7 +84,7 @@ public class FavoriteOperation {
 
     private boolean checkFilm(){
         Log.d(TAG,"entrato nel check");
-        table = FavoriteDB.getInstance().dbInterface().getFavorite();
+        List<Favorite> table = FavoriteDB.getInstance().dbInterface().getFavorite();
         for(Favorite favorite : table){
             if(favorite.getMovieId() == Integer.parseInt(id))
                 return true;

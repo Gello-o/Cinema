@@ -30,6 +30,4 @@ public class TrailerResponse {
     public List<Trailer> getTrailers() {
         return results;
     }
-
-    public void setTrailer(List<Trailer> trailers) { results = trailers; }
 }

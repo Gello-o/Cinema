@@ -80,7 +80,7 @@ public class MostraCategoriaViewModel extends ViewModel {
         filterOperation.implementFilter(2);
     }
 
-    public void initSearch(@NonNull Menu menu, Fragment fragment){
+    void initSearch(@NonNull Menu menu, Fragment fragment){
         SearchHandler searchOperation = new SearchHandler(menu, fragment);
         searchOperation.implementSearch(2);
     }
