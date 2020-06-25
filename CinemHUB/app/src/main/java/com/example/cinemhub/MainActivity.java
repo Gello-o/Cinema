@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-// Test iniziale su connessione dispositivo app
+        // Test iniziale su connessione dispositivo app
         if (!isConnected()) {
             new AlertDialog.Builder(MainActivity.this).setIcon(R.drawable.dialog_alert).setTitle(R.string.connection_alert)
                     .setMessage(R.string.connection_lost1).setPositiveButton("close", (dialog, which) -> finish())
@@ -75,15 +75,10 @@ public class MainActivity extends AppCompatActivity {
 
                         // Perdita connessione durante uso app
                         @Override
-                        public void onLost(Network network) {
+                        public void onLost(@NonNull Network network) {
                             if(isRunning){
                                 alert.setTitle(R.string.connection_alert)
-                                        .setMessage(R.string.connection_lost).setNegativeButton("close", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        finish();
-                                    }
-                                }).setPositiveButton("continue without network", new DialogInterface.OnClickListener() {
+                                        .setMessage(R.string.connection_lost).setNegativeButton("close", (dialog, which) -> finish()).setPositiveButton("continue without network", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                     }
