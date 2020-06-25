@@ -1,5 +1,6 @@
 package com.example.cinemhub.ui.nuovi_arrivi;
 
+import android.util.Log;
 import android.view.Menu;
 
 import androidx.annotation.NonNull;
@@ -14,15 +15,25 @@ import com.example.cinemhub.model.Movie;
 import com.example.cinemhub.model.MoviesRepository;
 import com.example.cinemhub.model.Resource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NuoviArriviViewModel extends ViewModel {
-    //private static final String TAG = "NuoviArriviViewModel";
+    private static final String TAG = "NuoviArriviViewModel";
     private MutableLiveData<Resource<List<Movie>>> film;
     private int page = 1;
     private int currentResults;
     private boolean isLoading;
     private boolean canLoad = true;
+    private List<Movie> filtered;
+
+    public List<Movie> getFiltered() {
+        return filtered;
+    }
+
+    public void setFiltered(List<Movie> filtered) {
+        this.filtered = filtered;
+    }
 
     public MutableLiveData<Resource<List<Movie>>> getProssimeUscite() {
         if(film == null) {

@@ -19,8 +19,7 @@
             android:layout_height="match_parent"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/a_description"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true" />
+            android:scaleType="centerCrop" />
 
 
 </androidx.cardview.widget.CardView>

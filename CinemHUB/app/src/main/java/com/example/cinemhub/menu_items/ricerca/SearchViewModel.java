@@ -29,6 +29,15 @@ public class SearchViewModel extends ViewModel {
     private int currentResults;
     private boolean isLoading;
     private boolean canLoad = true;
+    private List<Movie> filtered;
+
+    public List<Movie> getFiltered() {
+        return filtered;
+    }
+
+    public void setFiltered(List<Movie> filtered) {
+        this.filtered = filtered;
+    }
 
     MutableLiveData<Resource<List<Movie>>> doSearch(String query) {
         this.query = query;

@@ -73,10 +73,8 @@ public class ActivityDetail extends YouTubeBaseActivity {
                 public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                     if (keyDatum.getValue() != null)
                         youTubePlayer.cueVideo(keyDatum.getValue());
-                    else {
+                    else
                         youTubePlayer.cueVideo("7310215");
-                    }
-
                     Log.d(TAG, "success");
                 }
 
