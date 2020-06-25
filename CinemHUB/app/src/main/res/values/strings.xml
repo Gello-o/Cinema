@@ -16,9 +16,9 @@
     <string name="home_second">Home Second</string>
     <string name="menu_genere"></string>
 
-    <string name="movie_name">Movie Title</string>
+    <string name="movie_name">Title</string>
     <string name="movie_details">Movie Details</string>
-    <string name="plot">Plot Synopsis</string>
+    <string name="plot">Plot</string>
     <string name="rating">User Rating</string>
     <string name="release">Release Date</string>
     <string name="pref_sort_order_label">Sort Order</string>

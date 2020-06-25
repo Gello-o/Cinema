@@ -40,7 +40,8 @@
                 android:textAlignment="center"
                 android:textSize="25sp"
                 android:textStyle="bold"
-                android:layout_marginStart="@dimen/layout_margin_left" />
+                android:layout_marginStart="@dimen/layout_margin_left"
+                android:textColor="#000000"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -66,7 +67,8 @@
                 android:textSize="25sp"
                 android:textStyle="bold"
                 android:padding="@dimen/padding_layout"
-                android:layout_marginStart="@dimen/layout_margin_left" />
+                android:layout_marginStart="@dimen/layout_margin_left"
+                android:textColor="#000000"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -91,7 +93,8 @@
                 android:textAlignment="center"
                 android:textSize="25sp"
                 android:textStyle="bold"
-                android:layout_marginStart="@dimen/layout_margin_left" />
+                android:layout_marginStart="@dimen/layout_margin_left"
+                android:textColor="#000000"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -116,7 +119,8 @@
                 android:textAlignment="center"
                 android:textSize="25sp"
                 android:textStyle="bold"
-                android:layout_marginStart="@dimen/layout_margin_left" />
+                android:layout_marginStart="@dimen/layout_margin_left"
+                android:textColor="#000000"/>
 
             <TextView
                 android:layout_width="match_parent"
