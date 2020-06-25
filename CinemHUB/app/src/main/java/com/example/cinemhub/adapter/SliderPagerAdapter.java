@@ -50,7 +50,7 @@ public class SliderPagerAdapter extends PagerAdapter {
         ImageView slideImg = slideLayout.findViewById(R.id.slide_img);
        //TextView slideText = slideLayout.findViewById(R.id.slide_title);
 
-        if(mList.get(position) != null){
+        if(mList.get(position) != null && mList.get(position).getBackDropPath()!= null){
             Glide.with(mContext)
                     .load(Constants.BASE_IMAGE_URL+mList.get(position).getBackDropPath())
                     .placeholder(R.drawable.image_not_found_detail)

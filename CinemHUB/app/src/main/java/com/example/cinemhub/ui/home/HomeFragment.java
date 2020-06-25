@@ -91,8 +91,6 @@ public class HomeFragment extends Fragment {
                     if(moviesSet.get(i) != null && moviesSet.get(i).getVoteAverage() > 7)
                         slides.add(moviesSet.get(i));
                 }
-            }else{
-
             }
             initSlider();
             messageHandler = new Handler(Looper.getMainLooper());
@@ -145,7 +143,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void initSlider(){
-        //se slides è vuoto dobbiamo pensare ad una soluzione
         slideAdapter = new SliderPagerAdapter(getActivity(), slides);
         sliderpager.setAdapter(slideAdapter);
     }
@@ -160,9 +157,9 @@ public class HomeFragment extends Fragment {
             HomeFragment.this.runOnUiThread(() -> {
 
                 if(slides != null) {
-                    if (sliderpager.getCurrentItem() < slides.size() - 1) {
+                    if (sliderpager.getCurrentItem() < slides.size() - 1)
                         sliderpager.setCurrentItem(sliderpager.getCurrentItem() + 1);
-                    } else
+                     else
                         sliderpager.setCurrentItem(0);
                 }
             });
